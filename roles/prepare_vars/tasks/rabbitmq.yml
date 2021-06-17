@@ -1,0 +1,42 @@
+---
+# External RabbitMQ
+- when: use_external_rabbitmq | bool
+  block:
+  - name: "Check if all needed variables for RabbitMQ are defined if use_external_rabbitmq: true."
+    assert:
+      that:
+        - external_rabbitmq_host is defined
+        - external_rabbitmq_host | length
+        - external_rabbitmq_port is defined
+        - external_rabbitmq_port | int
+      fail_msg: >
+        You choose to use an external rabbitMQ server (use_external_rabbitmq: true),
+        external_rabbitmq_host, external_rabbitmq_port must be defined and not empty.
+
+  - name: "Set database connection variable when use_external_db: true."
+    set_fact:
+      rabbitmq_host: "{{ external_rabbitmq_host }}"
+      rabbitmq_port: "{{ external_rabbitmq_port }}"
+
+# Not external RabbitMQ
+- when: not use_external_rabbitmq | bool
+  block:
+  - name: "Check if the needed TLS vars are defined."
+    assert:
+      that:
+        - tls_rabbitmq_admin_key is defined
+        - tls_rabbitmq_admin_key | length
+        - tls_rabbitmq_admin_cert is defined
+        - tls_rabbitmq_admin_cert | length
+      fail_msg: >
+        You choose to use an internal rabbitMQ server (use_external_rabbitmq: false),
+        tls_rabbitmq_admin_key, tls_rabbitmq_admin_cert must be defined and not empty.
+
+  - name: "Check if rabbitmq is on the same same host."
+    set_fact:
+      rabbit_is_local: "{{ inventory_hostname in groups['app'] | default(false) }}"
+
+  - name: "Set RabbitMQ connection variable accordingly."
+    set_fact:
+      rabbitmq_host: "{{ rabbit_is_local | ternary('rabbitmq', rabbitmq_server_addr) }}"
+      rabbitmq_port: "{{ rabbit_is_local | ternary(5672, rabbitmq_external_port) }}"

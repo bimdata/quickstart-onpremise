@@ -1,0 +1,61 @@
+---
+docker_private_registry: docker-registry.bimdata.io
+
+# Used to login on the registry, this is a list, you can add registry if needed
+docker_registries:
+    username: "CHANGEME"  # Change me
+  - url: "https://{{ docker_private_registry }}"
+    password: "{{ vault_docker_private_registry_password }}"  # Change me in VAULT
+
+# Use public default registry
+docker_rabbitmq_image: rabbitmq
+docker_rabbitmq_tag: 3.8-management-alpine
+
+docker_postgres_image: postgres  # Only use when use_external_db: false
+docker_postgres_tag: 10-alpine
+
+# Use private registry
+docker_api_image: "{{ docker_private_registry }}/edf/api"
+docker_api_tag: latest
+
+docker_connect_image: "{{ docker_private_registry }}/edf/auth"
+docker_connect_tag: latest
+
+docker_platform_back_image: "{{ docker_private_registry }}/edf/platform_back"
+docker_platform_back_tag: latest
+
+docker_platform_front_image: "{{ docker_private_registry }}/edf/platform"
+docker_platform_front_tag: latest
+
+docker_iam_image: "{{ docker_private_registry }}/edf/keycloak"
+docker_iam_tag: latest
+
+docker_workers_export_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_export_tag: latest
+
+docker_workers_gltf_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_gltf_tag: latest
+
+docker_workers_extract_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_extract_tag: latest
+
+docker_workers_extract_quantities_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_extract_quantities_tag: latest
+
+docker_workers_svg_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_svg_tag: latest
+
+docker_workers_bvh_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_bvh_tag: latest
+
+docker_workers_optimize_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_optimize_tag: latest
+
+docker_workers_merge_image: "{{ docker_private_registry }}/edf/workers"
+docker_workers_merge_tag: latest
+
+docker_workers_xkt_image: "{{ docker_private_registry }}/edf/xkt_worker"
+docker_workers_xkt_tag: latest
+
+docker_workers_preview_image: "{{ docker_private_registry }}/edf/viewer_360"
+docker_workers_preview_tag: latest

@@ -1,0 +1,41 @@
+---
+# DATABASES
+# By default, the host will be compute from the inventory.
+# If you use an external postgres cluster, you need to set these variables.
+use_external_db: false
+external_db_host: None
+external_db_port: 5432
+
+## api
+db_api_name: api
+db_api_user: api
+db_api_password: "{{ vault_db_api_password }}"
+
+## connect
+db_connect_name: connect
+db_connect_user: connect
+db_connect_password: "{{ vault_db_connect_password }}"
+
+## platform
+db_platform_name: platform
+db_platform_user: platform
+db_platform_password: "{{ vault_db_platform_password }}"
+
+## iam (keycloak)
+db_iam_name: iam
+db_iam_user: iam
+db_iam_password: "{{ vault_db_iam_password }}"
+
+
+# After this line, all variables are only use if:
+# use_external_db: false *AND* the [db] server is different from the [app] server (in the inventory)
+
+# [app] server will needed to be able to contact [db] server on these ports
+db_api_external_port: 5432
+db_connect_external_port: 5433
+db_platform_external_port: 5434
+db_iam_external_port: 5435
+
+# This is the variable use to determine which address will be use by app server
+# to contact the dbs
+db_server_addr: "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}"

@@ -1,0 +1,4 @@
+---
+version: "3.8"
+services:
+  {{ compose_dbs | to_nice_yaml(indent=2) | indent(2) }}

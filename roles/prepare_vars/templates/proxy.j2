@@ -1,0 +1,11 @@
+{
+  {%- if http_proxy is defined and http_proxy | length -%}
+  HTTP_PROXY: {{ http_proxy }},
+  {%- endif -%}
+  {%- if https_proxy is defined and https_proxy | length -%}
+  HTTPS_PROXY: {{ https_proxy }},
+  {%- endif -%}
+  {%- if no_proxy is defined and no_proxy | length -%}
+  NO_PROXY: {{ no_proxy | join(',') }},
+  {%- endif -%}
+}

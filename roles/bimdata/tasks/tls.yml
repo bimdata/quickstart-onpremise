@@ -1,0 +1,53 @@
+---
+- name: "Copy the TLS CA."
+  template:
+    src: templates/tls/ca.crt.j2
+    dest: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Check what tls / cert needed to be present."
+  set_fact:
+    app_list_tls: "{{ default_app_list }}
+      {% if not use_external_rabbitmq | bool %}
+        + ['rabbitmq_admin']
+      {% endif %}"
+  vars:
+    default_app_list: #test
+      - api
+      - connect
+      - platform_back
+      - platform_front
+      - iam
+
+- name: "Copy the app TLS key."
+  template:
+    src: templates/tls/key.j2
+    dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
+    owner: root
+    group: root
+    mode: 0640
+  loop: "{{ app_list_tls }}"
+
+- name: "Copy the app TLS cert."
+  template:
+    src: templates/tls/cert.j2
+    dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
+    owner: root
+    group: root
+    mode: 0640
+  loop: "{{ app_list_tls }}"
+
+- name: "Copy pre-generated DH params."
+  copy:
+    src: pregen-dhparams.pem
+    dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
+    mode: 0640
+  when: nginx_use_pregen_dh
+
+- name: "Generate custom DH params."
+  openssl_dhparam:
+    path: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
+    size: "{{ nginx_dhparam_size | default(omit) }}"
+  when: not nginx_use_pregen_dh | bool

@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - prepare_vars
+    - docker
+
+- hosts: db
+  gather_facts: false
+  become: true
+  roles:
+    - role: bimdata_db
+      when: inventory_hostname not in groups['app']
+
+- hosts: app
+  gather_facts: false
+  become: true
+  roles:
+    - bimdata
+
+- hosts: workers
+  gather_facts: false
+  become: true
+  roles:
+    - role: bimdata_workers
+      when: inventory_hostname not in groups['app']

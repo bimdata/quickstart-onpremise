@@ -1,0 +1,213 @@
+workers-export:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_export_image }}
+      - TAG={{ docker_workers_export_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_export_instance }}
+  command: poetry run workers.export
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_export_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-gltf:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_gltf_image }}
+      - TAG={{ docker_workers_gltf_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_gltf_instance }}
+  command: poetry run workers.gltf
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_gltf_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-extract:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_extract_image }}
+      - TAG={{ docker_workers_extract_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_extract_instance }}
+  command: poetry run workers.extract
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_extract_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-extract-with-quantities:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_extract_quantities_image }}
+      - TAG={{ docker_workers_extract_quantities_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_extract_quantities_instance }}
+  command: poetry run workers.extract_with_quantities
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-svg:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_svg_image }}
+      - TAG={{ docker_workers_svg_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_svg_instance }}
+  command: poetry run workers.svg
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_svg_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-bvh:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_bvh_image }}
+      - TAG={{ docker_workers_bvh_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_bvh_instance }}
+  command: poetry run workers.bvh_tree
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_bvh_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-optimize:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_optimize_image }}
+      - TAG={{ docker_workers_optimize_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_optimize_instance }}
+  command: poetry run workers.optimize
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_optimize_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-merge:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_merge_image }}
+      - TAG={{ docker_workers_merge_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_merge_instance }}
+  command: poetry run workers.merge
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_merge_cpu }}
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-xkt:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_xkt_image }}
+      - TAG={{ docker_workers_xkt_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  deploy:
+    replicas: {{ workers_xkt_instance }}
+  command: node --max-old-space-size=4096 src/worker
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - NODE_ENV=production
+    - QUEUE=xkt
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_xkt_cpu }}
+    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped
+
+workers-preview:
+  build:
+    context: {{ bimdata_docker_volume_path }}
+    args:
+      - IMAGE={{ docker_workers_preview_image }}
+      - TAG={{ docker_workers_preview_tag }}
+    dockerfile: {{ bimdata_dockerfiles_path }}/preview.dockerfile
+  deploy:
+    replicas: {{ workers_preview_instance }}
+  command: node src/worker
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL=https://{{ api_dns_name }}
+    - NODE_ENV=production
+    - QUEUE=viewer_360
+    - MASTER_TOKEN={{ master_token }}
+    - CPU_ALLOCATED={{ workers_preview_cpu }}
+    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
+  restart: unless-stopped

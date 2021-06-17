@@ -1,0 +1,53 @@
+---
+- name: "Copy some init scripts."
+  copy:
+    src: "scripts/{{ item }}"
+    dest: "{{ bimdata_path }}/scripts/"
+    mode: 0640
+  loop:
+    - create_connect_provider.py
+    - create_invitation_app.py
+
+- name: "Copy the scripts into the needed containers."
+  command: "docker cp {{ bimdata_path }}/scripts/{{ item.script }} {{ item.container }}:/opt/{{ item.script }}"
+  loop:
+    - container: connect
+      script: create_connect_provider.py
+    - container: api
+      script: create_invitation_app.py
+
+- name: "Wait for connect to respond."
+  uri:
+    url: "https://{{ connect_dns_name }}"
+    method: GET
+    status_code: 200
+    ca_path: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+  environment: "{{ proxy_env }}"
+  register: connect_get
+  until: connect_get.status == 200
+  retries: 36
+  delay: 5
+
+- name: "Init connect."
+  command: "docker exec connect {{ item }} "
+  loop:
+    - "python manage.py creatersakey"
+    - |
+      python create_connect_provider.py {{ connect_client_id }}
+      {{ connect_client_secret }}https://{{ iam_dns_name }} {{ connect_invitation_client }}
+      {{ connect_invitation_client_secret }} {{ platform_front_client_id }}"
+
+- name: "Wait for API to respond."
+  uri:
+    url: "https://{{ api_dns_name }}"
+    method: GET
+    status_code: 200
+    ca_path: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+  environment: "{{ proxy_env }}"
+  register: connect_get
+  until: connect_get.status == 200
+  retries: 36
+  delay: 5
+
+- name: "Init API."
+  command: "docker exec api python create_invitation_app.py {{ connect_invitation_secret }} {{ connect_invitation_client }}"

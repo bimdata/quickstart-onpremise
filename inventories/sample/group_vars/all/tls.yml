@@ -1,0 +1,73 @@
+---
+# Use pre-generated dhparam?
+nginx_use_pregen_dh: true
+
+# You need to put the CA of the PKI used to generate certificates for the app
+tls_ca_certificate: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# If there are some subca, you can list them here.
+# You need to set them in the right order for the trust chain.
+tls_subca_certificates: []
+  # - |
+  #   -----BEGIN CERTIFICATE-----
+  #   CHANGEME CHANGEME CHANGEME
+  #   CHANGEME CHANGEME CHANGEME
+  #   -----END CERTIFICATE-----
+  # - |
+  #   -----BEGIN CERTIFICATE-----
+  #   CHANGEME CHANGEME CHANGEME
+  #   CHANGEME CHANGEME CHANGEME
+  #   -----END CERTIFICATE-----
+
+# API TLS Certs and key: need to match the name define in "{{ api_dns_name }}"
+tls_api_key: "{{ vault_tls_api_key }}"
+tls_api_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# Connect TLS Certs and key: need to match the name define in "{{ connect_dns_name }}"
+tls_connect_key: "{{ vault_tls_connect_key }}"
+tls_connect_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# Platform back TLS Certs and key: need to match the name define in "{{ platform_back_dns_name }}"
+tls_platform_back_key: "{{ vault_tls_platform_back_key }}"
+tls_platform_back_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# Platform front TLS Certs and key: need to match the name define in "{{ platform_dns_name }}"
+tls_platform_front_key: "{{ vault_tls_platform_front_key }}"
+tls_platform_front_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# IAM TLS Certs and key: need to match the name define in "{{ iam_dns_name }}"
+tls_iam_key: "{{ vault_tls_iam_key }}"
+tls_iam_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----
+
+# RabbitMQ TLS Certs and key: need to match the name define in "{{ rabbitmq_admin_dns_name }}"
+# This is only needed when: use_external_rabbitmq: false
+tls_rabbitmq_admin_key: "{{ vault_tls_rabbitmq_admin_key }}"
+tls_rabbitmq_admin_cert: |
+  -----BEGIN CERTIFICATE-----
+  CHANGEME CHANGEME CHANGEME
+  CHANGEME CHANGEME CHANGEME
+  -----END CERTIFICATE-----

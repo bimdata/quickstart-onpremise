@@ -1,0 +1,108 @@
+---
+app_dns_domain: domain.tld
+
+master_token: "{{ vault_master_token }}"
+
+# Creating temporary mapmox token: https://docs.mapbox.com/help/tutorials/get-started-tokens-api/#creating-temporary-tokens
+mapbox_token: "{{ vault_mapbox_token }}"
+max_upload_size: 1g
+
+
+# Some path where data will be stored
+bimdata_path: /opt/bimdata
+bimdata_docker_volume_path: "{{ bimdata_path }}/datas"
+bimdata_dockerfiles_path: "{{ bimdata_path }}/dockerfiles"
+
+# Web frontal
+external_port_http: 80
+external_port_https: 443
+
+# api
+api_dns_name: "api.{{ app_dns_domain }}"
+api_secret_key: "{{ vault_api_secret_key }}"  # Change me in the vault
+
+# connect
+connect_dns_name: "connect.{{ app_dns_domain }}"
+connect_secret_key: "{{ vault_connect_secret_key }}"  # Change me in the vault
+connect_client_id: "{{ 'connect_client_id' | to_uuid }}"
+connect_client_secret: "{{ 'connect_client_secret' | to_uuid }}"
+connect_invitation_secret: "{{ vault_connect_invitation_secret }}"  # Change me in the vault
+connect_invitation_client: "{{ 'connect_invitation_client' | to_uuid }}"
+connect_invitation_client_secret: "{{ vault_connect_invitation_client_secret }}"  # Change me in the vault
+
+# platform back
+platform_back_dns_name: "platform-back.{{ app_dns_domain }}"
+platform_back_secret_key: "{{ vault_platform_back_secret_key }}"  # Change me in the vault
+platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}"  # Change me in the vault
+
+# platform
+platform_front_dns_name: "platform.{{ app_dns_domain }}"
+platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid }}"
+
+# iam
+iam_dns_name: "iam.{{ app_dns_domain }}"
+iam_user: iam@domain.tld
+iam_password: "{{ vault_iam_password }}"  # Change me in the vault
+iam_truststore_password: "{{ vault_iam_truststore_password }}"  # Change me in the vault
+
+# workers
+## export
+workers_export_instance: 1
+workers_export_cpu: 1
+
+## gltf
+workers_gltf_instance: 1
+workers_gltf_cpu: 1
+
+## extract
+workers_extract_instance: 1
+workers_extract_cpu: 1
+
+## extract with quantities
+workers_extract_quantities_instance: 1
+workers_extract_quantities_cpu: 1
+
+## svg
+workers_svg_instance: 1
+workers_svg_cpu: 1
+
+## bvh tree
+workers_bvh_instance: 1
+workers_bvh_cpu: 1
+
+## optimize
+workers_optimize_instance: 1
+workers_optimize_cpu: 1
+
+## merge
+workers_merge_instance: 1
+workers_merge_cpu: 1
+
+## xkt
+workers_xkt_instance: 1
+workers_xkt_cpu: 1
+
+## preview
+workers_preview_instance: 1
+workers_preview_cpu: 1
+
+# smtp service
+smtp_host: mail.domain.tld
+smtp_port: 587
+smtp_user: infra@domain.tld
+smtp_pass: "{{ vault_smtp_pass }}"
+smtp_use_tls: true
+smtp_default_email: support@domain.tld
+
+# Dockerize for connect
+dockerize_version: v0.6.1
+
+# If for some reason the containers can't resolv the public name with dns…
+docker_use_extra_hosts: false
+docker_extra_hosts:
+  - "{{ api_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ connect_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ platform_back_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ platform_front_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ iam_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ rabbitmq_admin_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"

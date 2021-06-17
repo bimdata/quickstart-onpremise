@@ -1,0 +1,28 @@
+---
+- name: "Create needed directories."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 70
+    group: 70
+    mode: 0750
+  loop:
+    - "{{ bimdata_path }}"
+    - "{{ bimdata_docker_volume_path }}/db/api"
+    - "{{ bimdata_docker_volume_path }}/db/connect"
+    - "{{ bimdata_docker_volume_path }}/db/platform"
+    - "{{ bimdata_docker_volume_path }}/db/iam"
+
+- name: "Create docker-compose file."
+  template:
+    src: compose-db.yml.j2
+    dest: "{{ bimdata_path }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0640
+
+- name: "Pull needed images."
+  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
+
+- name: "Start containers"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --detach"

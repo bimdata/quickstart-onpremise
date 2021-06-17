@@ -1,0 +1,26 @@
+---
+# Docker APT configuration
+docker_apt_dependencies:
+  - python3-docker
+  - gnupg
+  - apt-transport-https
+  - ca-certificates
+docker_apt_release_channel: stable
+docker_repo_base_url: https://download.docker.com/linux
+docker_apt_key_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}/gpg"
+docker_apt_repo_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}"
+
+# Docker package selection
+docker_edition: ce  # 'ee' for 'Enterprise Edition' or 'ce' for 'Community Edition'
+docker_pkg_name: "docker-{{ docker_edition }}"
+docker_pkg_version: ""
+docker_pkg_version_hold: "{{ docker_pkg_version | default(false) | ternary(true, false) }}"
+
+# Docker service configuration
+docker_svc_name: docker
+
+# Docker compose configuration
+docker_install_compose: true
+docker_compose_version: 1.29.2
+docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+docker_compose_path: /usr/local/bin/docker-compose
