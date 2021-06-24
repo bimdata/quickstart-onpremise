@@ -14,10 +14,14 @@ workers-export:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-gltf:
   build:
@@ -35,10 +39,14 @@ workers-gltf:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-extract:
   build:
@@ -56,10 +64,14 @@ workers-extract:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-extract-with-quantities:
   build:
@@ -77,10 +89,14 @@ workers-extract-with-quantities:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-svg:
   build:
@@ -98,10 +114,14 @@ workers-svg:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-bvh:
   build:
@@ -119,10 +139,14 @@ workers-bvh:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_bvh_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-optimize:
   build:
@@ -140,10 +164,14 @@ workers-optimize:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_optimize_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-merge:
   build:
@@ -161,10 +189,14 @@ workers-merge:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
     - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-xkt:
   build:
@@ -182,12 +214,16 @@ workers-xkt:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - NODE_ENV=production
     - QUEUE=xkt
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_xkt_cpu }}
     - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
 
 workers-preview:
   build:
@@ -205,9 +241,13 @@ workers-preview:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - API_URL=https://{{ api_dns_name }}
+    - ENV={{ app_env }}
     - NODE_ENV=production
     - QUEUE=viewer_360
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_preview_cpu }}
     - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
   restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}

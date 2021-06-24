@@ -16,17 +16,25 @@
     - container: api
       script: create_invitation_app.py
 
-- name: "Wait for connect to respond."
+- name: "Wait for IAM to respond."
   uri:
-    url: "https://{{ connect_dns_name }}"
+    url: "https://{{ iam_dns_name }}"
     method: GET
     status_code: 200
     ca_path: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
   environment: "{{ proxy_env }}"
-  register: connect_get
-  until: connect_get.status == 200
+  register: iam_get
+  until: iam_get.status == 200
   retries: 36
   delay: 5
+
+- name: "Wait for connect migrations."
+  command: "docker exec connect bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+  register: connect_migration
+  until: connect_migration.stdout == "0"
+  failed_when: connect_migration.rc != 1
+  retries: 36
+  delay: 10
 
 - name: "Init connect."
   command: "docker exec connect {{ item }} "
@@ -34,8 +42,7 @@
     - "python manage.py creatersakey"
     - |
       python create_connect_provider.py {{ connect_client_id }}
-      {{ connect_client_secret }}https://{{ iam_dns_name }} {{ connect_invitation_client }}
-      {{ connect_invitation_client_secret }} {{ platform_front_client_id }}"
+      {{ connect_client_secret }} https://{{ iam_dns_name }}
 
 - name: "Wait for API to respond."
   uri:
@@ -49,5 +56,17 @@
   retries: 36
   delay: 5
 
+- name: "Wait for API migrations."
+  command: "docker exec api bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+  register: api_migration
+  until: api_migration.stdout == "0"
+  failed_when: api_migration.rc != 1
+  retries: 36
+  delay: 10
+
 - name: "Init API."
-  command: "docker exec api python create_invitation_app.py {{ connect_invitation_secret }} {{ connect_invitation_client }}"
+  command: |
+    docker exec api python create_invitation_app.py {{ connect_invitation_secret }}
+    {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
+    {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
+    https://{{ platform_front_dns_name }}

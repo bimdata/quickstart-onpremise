@@ -3,10 +3,11 @@ app_dns_domain: domain.tld
 
 master_token: "{{ vault_master_token }}"
 
+app_env: staging
+
 # Creating temporary mapmox token: https://docs.mapbox.com/help/tutorials/get-started-tokens-api/#creating-temporary-tokens
 mapbox_token: "{{ vault_mapbox_token }}"
 max_upload_size: 1g
-
 
 # Some path where data will be stored
 bimdata_path: /opt/bimdata
@@ -24,10 +25,10 @@ api_secret_key: "{{ vault_api_secret_key }}"  # Change me in the vault
 # connect
 connect_dns_name: "connect.{{ app_dns_domain }}"
 connect_secret_key: "{{ vault_connect_secret_key }}"  # Change me in the vault
-connect_client_id: "{{ 'connect_client_id' | to_uuid }}"
-connect_client_secret: "{{ 'connect_client_secret' | to_uuid }}"
+connect_client_id: "{{ 'connect_client_id' | to_uuid(namespace=uuid_namespace) }}"
+connect_client_secret: "{{ 'connect_client_secret' | to_uuid(namespace=uuid_namespace) }}"
 connect_invitation_secret: "{{ vault_connect_invitation_secret }}"  # Change me in the vault
-connect_invitation_client: "{{ 'connect_invitation_client' | to_uuid }}"
+connect_invitation_client: "{{ 'connect_invitation_client' | to_uuid(namespace=uuid_namespace) }}"
 connect_invitation_client_secret: "{{ vault_connect_invitation_client_secret }}"  # Change me in the vault
 
 # platform back
@@ -37,7 +38,7 @@ platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}"  # Chan
 
 # platform
 platform_front_dns_name: "platform.{{ app_dns_domain }}"
-platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid }}"
+platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"
 
 # iam
 iam_dns_name: "iam.{{ app_dns_domain }}"
@@ -106,3 +107,5 @@ docker_extra_hosts:
   - "{{ platform_front_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ iam_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ rabbitmq_admin_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+
+uuid_namespace: "{{ app_dns_domain | to_uuid }}"

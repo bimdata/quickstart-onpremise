@@ -55,6 +55,7 @@ services:
       - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
     environment:
       - VIRTUAL_HOST={{ api_dns_name }}
+      - ENV={{ app_env }}
       - API_URL=https://{{ api_dns_name }}
       - DOC_URL=https://developers.bimdata.io
       - CONNECT_URL=https://{{ connect_dns_name }}
@@ -112,6 +113,7 @@ services:
       - {{ bimdata_docker_volume_path }}/web/static/auth:/opt/static:rw
     environment:
       - VIRTUAL_HOST={{ connect_dns_name }}
+      - ENV={{ app_env }}
       - API_URL=https://{{ api_dns_name }}
       - DOC_URL=https://developers.bimdata.io
       - SITE_URL=https://{{ connect_dns_name }}
@@ -164,6 +166,7 @@ services:
       - {{ bimdata_docker_volume_path }}/web/static/platform_back:/opt/statics:rw
     environment:
       - VIRTUAL_HOST={{ platform_back_dns_name }}
+      - ENV={{ app_env }}
       - API_URL=https://{{ api_dns_name }}
       - PLATFORM_BACK_URL=https://{{ platform_back_dns_name }}
       - APP_URL=https://{{ platform_front_dns_name }}
@@ -195,13 +198,14 @@ services:
 {% endif %}
       - nginx-proxy
 
-  {# platform:
+  platform:
     container_name: platform-front
     build:
       context: {{ bimdata_docker_volume_path }}
       args:
         - IMAGE={{ docker_platform_front_image }}
         - TAG={{ docker_platform_front_tag }}
+        - ENV={{ app_env }}
         - NODE_ENV=production
         - BD_APP_URL=https://{{ platform_front_dns_name }}
         - BD_OIDC_IP=https://{{ iam_dns_name }}
@@ -211,7 +215,6 @@ services:
         - BD_PLATFORM_BACK_BASE_URL=https://{{ platform_back_dns_name }}
         - BD_MAPBOX_TOKEN={{ mapbox_token }}
         - BD_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
-
       dockerfile: {{ bimdata_dockerfiles_path }}/platform-build.dockerfile
     expose:
       - 8080
@@ -222,7 +225,7 @@ services:
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
     depends_on:
-      - nginx-proxy #}
+      - nginx-proxy
 
   iam:
     container_name: iam
@@ -238,6 +241,7 @@ services:
     environment:
       - VIRTUAL_HOST={{ iam_dns_name }}
       - VIRTUAL_PORT=8080
+      - ENV={{ app_env }}
       - DB_VENDOR=POSTGRES
       - PROXY_ADDRESS_FORWARDING=true
       - DB_ADDR={{ db_iam_host }}

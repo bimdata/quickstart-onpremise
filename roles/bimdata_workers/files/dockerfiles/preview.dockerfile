@@ -16,6 +16,6 @@ RUN  openssl req -new -newkey rsa:2048 -days 1 -nodes -x509 \
     -keyout /tmp/key.pem -out /tmp/cert.pem && \
     openssl s_server -key /tmp/key.pem -cert /tmp/cert.pem -accept 443 -www & \
     /opt/google/chrome-unstable/chrome --headless --no-sandbox https://localhost && \
-    kill openssl && rm /tmp/key.pem /tmp/cert.pem
+    kill `pidof openssl` && rm /tmp/key.pem /tmp/cert.pem
 RUN mkdir -p $HOME/.pki/nssdb
 RUN certutil -d sql:$HOME/.pki/nssdb -A -n 'Custom CA' -i /usr/local/share/ca-certificates/custom-ca.crt -t TCP,TCP,TCP
