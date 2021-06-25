@@ -42,10 +42,7 @@ invitation_app, created = App.objects.get_or_create(
 if created:
     # Missing a migration in API
     #invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
-    try:
-        scope = Scope.objects.get(name="org:manage")
-    except:
-        scope = Scope.objects.create(name="org:manage", consent_text="")
+    scope, created = Scope.objects.get_or_create(name="org:manage", consent_text="")
     invitation_app.scopes.add(scope)
 
 # create plarform app

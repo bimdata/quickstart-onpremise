@@ -110,7 +110,7 @@ services:
     expose:
       - 8000
     volumes:
-      - {{ bimdata_docker_volume_path }}/web/static/auth:/opt/static:rw
+      - {{ bimdata_docker_volume_path }}/web/static/connect:/opt/static:rw
     environment:
       - VIRTUAL_HOST={{ connect_dns_name }}
       - ENV={{ app_env }}
@@ -206,16 +206,15 @@ services:
         - IMAGE={{ docker_platform_front_image }}
         - TAG={{ docker_platform_front_tag }}
         - ENV={{ app_env }}
-        - NODE_ENV=production
-        - BD_APP_URL=https://{{ platform_front_dns_name }}
-        - BD_OIDC_IP=https://{{ iam_dns_name }}
-        - BD_OIDC_CLIENT_ID={{ platform_front_client_id }}
-        - BD_CONNECT_URL=https://{{ connect_dns_name }}
-        - BD_API_BASE_URL=https://{{ api_dns_name }}
-        - BD_PLATFORM_BACK_BASE_URL=https://{{ platform_back_dns_name }}
-        - BD_MAPBOX_TOKEN={{ mapbox_token }}
-        - BD_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/platform-build.dockerfile
+        - VUE_APP_BASE_URL=https://{{ platform_front_dns_name }}
+        - VUE_APP_IAM_BASE_URL=https://{{ iam_dns_name }}
+        - VUE_APP_API_BASE_URL=https://{{ api_dns_name }}
+        - VUE_APP_BACKEND_BASE_URL=https://{{ platform_back_dns_name }}
+        - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
+        - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
+        - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
+        - VUE_APP_URL_BIMDATACONNECT=https://{{ connect_dns_name }}
+      dockerfile: {{ bimdata_dockerfiles_path }}/platform_v2-build.dockerfile
     expose:
       - 8080
     environment:

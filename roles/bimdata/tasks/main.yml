@@ -3,9 +3,7 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
-    mode: 0750
+    mode: 0755
   loop:
     - "{{ bimdata_path }}/scripts"
     - "{{ bimdata_dockerfiles_path }}"
@@ -52,7 +50,7 @@
     - bases.dockerfile
     - keycloak.dockerfile
     - platform-build.dockerfile
-    - platform-install.dockerfile
+    - platform_v2-build.dockerfile
 
 - name: "Download Dockerize."
   get_url:
