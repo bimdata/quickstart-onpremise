@@ -1,6 +1,7 @@
 ---
 # Ansible connection
 ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_pipelining: true
 
 # If you can't connect directly to the machines via SSH, you can define a bastion.
 # It will proxy the ssh connection between ansible and the remote servers.

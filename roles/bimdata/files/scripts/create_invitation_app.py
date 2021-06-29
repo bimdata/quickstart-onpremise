@@ -40,10 +40,7 @@ invitation_app, created = App.objects.get_or_create(
     provider=idp
 )
 if created:
-    # Missing a migration in API
-    #invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
-    scope, created = Scope.objects.get_or_create(name="org:manage", consent_text="")
-    invitation_app.scopes.add(scope)
+    invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
 
 # create plarform app
 platform_app, created = App.objects.get_or_create(
