@@ -18,7 +18,7 @@ docker_postgres_tag: 10-alpine
 docker_api_image: "{{ docker_private_registry }}/on-premise/api"
 docker_api_tag: latest
 
-docker_connect_image: "{{ docker_private_registry }}/on-premise/auth"
+docker_connect_image: "{{ docker_private_registry }}/on-premise/connect"
 docker_connect_tag: latest
 
 docker_platform_back_image: "{{ docker_private_registry }}/on-premise/platform_back"
@@ -27,7 +27,7 @@ docker_platform_back_tag: latest
 docker_platform_front_image: "{{ docker_private_registry }}/on-premise/platform_v2"
 docker_platform_front_tag: latest
 
-docker_iam_image: "{{ docker_private_registry }}/on-premise/keycloak"
+docker_iam_image: "{{ docker_private_registry }}/on-premise/iam"
 docker_iam_tag: latest
 
 docker_workers_export_image: "{{ docker_private_registry }}/on-premise/workers"
