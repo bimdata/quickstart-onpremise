@@ -12,7 +12,7 @@
 - name: "Copy the TLS CA."
   template:
     src: templates/tls/ca.crt.j2
-    dest: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+    dest: "{{ bimdata_docker_volume_path }}/ca.crt"
     owner: root
     group: root
     mode: 0644
@@ -23,14 +23,11 @@
     dest: "{{ bimdata_docker_volume_path }}/.dockerignore"
     mode: 0640
 
-- name: "Copy dockerfiles."
+- name: "Copy preview dockerfiles."
   copy:
-    src: "dockerfiles/{{ item }}"
-    dest: "{{ bimdata_dockerfiles_path }}/{{ item }}"
+    src: "dockerfiles/preview.dockerfile"
+    dest: "{{ bimdata_dockerfiles_path }}/preview.dockerfile"
     mode: 0640
-  loop:
-    - bases.dockerfile
-    - preview.dockerfile
 
 - name: "Create docker-compose file."
   template:

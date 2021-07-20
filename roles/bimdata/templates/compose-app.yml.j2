@@ -39,20 +39,51 @@ services:
       - {{ bimdata_docker_volume_path }}/web/static:/var/www/static/:ro
     restart: unless-stopped
 
+  iam:
+    container_name: iam
+    image: {{ docker_iam_image }}:{{ docker_iam_tag }}
+    expose:
+      - 8080
+    volumes:
+      - {{ bimdata_docker_volume_path }}/keycloak:/opt/custom:ro
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+    environment:
+      - VIRTUAL_HOST={{ iam_dns_name }}
+      - VIRTUAL_PORT=8080
+      - ENV={{ app_env }}
+      - DB_VENDOR=POSTGRES
+      - PROXY_ADDRESS_FORWARDING=true
+      - DB_ADDR={{ db_iam_host }}
+      - DB_PORT={{ db_iam_port }}
+      - DB_SCHEMA=public
+      - DB_DATABASE={{ db_iam_name }}
+      - DB_USER={{ db_iam_user }}
+      - DB_PASSWORD={{ db_iam_password }}
+      - X509_CA_BUNDLE=/opt/onprem-ca.crt
+      - KEYCLOAK_HOSTNAME={{ iam_dns_name }}
+      - KEYCLOAK_USER={{ iam_user }}
+      - KEYCLOAK_PASSWORD={{ iam_password }}
+      - KEYCLOAK_IMPORT=/opt/custom/bimdata-realm.json
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      - iam-db
+{% endif %}
+      - nginx-proxy
+
   api:
     container_name: api
-    build:
-      context: {{ bimdata_docker_volume_path }}
-      args:
-        - IMAGE={{ docker_api_image }}
-        - TAG={{ docker_api_tag }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+    image: {{ docker_api_image }}:{{ docker_api_tag }}
     command: bash -c "python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn bimdata.wsgi -w $$(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) -b 0.0.0.0:8000 --timeout 1200 --access-logfile '-' --error-logfile '-' --worker-tmp-dir /dev/shm --log-level INFO"
     expose:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/api:/opt/statics:rw
       - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
+      - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
     environment:
       - VIRTUAL_HOST={{ api_dns_name }}
       - ENV={{ app_env }}
@@ -83,7 +114,8 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt  # Requests
+      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt       # urllib3
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -100,17 +132,13 @@ services:
 
   connect:
     container_name: connect
-    build:
-      context: {{ bimdata_docker_volume_path }}
-      args:
-        - IMAGE={{ docker_connect_image }}
-        - TAG={{ docker_connect_tag }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
-    command: dockerize -timeout 60s -wait https://{{ iam_dns_name }} bash -c "python manage.py compilescss && python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
+    image: {{ docker_connect_image }}:{{ docker_connect_tag }}
+    command: bash -c "python manage.py compilescss && python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
     expose:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/connect:/opt/static:rw
+      - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
     environment:
       - VIRTUAL_HOST={{ connect_dns_name }}
       - ENV={{ app_env }}
@@ -139,7 +167,8 @@ services:
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
       - INVITATION_CLIENT_SECRET={{ connect_invitation_client_secret }}
       - ADMIN_INTERFACE=True
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -153,17 +182,13 @@ services:
 
   platform-back:
     container_name: platform-back
-    build:
-      context: {{ bimdata_docker_volume_path }}
-      args:
-        - IMAGE={{ docker_platform_back_image }}
-        - TAG={{ docker_platform_back_tag }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+    image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
     command: bash -c "python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
     expose:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/platform_back:/opt/statics:rw
+      - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
     environment:
       - VIRTUAL_HOST={{ platform_back_dns_name }}
       - ENV={{ app_env }}
@@ -187,7 +212,8 @@ services:
       - DB_NAME={{ db_platform_name }}
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -214,7 +240,7 @@ services:
         - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
         - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
         - VUE_APP_URL_BIMDATACONNECT=https://{{ connect_dns_name }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/platform_v2-build.dockerfile
+      dockerfile: {{ bimdata_dockerfiles_path }}/platform.dockerfile
     expose:
       - 8080
     environment:
@@ -224,44 +250,6 @@ services:
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
     depends_on:
-      - nginx-proxy
-
-  iam:
-    container_name: iam
-    build:
-      context: {{ bimdata_docker_volume_path }}
-      args:
-        - IMAGE={{ docker_iam_image }}
-        - TAG={{ docker_iam_tag }}
-        - TRUSTSTORE_PASSWORD={{ iam_truststore_password }}
-      dockerfile: {{ bimdata_dockerfiles_path }}/keycloak.dockerfile
-    expose:
-      - 8080
-    environment:
-      - VIRTUAL_HOST={{ iam_dns_name }}
-      - VIRTUAL_PORT=8080
-      - ENV={{ app_env }}
-      - DB_VENDOR=POSTGRES
-      - PROXY_ADDRESS_FORWARDING=true
-      - DB_ADDR={{ db_iam_host }}
-      - DB_PORT={{ db_iam_port }}
-      - DB_SCHEMA=public
-      - DB_DATABASE={{ db_iam_name }}
-      - DB_USER={{ db_iam_user }}
-      - DB_PASSWORD={{ db_iam_password }}
-      - KEYCLOAK_HOSTNAME={{ iam_dns_name }}
-      - KEYCLOAK_USER={{ iam_user }}
-      - KEYCLOAK_PASSWORD={{ iam_password }}
-      - KEYCLOAK_IMPORT=/opt/bimdata-realm.json
-      - TRUSTSTORE_PASSWORD={{ iam_truststore_password }}
-    restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-    extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-    depends_on:
-{% if not use_external_db and inventory_hostname in groups['db'] %}
-      - iam-db
-{% endif %}
       - nginx-proxy
 
 {% if inventory_hostname in groups['workers'] %}

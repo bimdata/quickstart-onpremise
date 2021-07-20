@@ -2,7 +2,7 @@
 - name: "Copy the TLS CA."
   template:
     src: templates/tls/ca.crt.j2
-    dest: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+    dest: "{{ bimdata_docker_volume_path }}/ca.crt"
     owner: root
     group: root
     mode: 0644

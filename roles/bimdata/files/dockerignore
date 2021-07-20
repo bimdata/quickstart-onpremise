@@ -1,5 +1,0 @@
-*
-!dockerize.tar.gz
-!web/certs/ca.crt
-!keycloak/standalone-ha.xml
-!keycloak/bimdata-realm.json

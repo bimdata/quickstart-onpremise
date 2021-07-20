@@ -21,7 +21,7 @@
     url: "https://{{ iam_dns_name }}"
     method: GET
     status_code: 200
-    ca_path: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+    ca_path: "{{ bimdata_docker_volume_path }}/ca.crt"
   environment: "{{ proxy_env }}"
   register: iam_get
   until: iam_get.status == 200
@@ -49,7 +49,7 @@
     url: "https://{{ api_dns_name }}"
     method: GET
     status_code: 200
-    ca_path: "{{ bimdata_docker_volume_path }}/web/certs/ca.crt"
+    ca_path: "{{ bimdata_docker_volume_path }}/ca.crt"
   environment: "{{ proxy_env }}"
   register: connect_get
   until: connect_get.status == 200

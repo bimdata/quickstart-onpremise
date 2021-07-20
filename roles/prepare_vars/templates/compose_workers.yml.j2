@@ -1,10 +1,7 @@
 workers-export:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_export_image }}
-      - TAG={{ docker_workers_export_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_export_image }}:{{ docker_workers_export_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_export_instance }}
   command: poetry run workers.export
@@ -17,19 +14,17 @@ workers-export:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-gltf:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_gltf_image }}
-      - TAG={{ docker_workers_gltf_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_gltf_image }}:{{ docker_workers_gltf_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_gltf_instance }}
   command: poetry run workers.gltf
@@ -42,19 +37,17 @@ workers-gltf:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-extract:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_extract_image }}
-      - TAG={{ docker_workers_extract_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_extract_image }}:{{ docker_workers_extract_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_extract_instance }}
   command: poetry run workers.extract
@@ -67,19 +60,17 @@ workers-extract:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-extract-with-quantities:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_extract_quantities_image }}
-      - TAG={{ docker_workers_extract_quantities_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_extract_quantities_image }}:{{ docker_workers_extract_quantities_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_extract_quantities_instance }}
   command: poetry run workers.extract_with_quantities
@@ -92,19 +83,17 @@ workers-extract-with-quantities:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-svg:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_svg_image }}
-      - TAG={{ docker_workers_svg_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_svg_image }}:{{ docker_workers_svg_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_svg_instance }}
   command: poetry run workers.svg
@@ -117,19 +106,17 @@ workers-svg:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-bvh:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_bvh_image }}
-      - TAG={{ docker_workers_bvh_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_bvh_image }}:{{ docker_workers_bvh_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_bvh_instance }}
   command: poetry run workers.bvh_tree
@@ -142,19 +129,17 @@ workers-bvh:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_bvh_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-optimize:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_optimize_image }}
-      - TAG={{ docker_workers_optimize_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_optimize_image }}:{{ docker_workers_optimize_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_optimize_instance }}
   command: poetry run workers.optimize
@@ -167,19 +152,17 @@ workers-optimize:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_optimize_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-merge:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_merge_image }}
-      - TAG={{ docker_workers_merge_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_merge_image }}:{{ docker_workers_merge_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_merge_instance }}
   command: poetry run workers.merge
@@ -192,19 +175,16 @@ workers-merge:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/custom-ca.crt
+    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-xkt:
-  build:
-    context: {{ bimdata_docker_volume_path }}
-    args:
-      - IMAGE={{ docker_workers_xkt_image }}
-      - TAG={{ docker_workers_xkt_tag }}
-    dockerfile: {{ bimdata_dockerfiles_path }}/bases.dockerfile
+  image: {{ docker_workers_xkt_image }}:{{ docker_workers_xkt_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_xkt_instance }}
   command: node --max-old-space-size=4096 src/worker
@@ -219,7 +199,7 @@ workers-xkt:
     - QUEUE=xkt
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_xkt_cpu }}
-    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
+    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -246,7 +226,7 @@ workers-preview:
     - QUEUE=viewer_360
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_preview_cpu }}
-    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/custom-ca.crt
+    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/onprem-ca.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
