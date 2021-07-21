@@ -3,7 +3,7 @@
 # By default, the host will be compute from the inventory.
 # If you use an external rabbitmq cluster, you need to set these variables.
 use_external_rabbitmq: false
-external_rabbitmq_host: None
+external_rabbitmq_host: ""
 external_rabbitmq_port: 5672
 
 # These credentials are used by the apps to connect to the rabbitmq

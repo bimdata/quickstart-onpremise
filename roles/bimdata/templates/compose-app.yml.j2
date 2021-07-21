@@ -77,7 +77,7 @@ services:
   api:
     container_name: api
     image: {{ docker_api_image }}:{{ docker_api_tag }}
-    command: bash -c "python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn bimdata.wsgi -w $$(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) -b 0.0.0.0:8000 --timeout 1200 --access-logfile '-' --error-logfile '-' --worker-tmp-dir /dev/shm --log-level INFO"
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn bimdata.wsgi -w $$(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) -b 0.0.0.0:8000 --timeout 1200 --access-logfile '-' --error-logfile '-' --worker-tmp-dir /dev/shm --log-level INFO)"
     expose:
       - 8000
     volumes:
@@ -133,7 +133,7 @@ services:
   connect:
     container_name: connect
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
-    command: bash -c "python manage.py compilescss && python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
+    command: bash -c "python manage.py compilescss && python manage.py collectstatic --no-input && python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
     expose:
       - 8000
     volumes:
@@ -183,7 +183,7 @@ services:
   platform-back:
     container_name: platform-back
     image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
-    command: bash -c "python manage.py collectstatic --no-input & python manage.py migrate && python manage.py process_tasks & gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && python manage.py process_tasks && gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
     expose:
       - 8000
     volumes:

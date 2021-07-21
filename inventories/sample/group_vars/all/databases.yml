@@ -3,7 +3,7 @@
 # By default, the host will be compute from the inventory.
 # If you use an external postgres cluster, you need to set these variables.
 use_external_db: false
-external_db_host: None
+external_db_host: ""
 external_db_port: 5432
 
 ## api
