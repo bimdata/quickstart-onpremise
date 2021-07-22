@@ -16,8 +16,8 @@ our sales service to gain the proper accesses.
  other kind of disrupt services.
 
  - This project is an example on how to quickly install our applications. This is
-not intended for production usage. You may need to do multiple modification to
-match your infrastructure and your security need.
+not intended for production usage. You may need to do multiple modifications to
+match your infrastructure and your security needs.
 
  - This project do not support high availability deployment.
 
@@ -163,7 +163,7 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 
 #### SSH Bastion
 If you can't use SSH directly from this computer to the servers where you want to install
-our applications, you can use a *bastion* that will to proxy the ssh connections.
+our applications, you can use a *bastion* that will proxy the ssh connections.
 
 | Variables                 | Default value                 | Description                                    |
 |---------------------------|-------------------------------|------------------------------------------------|
@@ -329,3 +329,19 @@ You should not have to modified these variables in most cases.
 ### vault.yml
 In this file, all private informations are defined. Like password, TLS keys or other security stuff.
 You should replace all the values and encrypt the file with `ansible-vault`.
+
+When everything is configured, you can deploy:
+```
+ansible-playbook -i inventories/my-own-inventory/inventory.ini install-bimdata.yml
+```
+
+You may need to add options:
+
+| Options          | Effect                    |
+|------------------|---------------------------|
+| -k               | Prompt for ssh password.  |
+| -K               | Prompt for sudo password. |
+| --ask-vault-pass | Prompt for vault password |
+
+If you can't use `sudo`, you can check the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/become.html)
+on how to configure other way to manage privilege escalation.
