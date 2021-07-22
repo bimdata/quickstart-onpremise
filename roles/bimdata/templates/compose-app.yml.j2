@@ -183,7 +183,7 @@ services:
   platform-back:
     container_name: platform-back
     image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
-    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && python manage.py process_tasks && gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200)"
     expose:
       - 8000
     volumes:
