@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /opt
 
-ADD package.json package-lock.json /opt/
+COPY package.json package-lock.json /opt/
 
 RUN npm ci
 

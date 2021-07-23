@@ -18,9 +18,11 @@ vault_connect_invitation_client_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_webhook_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_iam_password: CHANGEME-BY-SOMETHING-SECURE
-vault_iam_truststore_password: CHANGEME-BY-SOMETHING-SECURE
 
 vault_smtp_pass: CHANGEME-BY-YOUR-PASSWORD-ON-THE-SMTP-SERVER
+
+vault_swift_password: CHANGEME-BY-YOUR-PASSWORD-ON-SWIFT
+swift_temp_url_key: CHANGEME-BY-SOMETHING-SECURE
 
 vault_tls_api_key: |
   -----BEGIN EC PRIVATE KEY-----

@@ -20,5 +20,9 @@
 - name: "Include tasks to compute rabbitmq variables."
   include_tasks: rabbitmq.yml
 
+- name: "Include tasks to check swift variables."
+  include_tasks: swift.yml
+  when: swift_enabled | bool
+
 - name: "Include tasks to compute workers variables."
   include_tasks: workers.yml

@@ -10,7 +10,7 @@
       - bastion_ssh_user | length
     fail_msg: >
       You choose to use a connection through a bastion (use_bastion: true),
-      bastion_ssh_addr, bastion_ssh_port, bastion_ssh_user must be defined and not empty."
+      bastion_ssh_addr, bastion_ssh_port, bastion_ssh_user must be defined and not empty.
 
 - name: "Compute easy to use bastion configuration."
   set_fact:

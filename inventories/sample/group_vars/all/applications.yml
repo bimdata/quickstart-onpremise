@@ -8,12 +8,12 @@ platform_front_dns_name: "platform.{{ app_dns_domain }}"
 iam_dns_name: "iam.{{ app_dns_domain }}"
 
 # smtp service
-smtp_host: mail.domain.tld
+smtp_host: ""
 smtp_port: 587
-smtp_user: infra@domain.tld
+smtp_user: ""
 smtp_pass: "{{ vault_smtp_pass }}"
 smtp_use_tls: true
-smtp_default_email: support@domain.tld
+smtp_default_email: ""
 
 # Web frontal
 external_port_http: 80
@@ -24,6 +24,16 @@ max_upload_size: 1g
 bimdata_path: /opt/bimdata
 bimdata_docker_volume_path: "{{ bimdata_path }}/datas"
 bimdata_dockerfiles_path: "{{ bimdata_path }}/dockerfiles"
+
+# Obect storage
+swift_enabled: false
+swift_auth_url: ""
+swift_tenant_id: ""
+swift_tenant_name: ""
+swift_username: ""
+swift_password: "{{ vault_swift_password }}"
+swift_temp_url_key: ""
+swift_container_name: ""
 
 # api
 api_secret_key: "{{ vault_api_secret_key }}"  # Change me in the vault

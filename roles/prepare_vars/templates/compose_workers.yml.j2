@@ -4,7 +4,7 @@ workers-export:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_export_instance }}
-  command: poetry run workers.export
+  command: bash -c "update-ca-certificates && poetry run workers.export"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -14,8 +14,8 @@ workers-export:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -27,7 +27,7 @@ workers-gltf:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_gltf_instance }}
-  command: poetry run workers.gltf
+  command: bash -c "update-ca-certificates && poetry run workers.gltf"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -37,8 +37,8 @@ workers-gltf:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -50,7 +50,7 @@ workers-extract:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_extract_instance }}
-  command: poetry run workers.extract
+  command: bash -c "update-ca-certificates && poetry run workers.extract"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -60,8 +60,8 @@ workers-extract:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -73,7 +73,7 @@ workers-extract-with-quantities:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_extract_quantities_instance }}
-  command: poetry run workers.extract_with_quantities
+  command: bash -c "update-ca-certificates && poetry run workers.extract_with_quantities"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -83,8 +83,8 @@ workers-extract-with-quantities:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -96,7 +96,7 @@ workers-svg:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_svg_instance }}
-  command: poetry run workers.svg
+  command: bash -c "update-ca-certificates && poetry run workers.svg"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -106,8 +106,8 @@ workers-svg:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -119,7 +119,7 @@ workers-bvh:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_bvh_instance }}
-  command: poetry run workers.bvh_tree
+  command: bash -c "update-ca-certificates && poetry run workers.bvh_tree"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -129,8 +129,8 @@ workers-bvh:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_bvh_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -142,7 +142,7 @@ workers-optimize:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_optimize_instance }}
-  command: poetry run workers.optimize
+  command: bash -c "update-ca-certificates && poetry run workers.optimize"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -152,8 +152,8 @@ workers-optimize:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_optimize_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-    - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -165,7 +165,7 @@ workers-merge:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_merge_instance }}
-  command: poetry run workers.merge
+  command: bash -c "update-ca-certificates && poetry run workers.merge"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -175,7 +175,8 @@ workers-merge:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
-    - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
+    - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -187,7 +188,7 @@ workers-xkt:
     - {{ bimdata_docker_volume_path }}/ca.crt:/usr/local/share/ca-certificates/onprem-ca.crt:ro
   deploy:
     replicas: {{ workers_xkt_instance }}
-  command: node --max-old-space-size=4096 src/worker
+  command: bash -c "update-ca-certificates && node --max-old-space-size=4096 src/worker"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -199,7 +200,7 @@ workers-xkt:
     - QUEUE=xkt
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_xkt_cpu }}
-    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/onprem-ca.crt
+    - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -214,7 +215,7 @@ workers-preview:
     dockerfile: {{ bimdata_dockerfiles_path }}/preview.dockerfile
   deploy:
     replicas: {{ workers_preview_instance }}
-  command: node src/worker
+  command: bash -c "update-ca-certificates && node src/worker"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -226,7 +227,7 @@ workers-preview:
     - QUEUE=viewer_360
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_preview_cpu }}
-    - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/onprem-ca.crt
+    - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}

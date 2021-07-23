@@ -21,8 +21,6 @@ match your infrastructure and your security needs.
 
  - This project do not support high availability deployment.
 
- - This project do not support swift storage (coming soon).
-
 ## How to start
 
 Clone the repository:
@@ -84,12 +82,12 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 #### SMTP Configuration
 | Variables          | Default value           | Description                                              |
 |--------------------|-------------------------|----------------------------------------------------------|
-| smtp_host          | "mail.domain.tld"       | SMTP server address.                                     |
+| smtp_host          | ""                      | SMTP server address.                                     |
 | smtp_port          | 587                     | SMTP server port.                                        |
-| smtp_user          | infra@domain.tld        | User used for the authentication on the SMTP server.     |
+| smtp_user          | ""                      | User used for the authentication on the SMTP server.     |
 | smtp_pass          | "{{ vault_smtp_pass }}" | Password used for the authentication on the SMTP server. |
 | smtp_use_tls       | true                    | If the SMTP connection should use TLS or not.            |
-| smtp_default_email | "support@domain.tld"    | Email address use as default sender.                     |
+| smtp_default_email | ""                      | Email address use as default sender.                     |
 
 #### Web configuration
 | Variables           | Default value | Description                                       |
@@ -106,6 +104,18 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
 | bimdata_dockerfiles_path   | "{{ bimdata_path }}/dockerfiles" | Where we store the dockerfiles use to start the containers. |
+
+Object storage (Swift):
+| Variables            | Default value                    | Description                                         |
+|----------------------|----------------------------------|-----------------------------------------------------|
+| swift_enabled        | false                            | Enable the swift storage or not.                    |
+| swift_auth_url       | ""                               | The URL of the auth server.                         |
+| swift_tenant_id      | ""                               | The tenant/project id to use when authenticating.   |
+| swift_tenant_name    | ""                               | The tenant/project name to use when authenticating. |
+| swift_username       | ""                               | The username to use to authenticate.                |
+| swift_password       | "{{ vault_swift_password }}"     | The password/key to use to authenticate.            |
+| swift_temp_url_key   | "{{ vault_swift_temp_url_key }}" | The temporary URL key ([see openstack documentation](https://docs.openstack.org/kilo/config-reference/content/object-storage-tempurl.html))      |
+| swift_container_name | ""                               | The container in which to store the files.          |
 
 #### Applications configuration
 

@@ -77,7 +77,7 @@ services:
   api:
     container_name: api
     image: {{ docker_api_image }}:{{ docker_api_tag }}
-    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn bimdata.wsgi -w $$(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) -b 0.0.0.0:8000 --timeout 1200 --access-logfile '-' --error-logfile '-' --worker-tmp-dir /dev/shm --log-level INFO)"
+    command: bash -c "update-ca-certificates && python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn bimdata.wsgi -w $$(( 2 * `cat /proc/cpuinfo | grep 'core id' | wc -l` + 1 )) -b 0.0.0.0:8000 --timeout 1200 --access-logfile '-' --error-logfile '-' --worker-tmp-dir /dev/shm --log-level INFO)"
     expose:
       - 8000
     volumes:
@@ -106,16 +106,27 @@ services:
       - OIDC_PROVIDER_ENDPOINT=https://{{ iam_dns_name }}
       - OIDC_PROVIDER_ADMIN_LOGIN={{ iam_user }}
       - OIDC_PROVIDER_ADMIN_PASSWORD={{ iam_password }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% endif %}
+{% if swift_enabled | bool %}
+      - SWIFT_AUTH_URL={{ swift_auth_url }}
+      - SWIFT_TENANT_ID={{ swift_tenant_id }}
+      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
+      - SWIFT_USERNAME={{ swift_username }}
+      - SWIFT_PASSWORD={{ swift_password }}
+      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
+      - SWIFT_CONTAINER_NAME={{ swift_container_name }}
+{% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt  # Requests
-      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt       # urllib3
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt  # Requests
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt       # urllib3
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -133,7 +144,7 @@ services:
   connect:
     container_name: connect
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
-    command: bash -c "python manage.py compilescss && python manage.py collectstatic --no-input && python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
+    command: bash -c "update-ca-certificates && python manage.py compilescss && python manage.py collectstatic --no-input && python manage.py migrate && python manage.py process_tasks & gunicorn auth.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200"
     expose:
       - 8000
     volumes:
@@ -158,17 +169,19 @@ services:
       - DB_NAME={{ db_connect_name }}
       - DB_USER={{ db_connect_user }}
       - DB_PASSWORD={{ db_connect_password }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
+{% endif %}
       - INVITATION_SECRET={{ connect_invitation_secret }}
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
       - INVITATION_CLIENT_SECRET={{ connect_invitation_client_secret }}
       - ADMIN_INTERFACE=True
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -183,7 +196,7 @@ services:
   platform-back:
     container_name: platform-back
     image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
-    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200)"
+    command: bash -c "update-ca-certificates && python manage.py collectstatic --no-input && python manage.py migrate && (python manage.py process_tasks & gunicorn platform_back.wsgi -w 4 -b 0.0.0.0:8000 --timeout 1200)"
     expose:
       - 8000
     volumes:
@@ -199,12 +212,14 @@ services:
       - SECRET_KEY={{ platform_back_secret_key }}
       - OIDC_RP_SIGN_ALGO=RS256
       - OIDC_OP_ISSUER=https://{{ iam_dns_name }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% endif %}
       - WEBHOOK_SECRET={{ platform_back_webhook_secret }}
       - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST={{ db_platform_host }}
@@ -212,8 +227,8 @@ services:
       - DB_NAME={{ db_platform_name }}
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
-      - REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/onprem-ca.crt
-      - SSL_CERT_FILE=/usr/local/share/ca-certificates/onprem-ca.crt
+      - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -240,6 +255,7 @@ services:
         - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
         - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
         - VUE_APP_URL_BIMDATACONNECT=https://{{ connect_dns_name }}
+        - VUE_APP_URL_OLD_PLATFORM=""
       dockerfile: {{ bimdata_dockerfiles_path }}/platform.dockerfile
     expose:
       - 8080
