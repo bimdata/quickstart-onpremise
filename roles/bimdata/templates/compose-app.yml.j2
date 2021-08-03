@@ -46,7 +46,9 @@ services:
       - 8080
     volumes:
       - {{ bimdata_docker_volume_path }}/keycloak:/opt/custom:ro
+{% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
     environment:
       - VIRTUAL_HOST={{ iam_dns_name }}
       - VIRTUAL_PORT=8080
@@ -59,11 +61,13 @@ services:
       - DB_DATABASE={{ db_iam_name }}
       - DB_USER={{ db_iam_user }}
       - DB_PASSWORD={{ db_iam_password }}
-      - X509_CA_BUNDLE=/opt/onprem-ca.crt
       - KEYCLOAK_HOSTNAME={{ iam_dns_name }}
       - KEYCLOAK_USER={{ iam_user }}
       - KEYCLOAK_PASSWORD={{ iam_password }}
       - KEYCLOAK_IMPORT=/opt/custom/bimdata-realm.json
+{% if tls_enabled  | bool %}
+      - X509_CA_BUNDLE=/opt/onprem-ca.crt
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -87,9 +91,9 @@ services:
     environment:
       - VIRTUAL_HOST={{ api_dns_name }}
       - ENV={{ app_env }}
-      - API_URL=https://{{ api_dns_name }}
+      - API_URL={{ api_url }}
       - DOC_URL=https://developers.bimdata.io
-      - CONNECT_URL=https://{{ connect_dns_name }}
+      - CONNECT_URL={{ connect_url }}
       - ALLOWED_HOSTS={{ api_dns_name }}
       - MASTER_TOKEN={{ master_token }}
       - SECRET_KEY={{ api_secret_key }}
@@ -103,7 +107,7 @@ services:
       - RABBITMQ_PORT={{ rabbitmq_port }}
       - RABBITMQ_USER={{ rabbitmq_user }}
       - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-      - OIDC_PROVIDER_ENDPOINT=https://{{ iam_dns_name }}
+      - OIDC_PROVIDER_ENDPOINT={{ iam_url }}
       - OIDC_PROVIDER_ADMIN_LOGIN={{ iam_user }}
       - OIDC_PROVIDER_ADMIN_PASSWORD={{ iam_password }}
 {% if SMTP_HOST is defined and SMTP_HOST | length %}
@@ -125,8 +129,11 @@ services:
 {% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
+{% if tls_enabled  | bool %}
+      - CA_CERT=/usr/local/share/ca-certificates/onprem-ca.crt
       - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt  # Requests
       - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt       # urllib3
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -153,11 +160,11 @@ services:
     environment:
       - VIRTUAL_HOST={{ connect_dns_name }}
       - ENV={{ app_env }}
-      - API_URL=https://{{ api_dns_name }}
+      - API_URL={{ api_url }}
       - DOC_URL=https://developers.bimdata.io
-      - SITE_URL=https://{{ connect_dns_name }}
-      - PLATFORM_URL=https://{{ platform_front_dns_name }}
-      - IAM_URL=https://{{ iam_dns_name }}
+      - SITE_URL={{ connect_url }}
+      - PLATFORM_URL={{ platform_front_url }}
+      - IAM_URL={{ iam_url }}
       - IAM_ADMIN_LOGIN={{ iam_user }}
       - IAM_ADMIN_PASSWORD={{ iam_password }}
       - ALLOWED_HOSTS={{ connect_dns_name }}
@@ -180,8 +187,10 @@ services:
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
       - INVITATION_CLIENT_SECRET={{ connect_invitation_client_secret }}
       - ADMIN_INTERFACE=True
+{% if tls_enabled  | bool %}
       - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
       - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -205,13 +214,13 @@ services:
     environment:
       - VIRTUAL_HOST={{ platform_back_dns_name }}
       - ENV={{ app_env }}
-      - API_URL=https://{{ api_dns_name }}
-      - PLATFORM_BACK_URL=https://{{ platform_back_dns_name }}
-      - APP_URL=https://{{ platform_front_dns_name }}
+      - API_URL={{ api_url }}
+      - PLATFORM_BACK_URL={{ platform_back_url }}
+      - APP_URL={{ platform_front_url }}
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
       - OIDC_RP_SIGN_ALGO=RS256
-      - OIDC_OP_ISSUER=https://{{ iam_dns_name }}
+      - OIDC_OP_ISSUER={{ iam_url }}
 {% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
@@ -227,8 +236,10 @@ services:
       - DB_NAME={{ db_platform_name }}
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
+{% if tls_enabled  | bool %}
       - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
       - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -247,14 +258,14 @@ services:
         - IMAGE={{ docker_platform_front_image }}
         - TAG={{ docker_platform_front_tag }}
         - ENV={{ app_env }}
-        - VUE_APP_BASE_URL=https://{{ platform_front_dns_name }}
-        - VUE_APP_IAM_BASE_URL=https://{{ iam_dns_name }}
-        - VUE_APP_API_BASE_URL=https://{{ api_dns_name }}
-        - VUE_APP_BACKEND_BASE_URL=https://{{ platform_back_dns_name }}
+        - VUE_APP_BASE_URL={{ platform_front_url }}
+        - VUE_APP_IAM_BASE_URL={{ iam_url }}
+        - VUE_APP_API_BASE_URL={{ api_url }}
+        - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
         - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
         - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
         - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
-        - VUE_APP_URL_BIMDATACONNECT=https://{{ connect_dns_name }}
+        - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
         - VUE_APP_URL_OLD_PLATFORM=""
       dockerfile: {{ bimdata_dockerfiles_path }}/platform.dockerfile
     expose:

@@ -1,0 +1,51 @@
+---
+- name: "Check if all needed variables for TLS are defined if needed."
+  assert:
+    that:
+      - tls_ca_certificate is defined
+      - tls_ca_certificate | length
+
+      - tls_api_key is defined
+      - tls_api_key | length
+      - tls_api_cert is defined
+      - tls_api_cert | length
+
+      - tls_connect_key is defined
+      - tls_connect_key | length
+      - tls_connect_cert is defined
+      - tls_connect_cert | length
+
+      - tls_platform_back_key is defined
+      - tls_platform_back_key | length
+      - tls_platform_back_cert is defined
+      - tls_platform_back_cert | length
+
+      - tls_platform_front_key is defined
+      - tls_platform_front_key | length
+      - tls_platform_front_cert is defined
+      - tls_platform_front_cert | length
+
+      - tls_iam_key is defined
+      - tls_iam_key | length
+      - tls_iam_cert is defined
+      - tls_iam_cert | length
+
+      - tls_rabbitmq_admin_key is defined
+      - tls_rabbitmq_admin_key | length
+      - tls_rabbitmq_admin_cert is defined
+      - tls_rabbitmq_admin_cert | length
+
+    fail_msg: >
+      You choose to enable TLS (tls_enabled: true),
+      you need to defined all the keys and certificates in group_vars/all/tls.yml.
+  when: tls_enabled | bool
+
+
+- name: "Set URL variable."
+  set_fact:
+    api_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ api_dns_name }}"
+    iam_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ iam_dns_name}}"
+    connect_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ connect_dns_name }}"
+    platform_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
+    platform_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
+    rabbitmq_admin_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"

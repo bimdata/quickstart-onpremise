@@ -1,4 +1,6 @@
 ---
+tls_enabled: false
+
 # Use pre-generated dhparam?
 nginx_use_pregen_dh: true
 

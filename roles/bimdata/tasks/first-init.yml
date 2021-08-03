@@ -18,10 +18,10 @@
 
 - name: "Wait for IAM to respond."
   uri:
-    url: "https://{{ iam_dns_name }}"
+    url: "{{ iam_url }}"
     method: GET
     status_code: 200
-    ca_path: "{{ bimdata_docker_volume_path }}/ca.crt"
+    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
   environment: "{{ proxy_env }}"
   register: iam_get
   until: iam_get.status == 200
@@ -42,14 +42,14 @@
     - "python manage.py creatersakey"
     - |
       python create_connect_provider.py {{ connect_client_id }}
-      {{ connect_client_secret }} https://{{ iam_dns_name }}
+      {{ connect_client_secret }} {{ iam_url }}
 
 - name: "Wait for API to respond."
   uri:
-    url: "https://{{ api_dns_name }}"
+    url: "{{ api_url }}"
     method: GET
     status_code: 200
-    ca_path: "{{ bimdata_docker_volume_path }}/ca.crt"
+    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
   environment: "{{ proxy_env }}"
   register: connect_get
   until: connect_get.status == 200
@@ -69,4 +69,4 @@
     docker exec api python create_invitation_app.py {{ connect_invitation_secret }}
     {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
     {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
-    https://{{ platform_front_dns_name }}
+    {{ platform_front_url }}

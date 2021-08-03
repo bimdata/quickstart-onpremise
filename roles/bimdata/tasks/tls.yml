@@ -38,16 +38,3 @@
     group: root
     mode: 0640
   loop: "{{ app_list_tls }}"
-
-- name: "Copy pre-generated DH params."
-  copy:
-    src: pregen-dhparams.pem
-    dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
-    mode: 0640
-  when: nginx_use_pregen_dh
-
-- name: "Generate custom DH params."
-  openssl_dhparam:
-    path: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
-    size: "{{ nginx_dhparam_size | default(omit) }}"
-  when: not nginx_use_pregen_dh | bool

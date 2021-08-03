@@ -10,12 +10,14 @@ workers-export:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -33,12 +35,14 @@ workers-gltf:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -56,12 +60,14 @@ workers-extract:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -79,12 +85,14 @@ workers-extract-with-quantities:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -102,12 +110,14 @@ workers-svg:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -125,12 +135,14 @@ workers-bvh:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_bvh_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -148,12 +160,14 @@ workers-optimize:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_optimize_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -171,12 +185,14 @@ workers-merge:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
+{% if tls_enabled  | bool %}
     - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
     - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -194,25 +210,31 @@ workers-xkt:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - NODE_ENV=production
     - QUEUE=xkt
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_xkt_cpu }}
+{% if tls_enabled  | bool %}
     - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
 workers-preview:
+{% if tls_enabled | bool %}
   build:
     context: {{ bimdata_docker_volume_path }}
     args:
       - IMAGE={{ docker_workers_preview_image }}
       - TAG={{ docker_workers_preview_tag }}
     dockerfile: {{ bimdata_dockerfiles_path }}/preview.dockerfile
+{% else %}
+  image: {{ docker_workers_preview_image }}:{{ docker_workers_preview_tag }}
+{% endif %}
   deploy:
     replicas: {{ workers_preview_instance }}
   command: bash -c "update-ca-certificates && node src/worker"
@@ -221,13 +243,15 @@ workers-preview:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL=https://{{ api_dns_name }}
+    - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - NODE_ENV=production
     - QUEUE=viewer_360
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_preview_cpu }}
+{% if tls_enabled  | bool %}
     - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
