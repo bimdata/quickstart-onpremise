@@ -12,6 +12,8 @@
     - "{{ bimdata_docker_volume_path }}/db/connect"
     - "{{ bimdata_docker_volume_path }}/db/platform"
     - "{{ bimdata_docker_volume_path }}/db/iam"
+    - "{{ bimdata_docker_volume_path }}/db/share"
+    - "{{ bimdata_docker_volume_path }}/db/marketplace"
 
 - name: "Create docker-compose file."
   template:

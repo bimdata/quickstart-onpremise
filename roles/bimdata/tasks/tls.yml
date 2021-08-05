@@ -1,40 +1,61 @@
 ---
-- name: "Copy the TLS CA."
-  template:
-    src: templates/tls/ca.crt.j2
-    dest: "{{ bimdata_docker_volume_path }}/ca.crt"
-    owner: root
-    group: root
-    mode: 0644
-
-- name: "Check what tls / cert needed to be present."
+- name: "Check what tls / cert needed to be present/absent."
   set_fact:
     app_list_tls: "{{ default_app_list }}
       {% if not use_external_rabbitmq | bool %}
         + ['rabbitmq_admin']
       {% endif %}"
   vars:
-    default_app_list: #test
+    default_app_list:
       - api
       - connect
       - platform_back
       - platform_front
       - iam
+      - documentation
+      - share
+      - archive
+      - marketplace_back
+      - marketplace_front
 
-- name: "Copy the app TLS key."
-  template:
-    src: templates/tls/key.j2
-    dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
-    owner: root
-    group: root
-    mode: 0640
-  loop: "{{ app_list_tls }}"
+- when: tls_enabled | bool
+  block:
+  - name: "Copy the TLS CA."
+    template:
+      src: templates/tls/ca.crt.j2
+      dest: "{{ bimdata_docker_volume_path }}/ca.crt"
+      owner: root
+      group: root
+      mode: 0644
 
-- name: "Copy the app TLS cert."
-  template:
-    src: templates/tls/cert.j2
-    dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
-    owner: root
-    group: root
-    mode: 0640
-  loop: "{{ app_list_tls }}"
+  - name: "Copy the app TLS key."
+    template:
+      src: templates/tls/key.j2
+      dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
+      owner: root
+      group: root
+      mode: 0640
+    loop: "{{ app_list_tls }}"
+
+  - name: "Copy the app TLS cert."
+    template:
+      src: templates/tls/cert.j2
+      dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
+      owner: root
+      group: root
+      mode: 0640
+    loop: "{{ app_list_tls }}"
+
+- when: not tls_enabled | bool
+  block:
+  - name: "Delete the app TLS key."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
+      state: absent
+    loop: "{{ app_list_tls }}"
+
+  - name: "Delete the app TLS cert."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
+      state: absent
+    loop: "{{ app_list_tls }}"

@@ -3,25 +3,30 @@
   gather_facts: false
   become: true
   roles:
-    - prepare_vars
-    - docker
+    - role: prepare_vars
+      tags: ['always']
+    - role: docker
+      tags: ['docker']
 
 - hosts: db
   gather_facts: false
   become: true
   roles:
     - role: bimdata_db
+      tags: ['database', 'db']
       when: inventory_hostname not in groups['app']
 
 - hosts: app
   gather_facts: false
   become: true
   roles:
-    - bimdata
+    - role: bimdata
+      tags: ['bimdata', 'app']
 
 - hosts: workers
   gather_facts: false
   become: true
   roles:
     - role: bimdata_workers
+      tags: ['bimdata', 'worker']
       when: inventory_hostname not in groups['app']

@@ -24,12 +24,6 @@
     dest: "{{ bimdata_docker_volume_path }}/.dockerignore"
     mode: 0640
 
-- name: "Copy preview dockerfiles."
-  copy:
-    src: "dockerfiles/preview.dockerfile"
-    dest: "{{ bimdata_dockerfiles_path }}/preview.dockerfile"
-    mode: 0640
-
 - name: "Create docker-compose file."
   template:
     src: compose-workers.yml.j2
@@ -45,4 +39,4 @@
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml build --pull
 
 - name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --detach"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --force-recreate --detach"

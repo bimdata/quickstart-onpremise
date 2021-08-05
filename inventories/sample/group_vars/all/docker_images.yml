@@ -4,7 +4,7 @@ docker_private_registry: docker-registry.bimdata.io
 # Used to login on the registry, this is a list, you can add registry if needed
 docker_registries:
   - url: "https://{{ docker_private_registry }}"
-    username: "robot$test-onprem"  # Change me
+    username: "extern@test"  # Change me
     password: "{{ vault_docker_private_registry_password }}"  # Change me in VAULT
 
 # Use public default registry
@@ -12,7 +12,7 @@ docker_rabbitmq_image: rabbitmq
 docker_rabbitmq_tag: 3.8-management-alpine
 
 docker_postgres_image: postgres  # Only use when use_external_db: false
-docker_postgres_tag: 10-alpine
+docker_postgres_tag: 13-alpine
 
 # Use private registry
 docker_api_image: "{{ docker_private_registry }}/on-premise/api"
@@ -29,6 +29,21 @@ docker_platform_front_tag: latest
 
 docker_iam_image: "{{ docker_private_registry }}/on-premise/iam"
 docker_iam_tag: latest
+
+docker_documentation_image: "{{ docker_private_registry }}/on-premise/documentation"
+docker_documentation_tag: latest
+
+docker_share_image: "{{ docker_private_registry }}/on-premise/share"
+docker_share_tag: latest
+
+docker_archive_image: "{{ docker_private_registry }}/on-premise/archive"
+docker_archive_tag: latest
+
+docker_marketplace_back_image: "{{ docker_private_registry }}/on-premise/marketplace_back"
+docker_marketplace_back_tag: latest
+
+docker_marketplace_front_image: "{{ docker_private_registry }}/on-premise/marketplace"
+docker_marketplace_front_tag: latest
 
 docker_workers_export_image: "{{ docker_private_registry }}/on-premise/workers"
 docker_workers_export_tag: latest

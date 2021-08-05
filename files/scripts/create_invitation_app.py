@@ -2,7 +2,7 @@ import os
 import sys
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bimdata.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bimdata.settings.api")
 django.setup()
 
 from django.conf import settings

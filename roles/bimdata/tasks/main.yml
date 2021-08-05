@@ -12,6 +12,8 @@
     - "{{ bimdata_docker_volume_path }}/web/static/api_storage"
     - "{{ bimdata_docker_volume_path }}/web/static/connect"
     - "{{ bimdata_docker_volume_path }}/web/static/platform_back"
+    - "{{ bimdata_docker_volume_path }}/web/static/share"
+    - "{{ bimdata_docker_volume_path }}/web/static/marketplace_back"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
@@ -28,6 +30,8 @@
     - connect
     - platform
     - iam
+    - share
+    - marketplace
   when:
     - not use_external_db
     - db_on_app
@@ -47,7 +51,6 @@
 
 - name: "Include tasks for TLS."
   include_tasks: tls.yml
-  when: tls_enabled | bool
 
 - name: "Copy .dockerignore file."
   copy:
@@ -58,12 +61,6 @@
 - name: "Copy platform dockerfiles."
   copy:
     src: "dockerfiles/platform.dockerfile"
-    dest: "{{ bimdata_dockerfiles_path }}/"
-    mode: 0640
-
-- name: "Copy preview dockerfiles if needed."
-  copy:
-    src: "dockerfiles/preview.dockerfile"
     dest: "{{ bimdata_dockerfiles_path }}/"
     mode: 0640
 
@@ -99,7 +96,7 @@
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml build --pull
 
 - name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --detach"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --force-recreate --detach"
 
 - name: "Include tasks for initialization."
   include_tasks: first-init.yml

@@ -26,6 +26,16 @@ db_iam_name: iam
 db_iam_user: iam
 db_iam_password: "{{ vault_db_iam_password }}"
 
+## Share
+db_share_name: share
+db_share_user: share
+db_share_password: "{{ vault_db_share_password }}"
+
+## Marketplace
+db_marketplace_name: marketplace
+db_marketplace_user: marketplace
+db_marketplace_password: "{{ vault_db_marketplace_password }}"
+
 
 # After this line, all variables are only use if:
 # use_external_db: false *AND* the [db] server is different from the [app] server (in the inventory)
@@ -35,6 +45,8 @@ db_api_external_port: 5432
 db_connect_external_port: 5433
 db_platform_external_port: 5434
 db_iam_external_port: 5435
+db_share_external_port: 5436
+db_marketplace_external_port: 5437
 
 # This is the variable use to determine which address will be use by app server
 # to contact the dbs

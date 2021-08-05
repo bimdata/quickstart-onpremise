@@ -66,7 +66,12 @@
 
 - name: "Init API."
   command: |
-    docker exec api python create_invitation_app.py {{ connect_invitation_secret }}
+    docker exec
+    {% if tls_enabled | bool %}
+    -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+    {% endif %}
+    api python create_invitation_app.py {{ connect_invitation_secret }}
     {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
     {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
     {{ platform_front_url }}
