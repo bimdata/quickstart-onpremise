@@ -61,14 +61,20 @@ Then, you need to modify the variables to match your needs.
 ### applications.yml
 #### DNS configuration
 
-| Variables               | Default value                        | Description                                            |
-|-------------------------|--------------------------------------|--------------------------------------------------------|
-| app_dns_domain          | "domain.tld"                         | DNS (sub)domain use to build the app URLs.             |
-| api_dns_name            | "api.{{ app_dns_domain }}"           | DNS name use for the API URL.                          |
-| connect_dns_name        | "connect.{{ app_dns_domain }}"       | DNS name use for the Connect URL.                      |
-| platform_back_dns_name  | "platform-back.{{ app_dns_domain }}" | DNS name use for the Platform back URL.                |
-| platform_front_dns_name | "platform.{{ app_dns_domain }}"      | DNS name use for the Platform URL.                     |
-| iam_dns_name            | "iam.{{ app_dns_domain }}"           | DNS name use for the Keycloak (identity provider) URL. |
+| Variables                   | Default value                          | Description                                            |
+|-----------------------------|----------------------------------------|--------------------------------------------------------|
+| app_dns_domain              | "domain.tld"                           | DNS (sub)domain use to build the app URLs.             |
+| api_dns_name                | "api.{{ app_dns_domain }}"             | DNS name use for the API URL.                          |
+| connect_dns_name            | "connect.{{ app_dns_domain }}"         | DNS name use for the Connect URL.                      |
+| platform_back_dns_name      | "platform-back.{{ app_dns_domain }}"   | DNS name use for the Platform back URL.                |
+| platform_front_dns_name     | "platform.{{ app_dns_domain }}"        | DNS name use for the Platform URL.                     |
+| iam_dns_name                | "iam.{{ app_dns_domain }}"             | DNS name use for the Keycloak (identity provider) URL. |
+| documentation_dns_name      |"doc.{{ app_dns_domain }}"              | DNS name use for the documentation URL.                |
+| share_dns_name              |"share.{{ app_dns_domain }}"            | DNS name use for the share URL.                        |  
+| archive_dns_name            |"archive.{{ app_dns_domain }}"          | DNS name use for the archive URL.                      |
+| marketplace_back_dns_name   |"marketplace-back.{{ app_dns_domain }}" | DNS name use for the marketplace back URL.             |
+| marketplace_front_dns_name  |"marketplace.{{ app_dns_domain }}"      | DNS name use for fhe marketplace URL.                  |
+
 
 For example if:
 ```
@@ -106,6 +112,7 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 | bimdata_dockerfiles_path   | "{{ bimdata_path }}/dockerfiles" | Where we store the dockerfiles use to start the containers. |
 
 Object storage (Swift):
+
 | Variables            | Default value                    | Description                                         |
 |----------------------|----------------------------------|-----------------------------------------------------|
 | swift_enabled        | false                            | Enable the swift storage or not.                    |
@@ -202,76 +209,96 @@ to access our docker registry for example.
 | external_db_port | 5432          | Postgres cluster TCP port use for connection if use_external_db: true.           |
 
 #### Databases
-| Variables            | Default value                      | Description                         |
-|----------------------|------------------------------------|-------------------------------------|
-| db_api_name          | "api"                              | Database name for the API.          |
-| db_api_user          | "api"                              | Postgres user for the API.          |
-| db_api_password      | "{{ vault_db_api_password }}"      | Postgres password for the API.      |
+| Variables               | Default value                         | Description                            |
+|-------------------------|---------------------------------------|----------------------------------------|
+| db_api_name             | "api"                                 | Database name for the API.             |
+| db_api_user             | "api"                                 | Postgres user for the API.             |
+| db_api_password         | "{{ vault_db_api_password }}"         | Postgres password for the API.         |
 ||||
-| db_connect_name      | "connect"                          | Database name for Connect.          |
-| db_connect_user      | "connect"                          | Postgres user for Connect.          |
-| db_connect_password  | "{{ vault_db_connect_password }}"  | Postgres password for Connect.      |
+| db_connect_name         | "connect"                             | Database name for Connect.             |
+| db_connect_user         | "connect"                             | Postgres user for Connect.             |
+| db_connect_password     | "{{ vault_db_connect_password }}"     | Postgres password for Connect.         |
 ||||
-| db_platform_name     | "platform"                         | Database name for the Platform.     |
-| db_platform_user     | "platform"                         | Postgres user for the Platform.     |
-| db_platform_password | "{{ vault_db_platform_password }}" | Postgres password for the Platform. |
+| db_platform_name        | "platform"                            | Database name for the Platform.        |
+| db_platform_user        | "platform"                            | Postgres user for the Platform.        |
+| db_platform_password    | "{{ vault_db_platform_password }}"    | Postgres password for the Platform.    |
 ||||
-| db_iam_name          | "iam"                              | Database name for Keycloak.         |
-| db_iam_user          | "iam"                              | Postgres user for Keycloak.         |
-| db_iam_password      | "{{ vault_db_iam_password }}"      | Postgres password for Keycloak.     |
+| db_iam_name             | "iam"                                 | Database name for Keycloak.            |
+| db_iam_user             | "iam"                                 | Postgres user for Keycloak.            |
+| db_iam_password         | "{{ vault_db_iam_password }}"         | Postgres password for Keycloak.        |
+||||
+| db_share_name           | "share"                               | Database name for Share.               |
+| db_share_user           | "share"                               | Postgres user for Share.               |
+| db_share_password       | "{{ vault_db_share_password }}"       | Postgres password for Share.           |
+||||
+| db_marketplace_name     | "marketplace"                         | Database name for the Marketplace.     |
+| db_marketplace_user     | "marketplace"                         | Postgres user for the Marketplace.     |
+| db_marketplace_password | "{{ vault_db_marketplace_password }}" | Postgres password for the Marketplace. |
 
 If `use_external_db: false` AND if the [db] server is different from the [app] server (in the inventory)
 each postgres instance will need to use its own TCP port. There are defined with these variables.
 You will need to configure your firewall: the [app] server will need to be able to communication
 with the [db] server on these ports.
 
-| Variables                 | Default value                                                        | Description                                                                              |
-|---------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| db_api_external_port      | 5432                                                                 | Postgres external port for the API.                                                      |
-| db_connect_external_port  | 5433                                                                 | Postgres external port for Connect.                                                      |
-| db_platform_external_port | 5434                                                                 | Postgres external port for the Platform.                                                 |
-| db_iam_external_port      | 5435                                                                 | Postgres external port for Keycloak.                                                     |
-| db_server_addr            | "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}" | Use to determine the IP that will be use for Postgres connection between [app] and [db]. |
+| Variables                    | Default value                                                        | Description                                                                              |
+|------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| db_api_external_port         | 5432                                                                 | Postgres external port for the API.                                                      |
+| db_connect_external_port     | 5433                                                                 | Postgres external port for Connect.                                                      |
+| db_platform_external_port    | 5434                                                                 | Postgres external port for the Platform.                                                 |
+| db_iam_external_port         | 5435                                                                 | Postgres external port for Keycloak.                                                     |
+| db_share_external_port       | 5436                                                                 | Postgres external port for Share.                                                        |
+| db_marketplace_external_port | 5437                                                                 | Postgres external port for Keycloak.                                                     |
+| db_server_addr               | "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}" | Use to determine the IP that will be use for Postgres connection between [app] and [db]. |
 
 ### docker_images.yml
-| Variables                               | Default value                                            | Description                                                               |
-|-----------------------------------------|----------------------------------------------------------|---------------------------------------------------------------------------|
-| docker_private_registry                 | "docker-registry.bimdata.io"                             | Define the registry address from which most of the images will come from. |
-| docker_registries                       |                                                          | List of registries informations use to configure docker authentication.   |
-| docker_rabbitmq_image                   | "rabbitmq"                                               | RabbitMQ docker image (use Dockerhub by default).                                |
-| docker_rabbitmq_tag                     | "3.8-management-alpine"                                  | RabbitMQ docker tag.                                                       |
-| docker_postgres_image                   | "postgres"                                               | Postgres docker image (use Dockerhub by default).                                |
-| docker_postgres_tag                     | "10-alpine"                                              | Postgres docker tag.                                                      |
-| docker_api_image                        | "{{ docker_private_registry }}/on-premise/api"           | API docker image. |
-| docker_api_tag                          | latest                                                   | API docker tag. |
-| docker_connect_image                    | "{{ docker_private_registry }}/on-premise/connect"       | Connect docker image. |
-| docker_connect_tag                      | latest                                                   | Connect docker tag. |
-| docker_platform_back_image              | "{{ docker_private_registry }}/on-premise/platform_back" | Platform back docker image. |
-| docker_platform_back_tag                | latest                                                   | Platform back docker tag. |
-| docker_platform_front_image             | "{{ docker_private_registry }}/on-premise/platform"      | Platform front docker image. |
-| docker_platform_front_tag               | latest                                                   | Platform front docker tag. |
-| docker_iam_image                        | "{{ docker_private_registry }}/on-premise/iam"           | Keycloak docker image. |
-| docker_iam_tag                          | latest                                                   | Keycloak docker tag. |
-| docker_workers_export_image             | "{{ docker_private_registry }}/on-premise/workers"       | Worker export docker image. |
-| docker_workers_export_tag               | latest                                                   | Worker export docker tag. |
-| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-premise/workers"       | Worker GLTF docker image. |
-| docker_workers_gltf_tag                 | latest                                                   | Worker GLTF docker tag. |
-| docker_workers_extract_image            | "{{ docker_private_registry }}/on-premise/workers"       | Worker extract docker image. |
-| docker_workers_extract_tag              | latest                                                   | Worker extract docker tag. |
-| docker_workers_extract_quantities_image | "{{ docker_private_registry }}/on-premise/workers"       | Worker extract quantities docker image. |
-| docker_workers_extract_quantities_tag   | latest                                                   | Worker extract quantities docker tag. |
-| docker_workers_svg_image                | "{{ docker_private_registry }}/on-premise/workers"       | Worker SVG docker image. |
-| docker_workers_svg_tag                  | latest                                                   | Worker SVG docker tag. |
-| docker_workers_bvh_image                | "{{ docker_private_registry }}/on-premise/workers"       | Worker BVH docker image. |
-| docker_workers_bvh_tag                  | latest                                                   | Worker BVH docker tag. |
-| docker_workers_optimize_image           | "{{ docker_private_registry }}/on-premise/workers"       | Worker optimize docker image. |
-| docker_workers_optimize_tag             | latest                                                   | Worker optimize docker tag. |
-| docker_workers_merge_image              | "{{ docker_private_registry }}/on-premise/workers"       | Worker merge docker image. |
-| docker_workers_merge_tag                | latest                                                   | Worker merge docker tag. |
-| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-premise/xkt_worker"    | Worker XKT docker image. |
-| docker_workers_xkt_tag                  | latest                                                   | Worker XKT docker tag. |
-| docker_workers_preview_image            | "{{ docker_private_registry }}/on-premise/viewer_360"    | Worker preview docker image. |
-| docker_workers_preview_tag              | latest                                                   | Worker preview docker tag. |
+| Variables                               | Default value                                               | Description                                                               |
+|-----------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------------------|
+| docker_private_registry                 | "docker-registry.bimdata.io"                                | Define the registry address from which most of the images will come from. |
+| docker_registries                       |                                                             | List of registries informations use to configure docker authentication.   |
+| docker_rabbitmq_image                   | "rabbitmq"                                                  | RabbitMQ docker image (use Dockerhub by default).                         |
+| docker_rabbitmq_tag                     | "3.8-management-alpine"                                     | RabbitMQ docker tag.                                                      |
+| docker_postgres_image                   | "postgres"                                                  | Postgres docker image (use Dockerhub by default).                         |
+| docker_postgres_tag                     | "10-alpine"                                                 | Postgres docker tag.                                                      |
+| docker_api_image                        | "{{ docker_private_registry }}/on-premise/api"              | API docker image.                                                         |
+| docker_api_tag                          | latest                                                      | API docker tag.                                                           |
+| docker_connect_image                    | "{{ docker_private_registry }}/on-premise/connect"          | Connect docker image.                                                     |
+| docker_connect_tag                      | latest                                                      | Connect docker tag.                                                       |
+| docker_platform_back_image              | "{{ docker_private_registry }}/on-premise/platform_back"    | Platform back docker image.                                               |
+| docker_platform_back_tag                | latest                                                      | Platform back docker tag.                                                 |
+| docker_platform_front_image             | "{{ docker_private_registry }}/on-premise/platform"         | Platform front docker image.                                              |
+| docker_platform_front_tag               | latest                                                      | Platform front docker tag.                                                |
+| docker_iam_image                        | "{{ docker_private_registry }}/on-premise/iam"              | Keycloak docker image.                                                    |
+| docker_iam_tag                          | latest                                                      | Keycloak docker tag.                                                      |
+| docker_documentation_image              | "{{ docker_private_registry }}/on-premise/documentation"    | Documentation docker image.                                               |
+| docker_documentation_tag                | latest                                                      | Documentation docker tag.                                                 |
+| docker_share_image                      | "{{ docker_private_registry }}/on-premise/share"            | Share docker image.                                                       |
+| docker_share_tag                        | latest                                                      | Share docker tag.                                                         |
+| docker_archive_image                    | "{{ docker_private_registry }}/on-premise/archive"          | Archive docker image.                                                     |
+| docker_archive_tag                      | latest                                                      | Archive docker tag.                                                       |
+| docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back" | Marketplace back images.                                                  |
+| docker_marketplace_back_tag             | latest                                                      | Marketplace back docker tag.                                              |
+| docker_marketplace_front_image          | "{{ docker_private_registry }}/on-premise/marketplace"      | Marketplace front docker image.                                           |
+| docker_marketplace_front_tag            | latest                                                      | Marketplace front docker tag.                                             |
+| docker_workers_export_image             | "{{ docker_private_registry }}/on-premise/workers"          | Worker export docker image.                                               |
+| docker_workers_export_tag               | latest                                                      | Worker export docker tag.                                                 |
+| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-premise/workers"          | Worker GLTF docker image.                                                 |
+| docker_workers_gltf_tag                 | latest                                                      | Worker GLTF docker tag.                                                   |
+| docker_workers_extract_image            | "{{ docker_private_registry }}/on-premise/workers"          | Worker extract docker image.                                              |
+| docker_workers_extract_tag              | latest                                                      | Worker extract docker tag.                                                |
+| docker_workers_extract_quantities_image | "{{ docker_private_registry }}/on-premise/workers"          | Worker extract quantities docker image.                                   |
+| docker_workers_extract_quantities_tag   | latest                                                      | Worker extract quantities docker tag.                                     |
+| docker_workers_svg_image                | "{{ docker_private_registry }}/on-premise/workers"          | Worker SVG docker image.                                                  |
+| docker_workers_svg_tag                  | latest                                                      | Worker SVG docker tag.                                                    |
+| docker_workers_bvh_image                | "{{ docker_private_registry }}/on-premise/workers"          | Worker BVH docker image.                                                  |
+| docker_workers_bvh_tag                  | latest                                                      | Worker BVH docker tag.                                                    |
+| docker_workers_optimize_image           | "{{ docker_private_registry }}/on-premise/workers"          | Worker optimize docker image.                                             |
+| docker_workers_optimize_tag             | latest                                                      | Worker optimize docker tag.                                               |
+| docker_workers_merge_image              | "{{ docker_private_registry }}/on-premise/workers"          | Worker merge docker image.                                                |
+| docker_workers_merge_tag                | latest                                                      | Worker merge docker tag.                                                  |
+| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-premise/xkt_worker"       | Worker XKT docker image.                                                  |
+| docker_workers_xkt_tag                  | latest                                                      | Worker XKT docker tag.                                                    |
+| docker_workers_preview_image            | "{{ docker_private_registry }}/on-premise/viewer_360"       | Worker preview docker image.                                              |
+| docker_workers_preview_tag              | latest                                                      | Worker preview docker tag.                                                |
 
 ### docker.yml
 | Variables                  | Default value                                                                                                                                     | Description                                                                                                  |
@@ -318,24 +345,34 @@ You should not have to modified these variables in most cases.
 | rabbitmq_server_addr    | "{{ rabbitmq_admin_dns_name }}" | RabbitMQ server address.                                   |
 
 ### tls.yml
-| Variables               | Default value                        | Description                                                                                                                    |
-|-------------------------|--------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| tls_enabled             | false                                | Enable external TLS or not.                                                                                                    |
-| nginx_use_pregen_dh     | true                                 | Use pre-defined diffie hellman parameters. If false it'll generate new one. This take a lot of time.                           |
-| tls_ca_certificate      | ""                                   | CA certificate of the CA used to sign the certificates for the applications. (PEM format.)                                     |
-| tls_subca_certificates  | []                                   | If a complexe CA architecture is used, tls_ca_certificate should contain the main CA, and this list all the intermediate ones. |
-| tls_api_key             | "{{ vault_tls_api_key }}"            | API TLS key (PEM format).                                                                                                      |
-| tls_api_cert            | ""                                   | API TLS Certificate (PEM format).                                                                                              |
-| tls_connect_key         | "{{ vault_tls_connect_key }}"        | Connect TLS key (PEM format).                                                                                                  |
-| tls_connect_cert        | ""                                   | Connect TLS Certificate (PEM format).                                                                                          |
-| tls_platform_back_key   | "{{ vault_tls_platform_back_key }}"  | Platform back TLS key (PEM format).                                                                                            |
-| tls_platform_back_cert  | ""                                   | Platform back TLS Certificate (PEM format).                                                                                    |
-| tls_platform_front_key  | "{{ vault_tls_platform_front_key }}" | Platform front TLS key (PEM format).                                                                                           |
-| tls_platform_front_cert | ""                                   | Platform front TLS Certificate (PEM format).                                                                                   |
-| tls_iam_key             | "{{ vault_tls_iam_key }}"            | Keycloak TLS key (PEM format).                                                                                                 |
-| tls_iam_cert            | ""                                   | Keycloak TLS Certificate (PEM format).                                                                                         |
-| tls_rabbitmq_admin_key  | "{{ vault_tls_rabbitmq_admin_key }}" | RabbitMQ TLS key (PEM format). (Only needed if use_external_rabbitmq: false.)                                                  |
-| tls_rabbitmq_admin_cert | ""                                   | RabbitMQ TLS Certificate (PEM format). (Only needed if use_external_rabbitmq: false.)                                          |
+| Variables                  | Default value                           | Description                                                                                                                    |
+|----------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| tls_enabled                | false                                   | Enable external TLS or not.                                                                                                    |
+| nginx_use_pregen_dh        | true                                    | Use pre-defined diffie hellman parameters. If false it'll generate new one. This take a lot of time.                           |
+| tls_ca_certificate         | ""                                      | CA certificate of the CA used to sign the certificates for the applications. (PEM format.)                                     |
+| tls_subca_certificates     | []                                      | If a complexe CA architecture is used, tls_ca_certificate should contain the main CA, and this list all the intermediate ones. |
+| tls_api_key                | "{{ vault_tls_api_key }}"               | API TLS key (PEM format).                                                                                                      |
+| tls_api_cert               | ""                                      | API TLS Certificate (PEM format).                                                                                              |
+| tls_connect_key            | "{{ vault_tls_connect_key }}"           | Connect TLS key (PEM format).                                                                                                  |
+| tls_connect_cert           | ""                                      | Connect TLS Certificate (PEM format).                                                                                          |
+| tls_platform_back_key      | "{{ vault_tls_platform_back_key }}"     | Platform back TLS key (PEM format).                                                                                            |
+| tls_platform_back_cert     | ""                                      | Platform back TLS Certificate (PEM format).                                                                                    |
+| tls_platform_front_key     | "{{ vault_tls_platform_front_key }}"    | Platform front TLS key (PEM format).                                                                                           |
+| tls_platform_front_cert    | ""                                      | Platform front TLS Certificate (PEM format).                                                                                   |
+| tls_iam_key                | "{{ vault_tls_iam_key }}"               | Keycloak TLS key (PEM format).                                                                                                 |
+| tls_iam_cert               | ""                                      | Keycloak TLS Certificate (PEM format).                                                                                         |
+| tls_rabbitmq_admin_key     | "{{ vault_tls_rabbitmq_admin_key }}"    | RabbitMQ TLS key (PEM format). (Only needed if use_external_rabbitmq: false.)                                                  |
+| tls_rabbitmq_admin_cert    | ""                                      | RabbitMQ TLS Certificate (PEM format). (Only needed if use_external_rabbitmq: false.)                                          |
+| tls_documentation_key      | "{{ vault_tls_documentation_key }}"     | Documentation TLS key (PEM format).                                                                                            |
+| tls_documentation_cert     | ""                                      | Documentation TLS Certificate (PEM format).                                                                                    |
+| tls_share_key              | "{{ vault_tls_share_key }}"             | Share TLS key (PEM format).                                                                                                    |
+| tls_share_cert             | ""                                      | Share TLS Certificate (PEM format).                                                                                            |
+| tls_archive_key            | "{{ vault_tls_archive_key }}"           | Archive TLS key (PEM format).                                                                                                  |
+| tls_archive_cert           | ""                                      | Archive TLS Certificate (PEM format).                                                                                          |
+| tls_marketplace_back_key   | "{{ vault_tls_marketplace_back_key }}"  | Marketplace back TLS key (PEM format).                                                                                         |
+| tls_marketplace_back_cert  | ""                                      | Marketplace back TLS Certificate (PEM format).                                                                                 |
+| tls_marketplace_front_key  | "{{ vault_tls_marketplace_front_key }}" | Marketplace front TLS key (PEM format).                                                                                        |
+| tls_marketplace_front_cert | ""                                      | Marketplace front TLS Certificate (PEM format).                                                                                |
 
 ### vault.yml
 In this file, all private informations are defined. Like password, TLS keys or other security stuff.
