@@ -31,6 +31,7 @@
       fail_msg: >
         You choose to use an internal rabbitMQ server (use_external_rabbitmq: false),
         tls_rabbitmq_admin_key, tls_rabbitmq_admin_cert must be defined and not empty.
+    when: tls_enabled | bool
 
   - name: "Check if rabbitmq is on the same same host."
     set_fact:

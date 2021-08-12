@@ -5,7 +5,7 @@
     state: directory
     owner: 70
     group: 70
-    mode: 0750
+    mode: 0700
   loop:
     - "{{ bimdata_path }}"
     - "{{ bimdata_docker_volume_path }}/db/api"

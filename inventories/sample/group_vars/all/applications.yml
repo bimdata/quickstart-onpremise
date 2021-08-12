@@ -39,7 +39,7 @@ swift_tenant_id: ""
 swift_tenant_name: ""
 swift_username: ""
 swift_password: "{{ vault_swift_password }}"
-swift_temp_url_key: ""
+swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
 swift_container_name: ""
 
 # api
