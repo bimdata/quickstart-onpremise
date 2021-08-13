@@ -95,7 +95,7 @@ config_var_value(){
 
   # Get current value
   if [[ $lookup -eq 1 ]] ; then
-    current_value=$(sed -rn "s/^[[:space:]]*${var_name}: \"\{\{ lookup\('file', '(.*$)'\) \}\}/\1/p" $path)
+    current_value=$(sed -rn "s/^[[:space:]]*${var_name}: \"\{\{ lookup\('file', '(.*)'\) \}\}\"$/\1/p" $path)
   else
     current_value=$(get_value "$var_name")
   fi
