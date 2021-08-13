@@ -32,7 +32,7 @@ services:
   # Web frontal
   nginx-proxy:
     container_name: nginx-proxy
-    image: jwilder/nginx-proxy:alpine
+    image: {{ docker_nginx_image }}:{{ docker_nginx_tag }}
     ports:
       - {{ external_port_http }}:80
       - {{ external_port_https }}:443
