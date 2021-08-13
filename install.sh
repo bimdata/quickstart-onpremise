@@ -2,6 +2,8 @@
 
 set -e
 
+trap clean_exit SIGINT SIGTERM ERR EXIT
+
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 VENV_PATH="${SCRIPT_DIR}/venv"
 STORAGE_TYPES=("local" "swift")
@@ -19,6 +21,16 @@ TLS_APPS=(
   "marketplace_back"
   "marketplace_front"
 )
+
+clean_exit(){
+  trap - SIGINT SIGTERM ERR EXIT
+  if [[ -n "$vault_password" ]] ; then
+    if head -n1 "$vault_path" | grep -q '^$ANSIBLE_VAULT;' ; then
+      ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault encrypt $vault_path > /dev/null
+    fi
+  fi
+  exit
+}
 
 usage() {
   cat <<EOF
@@ -83,7 +95,7 @@ config_var_value(){
 
   # Get current value
   if [[ $lookup -eq 1 ]] ; then
-    current_value=$(sed -rn "s/^[[:space:]]*${var_name}: *\"\{\{ lookup\('file', '(.*$)'\) \}\}/\1/p" $path)
+    current_value=$(sed -rn "s/^[[:space:]]*${var_name}: \"\{\{ lookup\('file', '(.*$)'\) \}\}/\1/p" $path)
   else
     current_value=$(get_value "$var_name")
   fi
@@ -95,7 +107,7 @@ config_var_value(){
     read -p "$prompt [$current_value]: " value
   fi
 
-  if [[ ! -z "$value" ]] ; then
+  if [[ -n "$value" ]] ; then
     # ${value//\//\\/}: string substitution, replace all '/' by '\/'
     # Needed because if there is a '/' in a variables, this broke sed syntax
     value=${value//\//\\/}
@@ -117,7 +129,7 @@ config_ini_value(){
   read -p "${group^} server name/address[$current_value]: " value
 
   # If non empty input, replace the value in the inventory
-  if [[ ! -z "$value" ]] ; then
+  if [[ -n "$value" ]] ; then
     sed -i "/^\[${group}\]$/{n;s/.*/${value}/}" "$ini_path"
   fi
 }
@@ -185,6 +197,15 @@ if [[ ${#inventories[@]} -ne 0 ]] ; then
   if [[ $wanted_inventory =~ $number_regex ]] ; then
     if [[ $wanted_inventory -le ${#inventories[@]} ]] ; then
       inventory_path="${inventories[$wanted_inventory]}"
+      vault_path="${inventory_path}/group_vars/all/vault.yml"
+
+      if head -n1 "$vault_path" | grep -q '^$ANSIBLE_VAULT;' ; then
+        read -p "This inventory have an encrypted vault. Please enter the password (hidden prompt): " -s vault_password
+        if [[ -n "$vault_password" ]] ; then
+          ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault decrypt $vault_path
+        fi
+      fi
+
     else
       print_err "Unknown input. Invalid ID, must be between 0 and ${#inventories[@]}."
       exit 1
@@ -250,7 +271,7 @@ if [[ "$docker_install" =~ ^([yY][eE][sS]|[tT][rR][uU][eE])$ ]] ; then
     echo "The deployment will only work if your modifications are right."
   else
     read -p "Private docker registry username[$current_docker_user]: " docker_user
-    if [[ ! -z "$docker_user" ]] ; then
+    if [[ -n "$docker_user" ]] ; then
       sed -zri "s|([[:space:]]*- url: \"https://\{\{ docker_private_registry \}\}\"\n[[:space:]]*username: )[^\n]*\n|\1\"$docker_user\"\n|g" "$path"
     fi
   fi
@@ -414,12 +435,33 @@ if [[ "$proxy_needed" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "Proxy exclusions, must be a list (['item1', 'item2'])" "no_proxy"
 fi
 
+cat <<EOF
+
+#################################################
+####           Vault configuration           ####
+#################################################
+
+EOF
+
 # Replace default password by random strings of [:alnum:]
 # [:punct:] add too much complexe cases where escaping is needed, for now
+vault_path="${inventory_path}/group_vars/all/vault.yml"
+
 awk -i inplace -F ': ' 'BEGIN {OFS = FS } { \
   cmd = "cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1" ; \
   cmd | getline password ; close(cmd)
-} $2 == "CHANGEME-BY-SOMETHING-SECURE" { $2 = "'\''"password"'\''" } 1' \
-"${inventory_path}/group_vars/all/vault.yml"
+} $2 == "CHANGEME-BY-SOMETHING-SECURE" { $2 = "'\''"password"'\''" } 1' "$vault_path"
 
-ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
+if [[ -z "$vault_password" ]] ; then
+  echo "The vault contains sensible information but is unencrypted."
+  echo "Enter a password if you want to encrypt it."
+  echo "You need to remember this password or store it securly."
+  echo "Leave it empty if you don't want to encrypt the vault."
+  read -p "Vault password (hidden prompt): " -s vault_password
+fi
+
+if [[ -n "$vault_password" ]] ; then
+  ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault encrypt $vault_path
+fi
+
+ANSIBLE_VAULT_PASSWD=$vault_password ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
