@@ -22,11 +22,13 @@ TLS_APPS=(
   "marketplace_front"
 )
 
+VAULT_SCRIPT="${SCRIPT_DIR}/.get-vault-pass.sh"
+
 clean_exit(){
   trap - SIGINT SIGTERM ERR EXIT
   if [[ -n "$vault_password" ]] ; then
-    if head -n1 "$vault_path" | grep -q '^$ANSIBLE_VAULT;' ; then
-      ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault encrypt $vault_path > /dev/null
+    if head -n1 "$vault_path" | grep -vq '^$ANSIBLE_VAULT;' ; then
+      ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault encrypt $vault_path > /dev/null
     fi
   fi
   exit
@@ -167,6 +169,7 @@ fi
 # Enable it and install prerequisistes
 print_verb "Enable virtualenv: source \"${VENV_PATH}/bin/activate\""
 source "${VENV_PATH}/bin/activate"
+pip install --upgrade pip > /dev/null
 
 print_verb "Install python requirements: pip install -r ${SCRIPT_DIR}/requirements.txt"
 pip install -r ${SCRIPT_DIR}/requirements.txt | print_verb
@@ -202,7 +205,7 @@ if [[ ${#inventories[@]} -ne 0 ]] ; then
       if head -n1 "$vault_path" | grep -q '^$ANSIBLE_VAULT;' ; then
         read -p "This inventory have an encrypted vault. Please enter the password (hidden prompt): " -s vault_password
         if [[ -n "$vault_password" ]] ; then
-          ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault decrypt $vault_path
+          ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault decrypt $vault_path
         fi
       fi
 
@@ -447,10 +450,9 @@ EOF
 # [:punct:] add too much complexe cases where escaping is needed, for now
 vault_path="${inventory_path}/group_vars/all/vault.yml"
 
-awk -i inplace -F ': ' 'BEGIN {OFS = FS } { \
-  cmd = "cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1" ; \
-  cmd | getline password ; close(cmd)
-} $2 == "CHANGEME-BY-SOMETHING-SECURE" { $2 = "'\''"password"'\''" } 1' "$vault_path"
+for line in $(grep -n "CHANGEME-BY-SOMETHING-SECURE" "$vault_path" | cut -d ':' -f 1) ; do
+    sed -i "${line}s/CHANGEME-BY-SOMETHING-SECURE/$(cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1)/" "$vault_path"
+done
 
 if [[ -z "$vault_password" ]] ; then
   echo "The vault contains sensible information but is unencrypted."
@@ -461,7 +463,7 @@ if [[ -z "$vault_password" ]] ; then
 fi
 
 if [[ -n "$vault_password" ]] ; then
-  ANSIBLE_VAULT_PASSWD=$vault_password ansible-vault encrypt $vault_path
+  ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault encrypt $vault_path
 fi
 
-ANSIBLE_VAULT_PASSWD=$vault_password ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
+ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
