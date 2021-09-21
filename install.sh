@@ -462,6 +462,7 @@ fi
 
 if [[ -n "$vault_password" ]] ; then
   ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault encrypt $vault_path
+  ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
+else
+  ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
 fi
-
-ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-playbook -i $inventory_path/inventory.ini install-bimdata.yml
