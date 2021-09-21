@@ -1,6 +1,6 @@
 ---
 # DNS Domain
-app_dns_domain: domain.tld
+app_dns_domain: test.domain.tld
 
 # DNS subdomains
 api_dns_name: "api.{{ app_dns_domain }}"
@@ -11,8 +11,6 @@ iam_dns_name: "iam.{{ app_dns_domain }}"
 documentation_dns_name: "doc.{{ app_dns_domain }}"
 share_dns_name: "share.{{ app_dns_domain }}"
 archive_dns_name: "archive.{{ app_dns_domain }}"
-marketplace_back_dns_name: "marketplace-back.{{ app_dns_domain }}"
-marketplace_front_dns_name: "marketplace.{{ app_dns_domain }}"
 
 # smtp service
 smtp_host: ""
@@ -72,12 +70,6 @@ share_secret_key: "{{ vault_share_secret_key }}"
 
 # Archive
 archive_workers_nb: 2
-
-# Marketplace_back
-marketplace_back_secret_key: "{{ vault_marketplace_back_secret_key }}"  # Change me in the vault
-marketplace_header_secure_string: "{{ vault_marketplace_header_secure_string }}"  # Change me in the vault
-# Marketplace_front
-Marketplace_front_workers: 2
 
 # workers
 ## export

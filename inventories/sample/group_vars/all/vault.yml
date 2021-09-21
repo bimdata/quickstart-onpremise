@@ -10,7 +10,6 @@ vault_db_connect_password: CHANGEME-BY-SOMETHING-SECURE
 vault_db_platform_password: CHANGEME-BY-SOMETHING-SECURE
 vault_db_iam_password: CHANGEME-BY-SOMETHING-SECURE
 vault_db_share_password: CHANGEME-BY-SOMETHING-SECURE
-vault_db_marketplace_password: CHANGEME-BY-SOMETHING-SECURE
 
 vault_rabbitmq_password: CHANGEME-BY-SOMETHING-SECURE
 vault_api_secret_key: CHANGEME-BY-SOMETHING-SECURE
@@ -19,8 +18,6 @@ vault_connect_invitation_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_connect_invitation_client_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_webhook_secret: CHANGEME-BY-SOMETHING-SECURE
-vault_marketplace_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
-vault_marketplace_header_secure_string: CHANGEME-BY-SOMETHING-SECURE
 vault_iam_password: CHANGEME-BY-SOMETHING-SECURE
 vault_share_secret_key: CHANGEME-BY-SOMETHING-SECURE
 
@@ -46,7 +43,3 @@ vault_tls_documentation_key: ""
 vault_tls_share_key: ""
 
 vault_tls_archive_key: ""
-
-vault_tls_marketplace_back_key: ""
-
-vault_tls_marketplace_front_key: ""

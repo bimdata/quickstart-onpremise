@@ -47,11 +47,3 @@ tls_share_cert: ""
 # Archive TLS Certs and key: need to match the name define in "{{ archive_dns_name }}"
 tls_archive_key: "{{ vault_tls_archive_key }}"
 tls_archive_cert: ""
-
-# Marketplace back TLS Certs and key: need to match the name define in "{{ marketplace_back_dns_name }}"
-tls_marketplace_back_key: "{{ vault_tls_marketplace_back_key }}"
-tls_marketplace_back_cert: ""
-
-# Marketplace front TLS Certs and key: need to match the name define in "{{ marketplace_front_dns_name }}"
-tls_marketplace_front_key: "{{ vault_tls_marketplace_front_key }}"
-tls_marketplace_front_cert: ""

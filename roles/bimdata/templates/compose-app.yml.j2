@@ -292,7 +292,6 @@ services:
         - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
         - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
         - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
-        - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
         - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
         - VUE_APP_URL_OLD_PLATFORM="https://platform-old-staging.bimdata.io"
         - VUE_APP_VIEWER_BASE_URL=""
@@ -383,58 +382,6 @@ services:
     depends_on:
       nginx-proxy:
         condition: service_started
-
-  {# marketplace-back:
-    container_name: marketplace-back
-    image: {{ docker_marketplace_back_image }}:{{ docker_marketplace_back_tag }}
-    expose:
-      - 8000
-    volumes:
-      - {{ bimdata_docker_volume_path }}/web/static/marketplace_back:/opt/statics:rw
-{% if tls_enabled  | bool %}
-      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
-{% endif %}
-    environment:
-      - VIRTUAL_HOST={{ marketplace_back_dns_name }}
-      - ENV={{ app_env }}
-      - ALLOWED_HOSTS={{ marketplace_back_dns_name }}
-      - MASTER_TOKEN={{ master_token }}
-      - MARKETPLACE_BACK_URL={{ marketplace_back_url }}
-      - MARKETPLACE_URL={{ marketplace_front_url }}
-      - OIDC_RP_SIGN_ALGO=RS256
-      - OIDC_OP_ISSUER={{ iam_url }}
-      - API_URL={{ api_url }}
-      - APP_URL={{ platform_front_url }}
-      - PLATFORM_BACK_URL={{ platform_back_url }}
-      - SECRET_KEY={{ marketplace_back_secret_key }}
-      - MARKETPLACE_HEADER_SECURE_STRING={{ marketplace_header_secure_string }}
-{% if SMTP_HOST is defined and SMTP_HOST | length %}
-      - SMTP_HOST={{ smtp_host }}
-      - SMTP_PORT={{ smtp_port }}
-      - SMTP_USER={{ smtp_user }}
-      - SMTP_PASS={{ smtp_pass }}
-      - SMTP_USE_TLS={{ smtp_use_tls }}
-      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
-{% endif %}
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_HOST={{ db_marketplace_host }}
-      - DB_PORT={{ db_marketplace_port }}
-      - DB_NAME={{ db_marketplace_name }}
-      - DB_USER={{ db_marketplace_user }}
-      - DB_PASSWORD={{ db_marketplace_password }}
-{% if tls_enabled  | bool %}
-      - CA_CERT=/opt/onprem-ca.crt
-      - SSL_CERT_FILE=/opt/onprem-ca.crt
-{% endif %}
-    restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-    extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-    depends_on:
-{% if not use_external_db and inventory_hostname in groups['db'] %}
-      - platform-db
-{% endif %}
-      - nginx-proxy #}
 
 {% if inventory_hostname in groups['workers'] %}
   # Workers
