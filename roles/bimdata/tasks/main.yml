@@ -76,9 +76,9 @@
   loop: "{{ nginx_vhost_override }}"
 
 - name: "Copy keycloak realm."
-  copy:
-    src: "keycloak/bimdata-realm.json"
-    dest: "{{ bimdata_docker_volume_path }}/keycloak/"
+  template:
+    src: "keycloak/bimdata-realm.json.j2"
+    dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
     mode: 0640
 
 - name: "Create docker-compose file."
