@@ -32,6 +32,15 @@ clean_exit(){
   exit
 }
 
+clean_read(){
+  # Read all the stdin content before doing the actual read
+  # in case the user type something by misteak during the processing time
+  while read -r -t 0; do read -r; done
+
+  # Actual read
+  read "$@"
+}
+
 usage() {
   cat <<EOF
 Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v]
@@ -101,10 +110,10 @@ config_var_value(){
   fi
 
   if [[ $var_name =~ "vault_" ]] && [[ $lookup -eq 0 ]] ; then
-    read -p "$prompt (sensible datas, hidden current value and prompt): " -s value
+    clean_read -p "$prompt (sensible datas, hidden current value and prompt): " -s value
     echo -en "\n"
   else
-    read -p "$prompt [$current_value]: " value
+    clean_read -p "$prompt [$current_value]: " value
   fi
 
   if [[ -n "$value" ]] ; then
@@ -126,7 +135,7 @@ config_ini_value(){
 
   # Get current value
   local current_value=$(sed -n "/\[${group}\]/{n;p;}" "$ini_path")
-  read -p "${group^} server name/address[$current_value]: " value
+  clean_read -p "${group^} server name/address[$current_value]: " value
 
   # If non empty input, replace the value in the inventory
   if [[ -n "$value" ]] ; then
@@ -192,7 +201,7 @@ if [[ ${#inventories[@]} -ne 0 ]] ; then
     inventory_index=$(( inventory_index + 1 ))
   done
   echo -e "\nIf you want to create a new one, enter 'create', else enter the number corresponding to the wanted inventory."
-  read -p "Reading: " wanted_inventory
+  clean_read -p "Reading: " wanted_inventory
 
   number_regex="^[0-9]+$"
   if [[ $wanted_inventory =~ $number_regex ]] ; then
@@ -201,7 +210,7 @@ if [[ ${#inventories[@]} -ne 0 ]] ; then
       vault_path="${inventory_path}/group_vars/all/vault.yml"
 
       if head -n1 "$vault_path" | grep -q '^$ANSIBLE_VAULT;' ; then
-        read -p "This inventory have an encrypted vault. Please enter the password (hidden prompt): " -s vault_password
+        clean_read -p "This inventory have an encrypted vault. Please enter the password (hidden prompt): " -s vault_password
         if [[ -n "$vault_password" ]] ; then
           ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault decrypt $vault_path
         fi
@@ -222,7 +231,7 @@ fi
 # Create a new inventory if needed
 if [[ ${#inventories[@]} -eq 0 ]] || [[ -z "$inventory_path" ]] ; then
   echo -en "\n"
-  read -p "We will create a new inventory for you, please enter its name: " inventory_name
+  clean_read -p "We will create a new inventory for you, please enter its name: " inventory_name
   inventory_path="${SCRIPT_DIR}/inventories/${inventory_name}"
 
   if [[ -d "$inventory_path" ]] ; then
@@ -271,7 +280,7 @@ if [[ "$docker_install" =~ ^([yY][eE][sS]|[tT][rR][uU][eE])$ ]] ; then
     echo "${inventory_path}/group_vars/all/docker_images.yml seems to have been modify. The script could not modify it safely."
     echo "The deployment will only work if your modifications are right."
   else
-    read -p "Private docker registry username[$current_docker_user]: " docker_user
+    clean_read -p "Private docker registry username[$current_docker_user]: " docker_user
     if [[ -n "$docker_user" ]] ; then
       sed -zri "s|([[:space:]]*- url: \"https://\{\{ docker_private_registry \}\}\"\n[[:space:]]*username: )[^\n]*\n|\1\"$docker_user\"\n|g" "$path"
     fi
@@ -300,7 +309,7 @@ EOF
 config_var_value "Application DNS domain" "app_dns_domain"
 
 # Data configuration
-read -p "Personalize data storage (Yes/No)[No]: " conf_storage
+clean_read -p "Personalize data storage (Yes/No)[No]: " conf_storage
 if [[ "$conf_storage" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "Bimdata install path" "bimdata_path"
   echo "Storage type:"
@@ -308,7 +317,7 @@ if [[ "$conf_storage" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
     echo "  - $type"
   done
 
-  read -p "Enter the the wanted storage type [${STORAGE_TYPES[0]}]: " storage_type
+  clean_read -p "Enter the the wanted storage type [${STORAGE_TYPES[0]}]: " storage_type
 
   # Set default value
   if [[ -z $storage_type ]] ; then
@@ -334,7 +343,7 @@ fi
 
 # SMTP configuration
 echo -en "\n"
-read -p "Personalize SMTP informations (Yes/No)[No]: " conf_smtp
+clean_read -p "Personalize SMTP informations (Yes/No)[No]: " conf_smtp
 if [[ "$conf_smtp" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "SMTP Host" "smtp_host"
   config_var_value "SMTP Port" "smtp_port"
@@ -429,7 +438,7 @@ if [[ "$use_bastion" =~ ^([yY][eE][sS]|[tT][rR][uU][eE])$ ]] ; then
   config_var_value "Bastion ssh extra options" "bastion_ssh_extra_options"
 fi
 
-read -p "Servers need a proxy to access the web (Yes/No)[No]: " proxy_needed
+clean_read -p "Servers need a proxy to access the web (Yes/No)[No]: " proxy_needed
 if [[ "$proxy_needed" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "HTTP Proxy (format: http://username:password@proxy.company.tld:PORT/)" "http_proxy"
   config_var_value "HTTPS Proxy (format: http://username:password@proxy.company.tld:PORT/)" "https_proxy"
@@ -457,7 +466,7 @@ if [[ -z "$vault_password" ]] ; then
   echo "Enter a password if you want to encrypt it."
   echo "You need to remember this password or store it securly."
   echo "Leave it empty if you don't want to encrypt the vault."
-  read -p "Vault password (hidden prompt): " -s vault_password
+  clean_read -p "Vault password (hidden prompt): " -s vault_password
 fi
 
 if [[ -n "$vault_password" ]] ; then
