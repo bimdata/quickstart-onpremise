@@ -338,7 +338,10 @@ if [[ "$conf_storage" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
     config_var_value "Swift username" "swift_username"
     config_var_value "Swift password" "vault_swift_password"
     config_var_value "Swift temporary URL key" "vault_swift_temp_url_key"
-    config_var_value "Swift container name" "swift_container_name"
+
+    echo "We need two different Swift container: one for the API and one for Connect."
+    config_var_value "Swift API container name" "swift_api_container_name"
+    config_var_value "Swift Connect container name" "swift_connect_container_name"
   else
     print_err "Unknown storage type ${storage_type}, must be: ${STORAGE_TYPES[@]}."
     exit 1

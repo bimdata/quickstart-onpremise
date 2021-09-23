@@ -9,13 +9,22 @@
     - "{{ bimdata_dockerfiles_path }}"
     - "{{ bimdata_docker_volume_path }}/keycloak"
     - "{{ bimdata_docker_volume_path }}/web/static/api"
-    - "{{ bimdata_docker_volume_path }}/web/static/api_storage"
     - "{{ bimdata_docker_volume_path }}/web/static/connect"
     - "{{ bimdata_docker_volume_path }}/web/static/platform_back"
     - "{{ bimdata_docker_volume_path }}/web/static/share"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
+
+- name: "Create needed directories for local storage."
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - "{{ bimdata_docker_volume_path }}/web/static/api_storage"
+    - "{{ bimdata_docker_volume_path }}/web/static/connect_storage"
+  when: not swift_enabled | bool
 
 - name: "Create needed directories for db if needed."
   file:

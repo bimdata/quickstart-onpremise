@@ -99,7 +99,9 @@ services:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/api:/opt/statics:rw
+{% if swift_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
+{% endif %}
 {% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
@@ -173,6 +175,9 @@ services:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/connect:/opt/static:rw
+{% if swift_enabled | bool and swift_connect_container_name | length %}
+      - {{ bimdata_docker_volume_path }}/web/static/connect_storage:/opt/storage:rw
+{% endif %}
 {% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
@@ -203,6 +208,15 @@ services:
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
+{% endif %}
+{% if swift_enabled | bool and swift_connect_container_name | length %}
+      - SWIFT_AUTH_URL={{ swift_auth_url }}
+      - SWIFT_TENANT_ID={{ swift_tenant_id }}
+      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
+      - SWIFT_USERNAME={{ swift_username }}
+      - SWIFT_PASSWORD={{ swift_password }}
+      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
+      - SWIFT_CONTAINER_NAME={{ swift_container_name }}
 {% endif %}
       - INVITATION_SECRET={{ connect_invitation_secret }}
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}

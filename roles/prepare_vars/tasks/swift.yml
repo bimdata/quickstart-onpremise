@@ -8,6 +8,11 @@
       - swift_username | length
       - swift_password is defined
       - swift_password | length
+      - swift_api_container_name is defined
+      - swift_api_container_name | length
+      - swift_connect_container_name is defined
+      - swift_connect_container_name | length
     fail_msg: >
       You choose to use an object storage (swift_enabled: true),
-      swift_auth_url, swift_username and swift_password must be defined and not empty.
+      swift_auth_url, swift_username, swift_password, swift_api_container_name
+      and swift_connect_container_name must be defined and not empty.

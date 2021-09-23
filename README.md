@@ -110,16 +110,17 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 
 Object storage (Swift):
 
-| Variables            | Default value                    | Description                                         |
-|----------------------|----------------------------------|-----------------------------------------------------|
-| swift_enabled        | false                            | Enable the swift storage or not.                    |
-| swift_auth_url       | ""                               | The URL of the auth server.                         |
-| swift_tenant_id      | ""                               | The tenant/project id to use when authenticating.   |
-| swift_tenant_name    | ""                               | The tenant/project name to use when authenticating. |
-| swift_username       | ""                               | The username to use to authenticate.                |
-| swift_password       | "{{ vault_swift_password }}"     | The password/key to use to authenticate.            |
-| swift_temp_url_key   | "{{ vault_swift_temp_url_key }}" | The temporary URL key ([see openstack documentation](https://docs.openstack.org/kilo/config-reference/content/object-storage-tempurl.html))      |
-| swift_container_name | ""                               | The container in which to store the files.          |
+| Variables                    | Default value                    | Description                                         |
+|------------------------------|----------------------------------|-----------------------------------------------------|
+| swift_enabled                | false                            | Enable the swift storage or not.                    |
+| swift_auth_url               | ""                               | The URL of the auth server.                         |
+| swift_tenant_id              | ""                               | The tenant/project id to use when authenticating.   |
+| swift_tenant_name            | ""                               | The tenant/project name to use when authenticating. |
+| swift_username               | ""                               | The username to use to authenticate.                |
+| swift_password               | "{{ vault_swift_password }}"     | The password/key to use to authenticate.            |
+| swift_temp_url_key           | "{{ vault_swift_temp_url_key }}" | The temporary URL key ([see openstack documentation](https://docs.openstack.org/kilo/config-reference/content/object-storage-tempurl.html))      |
+| swift_api_container_name     | ""                               | The container in which to store the API files.      |
+| swift_connect_container_name | ""                               | The container in which to store the Connect files.  |
 
 #### Applications configuration
 

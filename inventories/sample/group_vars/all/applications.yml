@@ -38,7 +38,9 @@ swift_tenant_name: ""
 swift_username: ""
 swift_password: "{{ vault_swift_password }}"
 swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
-swift_container_name: ""
+# Api and Connect need a different container
+swift_api_container_name: ""
+swift_connect_container_name: ""
 
 # api
 api_secret_key: "{{ vault_api_secret_key }}"  # Change me in the vault

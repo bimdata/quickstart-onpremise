@@ -25,6 +25,7 @@ nginx_vhost_override:
           alias /var/www/static/api/;
       }
 
+      {% if swift_enabled | bool %}
       location /storage/ {
         alias /var/www/static/api_storage/;
         add_header 'Access-Control-Allow-Origin' '*';
@@ -37,6 +38,8 @@ nginx_vhost_override:
           return 204;
         }
       }
+      {% endif %}
+
   - vhost: "{{ connect_dns_name }}"
     config: |
       proxy_connect_timeout       20m;
@@ -47,6 +50,22 @@ nginx_vhost_override:
       location /static/ {
           alias /var/www/static/connect/;
       }
+
+      {% if swift_enabled | bool %}
+      location /storage/ {
+        alias /var/www/static/connect_storage/;
+        add_header 'Access-Control-Allow-Origin' '*';
+
+        # Preflighted requests
+        if ($request_method = OPTIONS ) {
+          add_header 'Access-Control-Allow-Origin'  '*';
+          add_header 'Access-Control-Allow-Methods' 'OPTIONS, HEAD, GET';
+          add_header 'Access-Control-Allow-Headers' 'Authorization, Origin, X-Requested-With, Content-Type, Accept';
+          return 204;
+        }
+      }
+      {% endif %}
+
   - vhost: "{{ platform_back_dns_name }}"
     config: |
       proxy_connect_timeout       20m;
