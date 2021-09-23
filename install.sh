@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 trap clean_exit SIGINT SIGTERM ERR EXIT
 
@@ -24,7 +24,7 @@ VAULT_SCRIPT="${SCRIPT_DIR}/.get-vault-pass.sh"
 
 clean_exit(){
   trap - SIGINT SIGTERM ERR EXIT
-  if [[ -n "$vault_password" ]] ; then
+  if [[ -n "${vault_password:-}" ]] ; then
     if head -n1 "$vault_path" | grep -vq '^$ANSIBLE_VAULT;' ; then
       ANSIBLE_VAULT_PASSWORD=$vault_password ANSIBLE_VAULT_PASSWORD_FILE=$VAULT_SCRIPT ansible-vault encrypt $vault_path > /dev/null
     fi
@@ -78,7 +78,7 @@ print_err(){
 
 print_verb(){
   output="${1:-$(</dev/stdin)}"
-  if [[ $verbose -eq 1 ]] ; then
+  if [[ ${verbose:-0} -eq 1 ]] ; then
     echo "VERBOSE - $output"
   fi
 }
@@ -93,8 +93,10 @@ config_var_value(){
   local prompt="$1"
   local var_name="$2"
 
-  if [[ $3 == "lookup" ]] ; then
+  if [[ ${3:-} == "lookup" ]] ; then
     local lookup=1
+  else
+    local lookup=0
   fi
 
   # ${inventory_path// /\\ }: string substitution, replace all ' ' by '\ '
@@ -461,12 +463,28 @@ for line in $(grep -n "CHANGEME-BY-SOMETHING-SECURE" "$vault_path" | cut -d ':' 
     sed -i "${line}s/CHANGEME-BY-SOMETHING-SECURE/$(cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1)/" "$vault_path"
 done
 
-if [[ -z "$vault_password" ]] ; then
+if [[ -z "${vault_password:-}" ]] ; then
   echo "The vault contains sensible information but is unencrypted."
   echo "Enter a password if you want to encrypt it."
   echo "You need to remember this password or store it securly."
   echo "Leave it empty if you don't want to encrypt the vault."
-  clean_read -p "Vault password (hidden prompt): " -s vault_password
+
+  password_match=0
+  while [[ "$password_match" != "1" ]] ; do
+    clean_read -p "Vault password (hidden prompt): " -s vault_password
+    if [[ -n "${vault_password:-}" ]] ; then
+      echo "" # Empty line between the prompt
+      clean_read -p "Vault password confirmation (hidden prompt): " -s vault_password_confirm
+      if [[ "$vault_password" == "$vault_password_confirm" ]] ; then
+        password_match=1
+      else
+        echo "Sorry the password didn't match."
+      fi
+    else
+      # Empty string, vault is not use, exit the loop
+      password_match=1
+    fi
+  done
 fi
 
 if [[ -n "$vault_password" ]] ; then
