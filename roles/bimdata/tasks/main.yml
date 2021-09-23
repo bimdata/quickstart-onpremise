@@ -103,7 +103,7 @@
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml build --pull
 
 - name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --force-recreate --detach"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
 
 - name: "Include tasks for initialization."
   include_tasks: first-init.yml

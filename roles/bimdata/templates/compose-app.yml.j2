@@ -115,7 +115,6 @@ services:
       - ALLOWED_HOSTS={{ api_dns_name }}
       - MASTER_TOKEN={{ master_token }}
       - SECRET_KEY={{ api_secret_key }}
-      - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST={{ db_api_host }}
       - DB_PORT={{ db_api_port }}
       - DB_NAME={{ db_api_name }}
@@ -196,7 +195,6 @@ services:
       - ALLOWED_HOSTS={{ connect_dns_name }}
       - API_TOKEN={{ master_token }}
       - SECRET_KEY={{ connect_secret_key }}
-      - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST={{ db_connect_host }}
       - DB_PORT={{ db_connect_port }}
       - DB_NAME={{ db_connect_name }}
@@ -257,7 +255,6 @@ services:
       - APP_URL={{ platform_front_url }}
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
-      - OIDC_RP_SIGN_ALGO=RS256
       - OIDC_OP_ISSUER={{ iam_url }}
 {% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
@@ -268,7 +265,6 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
 {% endif %}
       - WEBHOOK_SECRET={{ platform_back_webhook_secret }}
-      - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST={{ db_platform_host }}
       - DB_PORT={{ db_platform_port }}
       - DB_NAME={{ db_platform_name }}
@@ -331,11 +327,6 @@ services:
       - 80
     environment:
       - VIRTUAL_HOST={{ documentation_dns_name }}
-      - ENV={{ app_env }}
-      - API_URL={{ api_url }}
-      - CONNECT_URL={{ connect_url }}
-      - IAM_URL={{ iam_url }}
-      - PLAYGROUND_CLIENT_ID=""
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -359,7 +350,6 @@ services:
       - OIDC_OP_ISSUER"{{ iam_url }}
       - API_URL={{ api_url }}
       - SECRET_KEY={{ share_secret_key }}
-      - DB_ENGINE=django.db.backends.postgresql
       - DB_HOST={{ db_share_host }}
       - DB_PORT={{ db_share_port }}
       - DB_NAME={{ db_share_name }}
