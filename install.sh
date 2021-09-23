@@ -180,6 +180,7 @@ print_verb "Enable virtualenv: source \"${VENV_PATH}/bin/activate\""
 source "${VENV_PATH}/bin/activate"
 pip install --upgrade pip > /dev/null
 
+echo "Installing prerequisites, please wait…"
 print_verb "Install python requirements: pip install -r ${SCRIPT_DIR}/requirements.txt"
 pip install -r ${SCRIPT_DIR}/requirements.txt | print_verb
 
@@ -249,6 +250,7 @@ fi
 echo -e "\nWe'll now ask you some questions to configure the deployment.\n"
 
 # Host configuration
+echo -e "\nFirst, we will configure the ansible hosts. Please enter the name or ip address of the servers:\n"
 config_ini_value 'app'
 config_ini_value 'db'
 config_ini_value 'workers'
