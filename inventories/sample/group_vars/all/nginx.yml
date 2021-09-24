@@ -25,7 +25,7 @@ nginx_vhost_override:
           alias /var/www/static/api/;
       }
 
-      {% if swift_enabled | bool %}
+      {% if not swift_enabled | bool %}
       location /storage/ {
         alias /var/www/static/api_storage/;
         add_header 'Access-Control-Allow-Origin' '*';
@@ -51,7 +51,7 @@ nginx_vhost_override:
           alias /var/www/static/connect/;
       }
 
-      {% if swift_enabled | bool %}
+      {% if not swift_enabled | bool %}
       location /storage/ {
         alias /var/www/static/connect_storage/;
         add_header 'Access-Control-Allow-Origin' '*';

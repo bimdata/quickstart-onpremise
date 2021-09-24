@@ -99,7 +99,7 @@ services:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/api:/opt/statics:rw
-{% if swift_enabled | bool %}
+{% if not swift_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled  | bool %}
@@ -174,10 +174,10 @@ services:
       - 8000
     volumes:
       - {{ bimdata_docker_volume_path }}/web/static/connect:/opt/static:rw
-{% if swift_enabled | bool and swift_connect_container_name | length %}
+{% if not swift_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/static/connect_storage:/opt/storage:rw
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
     environment:

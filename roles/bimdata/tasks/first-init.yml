@@ -43,6 +43,7 @@
     - |
       python create_connect_provider.py {{ connect_client_id }}
       {{ connect_client_secret }} {{ iam_url }}
+  no_log: true
 
 - name: "Wait for API to respond."
   uri:
@@ -75,3 +76,4 @@
     {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
     {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
     {{ platform_front_url }}
+  no_log: true
