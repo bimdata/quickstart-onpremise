@@ -287,31 +287,22 @@ services:
 
   platform:
     container_name: platform-front
-    build:
-      context: {{ bimdata_docker_volume_path }}
-      args:
-        - IMAGE={{ docker_platform_front_image }}
-        - TAG={{ docker_platform_front_tag }}
-        - ENV={{ app_env }}
-        - VUE_APP_BASE_URL={{ platform_front_url }}
-        - VUE_APP_IAM_BASE_URL={{ iam_url }}
-        - VUE_APP_API_BASE_URL={{ api_url }}
-        - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
-        - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
-        - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
-        - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
-        - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
-        - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
-        - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
-        - VUE_APP_URL_OLD_PLATFORM="https://platform-old-staging.bimdata.io"
-        - VUE_APP_VIEWER_BASE_URL=""
-        - HOST=0.0.0.0
-      dockerfile: {{ bimdata_dockerfiles_path }}/platform.dockerfile
+    image: {{ docker_platform_front_image }}:{{ docker_platform_front_tag }}
     expose:
       - 8080
     environment:
       - VIRTUAL_HOST={{ platform_front_dns_name }}
       - HOST=0.0.0.0
+      - VUE_APP_BASE_URL={{ platform_front_url }}
+      - VUE_APP_IAM_BASE_URL={{ iam_url }}
+      - VUE_APP_API_BASE_URL={{ api_url }}
+      - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
+      - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
+      - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
+      - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
+      - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
+      - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
+      - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}

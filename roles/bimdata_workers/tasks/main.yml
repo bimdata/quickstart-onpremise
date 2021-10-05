@@ -35,8 +35,5 @@
 - name: "Pull needed images."
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
 
-- name: "Build needed images."
-  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml build --pull
-
 - name: "Start containers"
   command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"

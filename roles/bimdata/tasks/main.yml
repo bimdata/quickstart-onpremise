@@ -65,12 +65,6 @@
     dest: "{{ bimdata_docker_volume_path }}/.dockerignore"
     mode: 0640
 
-- name: "Copy platform dockerfiles."
-  copy:
-    src: "dockerfiles/platform.dockerfile"
-    dest: "{{ bimdata_dockerfiles_path }}/"
-    mode: 0640
-
 - name: "Copy nginx custom configuration."
   template:
     src: web/custom.conf.j2
@@ -98,9 +92,6 @@
 
 - name: "Pull needed images."
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
-
-- name: "Build needed images."
-  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml build --pull
 
 - name: "Start containers"
   command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
