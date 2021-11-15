@@ -67,7 +67,7 @@
 - name: "Set URL variable."
   set_fact:
     api_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ api_dns_name }}"
-    iam_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ iam_dns_name}}"
+    iam_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ iam_dns_name }}"
     connect_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ connect_dns_name }}"
     platform_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
     platform_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_front_dns_name }}"

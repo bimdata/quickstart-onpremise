@@ -1,6 +1,6 @@
 ---
 parseable: true
 skip_list:
-  # [E701]: "meta/main.yml should contain relevant info"
-  # Roles in this project are not intended to be used/imported by Ansible Galaxy.
-  - '701'
+  # Intensive use of the command module, can't always use changed_when for now.
+  # This will be improve in the futur.
+   - no-changed-when
