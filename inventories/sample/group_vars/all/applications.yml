@@ -27,7 +27,7 @@ max_upload_size: 1g
 
 # Some path where data will be stored
 bimdata_path: /opt/bimdata
-bimdata_docker_volume_path: "{{ bimdata_path }}/datas"
+bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_dockerfiles_path: "{{ bimdata_path }}/dockerfiles"
 
 # Obect storage
@@ -117,5 +117,5 @@ workers_preview_cpu: 1
 # Misc
 uuid_namespace: "{{ app_dns_domain | to_uuid }}"
 master_token: "{{ vault_master_token }}"
-app_env: staging
+app_env: on-premises
 mapbox_token: "{{ vault_mapbox_token }}"
