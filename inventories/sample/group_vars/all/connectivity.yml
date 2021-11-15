@@ -14,5 +14,5 @@ bastion_ssh_user: "{{ lookup('env', 'USER') }}"
 # Proxy configuration
 # If the target server can't access the web directly, you need to configure this.
 http_proxy: ""   # http://username:password@proxy.company.tld:PORT/
-https_proxy: ""  # https://username:password@proxy.company.tld:PORT/
+https_proxy: "{{ http_proxy }}"  # https://username:password@proxy.company.tld:PORT/
 no_proxy: []     # List of domains that do not need to be access through proxy

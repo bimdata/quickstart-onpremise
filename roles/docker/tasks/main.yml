@@ -3,11 +3,13 @@
   apt:
     name: "{{ docker_apt_dependencies }}"
     state: present
+  environment: "{{ proxy_env }}"
 
 - name: "Add Docker key."
   apt_key:
     url: "{{ docker_apt_key_url }}"
     state: present
+  environment: "{{ proxy_env }}"
 
 - name: "Get deb architecture"
   command: "dpkg --print-architecture"
@@ -21,6 +23,7 @@
     repo: "deb [arch={{ deb_arch.stdout }}] {{ docker_apt_repo_url }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
     update_cache: true
     state: present
+  environment: "{{ proxy_env }}"
 
 - name: "Get installed Docker version."
   command: "dpkg-query --showformat='${Version}' --show {{ docker_pkg_name }}"
@@ -40,6 +43,7 @@
     name: "{{ docker_pkg_name }}{% if docker_pkg_version is defined and docker_pkg_version != '' %}={{ docker_pkg_version }}{% endif %}"
     cache_valid_time: 3600
     state: present
+  environment: "{{ proxy_env }}"
   notify: "Restart Docker."
 
 - name: "Hold Docker version."

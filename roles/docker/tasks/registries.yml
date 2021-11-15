@@ -5,4 +5,5 @@
     username: "{{ item.username }}"
     password: "{{ item.password }}"
   loop: "{{ docker_registries }}"
+  environment: "{{ proxy_env }}"
   no_log: true
