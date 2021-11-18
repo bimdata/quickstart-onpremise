@@ -114,6 +114,12 @@ keycloak_mappers=(
     },
     {
         "identityProviderAlias": "bimdataconnect",
+        "config": {"user.attribute": "language", "claim": "language"},
+        "name": "language",
+        "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+    },
+    {
+        "identityProviderAlias": "bimdataconnect",
         "config": {"user.attribute": "provider_sub", "claim": "sub"},
         "name": "provider_sub",
         "identityProviderMapper": "oidc-user-attribute-idp-mapper",
