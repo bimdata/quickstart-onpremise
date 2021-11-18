@@ -2,7 +2,7 @@ import os
 import sys
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "auth.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "auth.settings.connect")
 django.setup()
 
 from django.conf import settings
