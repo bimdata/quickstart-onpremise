@@ -141,3 +141,24 @@ if response.status_code == 200:
 for mapper in keycloak_mappers:
     if not next((x for x in existing_mappers if x['name'] == mapper['name']), None):
         request("post", "/identity-provider/instances/bimdataconnect/mappers", json=mapper)
+
+
+bimdata_platform_mapper = {
+    "name": "bimdata_platform",
+    "protocol": "openid-connect",
+    "protocolMapper": "oidc-hardcoded-role-mapper",
+    "config": {"role": "bimdata_platform"}
+}
+
+response = request(
+    "get",
+    f"/clients/{platform_app.keycloak_id}/protocol-mappers/models",
+    raise_for_status=True
+).json()
+
+if not next((x for x in response if x["name"] == "bimdata_platform"), None):
+    request(
+        "post",
+        f"/clients/{platform_app.keycloak_id}/protocol-mappers/models",
+        json=bimdata_platform_mapper
+    )
