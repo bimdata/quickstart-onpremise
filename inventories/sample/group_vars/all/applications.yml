@@ -105,10 +105,6 @@ workers_extract_quantities_cpu: 1
 workers_svg_instance: 1
 workers_svg_cpu: 1
 
-## optimize
-workers_optimize_instance: 1
-workers_optimize_cpu: 1
-
 ## merge
 workers_merge_instance: 1
 workers_merge_cpu: 1
