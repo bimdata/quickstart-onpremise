@@ -118,30 +118,6 @@ workers-svg:
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
-workers-bvh:
-  image: {{ docker_workers_bvh_image }}:{{ docker_workers_bvh_tag }}
-  deploy:
-    replicas: {{ workers_bvh_instance }}
-  environment:
-    - WORKER_SCRIPT=workers.bvh_tree
-    - RABBITMQ_HOST={{ rabbitmq_host }}
-    - RABBITMQ_PORT={{ rabbitmq_port }}
-    - RABBITMQ_USER={{ rabbitmq_user }}
-    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
-    - ENV={{ app_env }}
-    - MASTER_TOKEN={{ master_token }}
-    - CPU_ALLOCATED={{ workers_bvh_cpu }}
-{% if tls_enabled  | bool %}
-    - CA_CERT=/opt/onprem-ca.crt
-  volumes:
-    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
-{% endif %}
-  restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-  extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-
 workers-optimize:
   image: {{ docker_workers_optimize_image }}:{{ docker_workers_optimize_tag }}
   deploy:

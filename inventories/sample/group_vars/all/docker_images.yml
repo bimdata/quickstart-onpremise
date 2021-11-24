@@ -63,9 +63,6 @@ docker_workers_extract_quantities_tag: latest
 docker_workers_svg_image: "{{ docker_private_registry }}/on-prem/workers"
 docker_workers_svg_tag: latest
 
-docker_workers_bvh_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_bvh_tag: latest
-
 docker_workers_optimize_image: "{{ docker_private_registry }}/on-prem/workers"
 docker_workers_optimize_tag: latest
 

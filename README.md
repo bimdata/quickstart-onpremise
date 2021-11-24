@@ -162,8 +162,6 @@ Object storage (Swift):
 | workers_extract_quantities_cpu      | 1                                                                        | Number of CPUs allocated for each replicas.                 |
 | workers_svg_instance                | 1                                                                        | Number of replicas deployed on *each* server.               |
 | workers_svg_cpu                     | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_bvh_instance                | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_bvh_cpu                     | 1                                                                        | Number of CPUs allocated for each replicas.                 |
 | workers_optimize_instance           | 1                                                                        | Number of replicas deployed on *each* server.               |
 | workers_optimize_cpu                | 1                                                                        | Number of CPUs allocated for each replicas.                 |
 | workers_merge_instance              | 1                                                                        | Number of replicas deployed on *each* server.               |
@@ -296,8 +294,6 @@ with the [db] server on these ports.
 | docker_workers_extract_quantities_tag   | latest                                                      | Worker extract quantities docker tag.                                     |
 | docker_workers_svg_image                | "{{ docker_private_registry }}/on-prem/workers"          | Worker SVG docker image.                                                  |
 | docker_workers_svg_tag                  | latest                                                      | Worker SVG docker tag.                                                    |
-| docker_workers_bvh_image                | "{{ docker_private_registry }}/on-prem/workers"          | Worker BVH docker image.                                                  |
-| docker_workers_bvh_tag                  | latest                                                      | Worker BVH docker tag.                                                    |
 | docker_workers_optimize_image           | "{{ docker_private_registry }}/on-prem/workers"          | Worker optimize docker image.                                             |
 | docker_workers_optimize_tag             | latest                                                      | Worker optimize docker tag.                                               |
 | docker_workers_merge_image              | "{{ docker_private_registry }}/on-prem/workers"          | Worker merge docker image.                                                |
