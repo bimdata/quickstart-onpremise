@@ -45,6 +45,16 @@
       - tls_archive_cert is defined
       - tls_archive_cert | length
 
+      - tls_marketplace_back_key is defined
+      - tls_marketplace_back_key | length
+      - tls_marketplace_back_cert is defined
+      - tls_marketplace_back_cert | length
+
+      - tls_marketplace_front_key is defined
+      - tls_marketplace_front_key | length
+      - tls_marketplace_front_cert is defined
+      - tls_marketplace_front_cert | length
+
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
       you need to defined all the keys and certificates in group_vars/all/tls.yml.
@@ -75,3 +85,5 @@
     documentation_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ documentation_dns_name }}"
     share_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ share_dns_name }}"
     archive_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ archive_dns_name }}"
+    marketplace_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
+    marketplace_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"

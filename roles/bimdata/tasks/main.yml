@@ -12,6 +12,7 @@
     - "{{ bimdata_docker_volume_path }}/web/static/connect"
     - "{{ bimdata_docker_volume_path }}/web/static/platform_back"
     - "{{ bimdata_docker_volume_path }}/web/static/share"
+    - "{{ bimdata_docker_volume_path }}/web/static/marketplace_back"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
@@ -39,6 +40,7 @@
     - platform
     - iam
     - share
+    - marketplace
   when:
     - not use_external_db
     - db_on_app

@@ -72,6 +72,9 @@ Then, you need to modify the variables to match your needs.
 | documentation_dns_name      |"doc.{{ app_dns_domain }}"              | DNS name use for the documentation URL.                |
 | share_dns_name              |"share.{{ app_dns_domain }}"            | DNS name use for the share URL.                        |  
 | archive_dns_name            |"archive.{{ app_dns_domain }}"          | DNS name use for the archive URL.                      |
+| marketplace_back_dns_name   |"marketplace-back.{{ app_dns_domain }}" | DNS name use for the marketplace back URL.             |
+| marketplace_front_dns_name  |"marketplace.{{ app_dns_domain }}"      | DNS name use for fhe marketplace URL.                  |
+
 
 For example if:
 ```
@@ -142,6 +145,12 @@ Object storage (Swift):
 ||||
 | iam_user                            | "admin"                                                                  | Keycloak administrator user.                                |
 | iam_password                        | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                            |
+||||
+| marketplace_enabled                 | false                                                                    | Enable / disable marketplace.                               |
+| marketplace_back_secret_key         | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                 |
+||||
+| marketplace_front_client_id         | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                 |
+| marketplace_front_workers           | 2                                                                        | Number of node workers.                                     |
 ||||
 | workers_export_instance             | 1                                                                        | Number of replicas deployed on *each* server.               |
 | workers_export_cpu                  | 1                                                                        | Number of CPUs allocated for each replicas.                 |
@@ -228,6 +237,10 @@ to access our docker registry for example.
 | db_share_name           | "share"                               | Database name for Share.               |
 | db_share_user           | "share"                               | Postgres user for Share.               |
 | db_share_password       | "{{ vault_db_share_password }}"       | Postgres password for Share.           |
+||||
+| db_marketplace_name     | "marketplace"                         | Database name for the Marketplace.     |
+| db_marketplace_user     | "marketplace"                         | Postgres user for the Marketplace.     |
+| db_marketplace_password | "{{ vault_db_marketplace_password }}" | Postgres password for the Marketplace. |
 
 If `use_external_db: false` AND if the [db] server is different from the [app] server (in the inventory)
 each postgres instance will need to use its own TCP port. There are defined with these variables.
@@ -241,6 +254,7 @@ with the [db] server on these ports.
 | db_platform_external_port    | 5434                                                                 | Postgres external port for the Platform.                                                 |
 | db_iam_external_port         | 5435                                                                 | Postgres external port for Keycloak.                                                     |
 | db_share_external_port       | 5436                                                                 | Postgres external port for Share.                                                        |
+| db_marketplace_external_port | 5437                                                                 | Postgres external port for Keycloak.                                                     |
 | db_server_addr               | "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}" | Use to determine the IP that will be use for Postgres connection between [app] and [db]. |
 
 ### docker_images.yml
@@ -268,6 +282,10 @@ with the [db] server on these ports.
 | docker_share_tag                        | latest                                                      | Share docker tag.                                                         |
 | docker_archive_image                    | "{{ docker_private_registry }}/on-prem/archive"          | Archive docker image.                                                     |
 | docker_archive_tag                      | latest                                                      | Archive docker tag.                                                       |
+| docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back" | Marketplace back images.                                                  |
+| docker_marketplace_back_tag             | latest                                                      | Marketplace back docker tag.                                              |
+| docker_marketplace_front_image          | "{{ docker_private_registry }}/on-premise/marketplace"      | Marketplace front docker image.                                           |
+| docker_marketplace_front_tag            | latest                                                      | Marketplace front docker tag.                                             |
 | docker_workers_export_image             | "{{ docker_private_registry }}/on-prem/workers"          | Worker export docker image.                                               |
 | docker_workers_export_tag               | latest                                                      | Worker export docker tag.                                                 |
 | docker_workers_gltf_image               | "{{ docker_private_registry }}/on-prem/workers"          | Worker GLTF docker image.                                                 |
@@ -358,6 +376,10 @@ You should not have to modified these variables in most cases.
 | tls_share_cert             | ""                                      | Share TLS Certificate (PEM format).                                                                                            |
 | tls_archive_key            | "{{ vault_tls_archive_key }}"           | Archive TLS key (PEM format).                                                                                                  |
 | tls_archive_cert           | ""                                      | Archive TLS Certificate (PEM format).                                                                                          |
+| tls_marketplace_back_key   | "{{ vault_tls_marketplace_back_key }}"  | Marketplace back TLS key (PEM format).                                                                                         |
+| tls_marketplace_back_cert  | ""                                      | Marketplace back TLS Certificate (PEM format).                                                                                 |
+| tls_marketplace_front_key  | "{{ vault_tls_marketplace_front_key }}" | Marketplace front TLS key (PEM format).                                                                                        |
+| tls_marketplace_front_cert | ""                                      | Marketplace front TLS Certificate (PEM format).                                                                                |
 
 ### vault.yml
 In this file, all private informations are defined. Like password, TLS keys or other security stuff.

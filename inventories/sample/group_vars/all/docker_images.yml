@@ -42,6 +42,12 @@ docker_share_tag: latest
 docker_archive_image: "{{ docker_private_registry }}/on-prem/archive"
 docker_archive_tag: latest
 
+docker_marketplace_back_image: "{{ docker_private_registry }}/on-premise/marketplace_back"
+docker_marketplace_back_tag: latest
+
+docker_marketplace_front_image: "{{ docker_private_registry }}/on-premise/marketplace"
+docker_marketplace_front_tag: latest
+
 docker_workers_export_image: "{{ docker_private_registry }}/on-prem/workers"
 docker_workers_export_tag: latest
 

@@ -303,6 +303,7 @@ services:
       - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
       - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
       - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
+      - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -378,6 +379,85 @@ services:
       nginx-proxy:
         condition: service_started
 
+{% if marketplace_enabled | bool %}
+  marketplace-back:
+    container_name: marketplace-back
+    image: {{ docker_marketplace_back_image }}:{{ docker_marketplace_back_tag }}
+    expose:
+      - 8000
+    volumes:
+      - {{ bimdata_docker_volume_path }}/web/static/marketplace_back:/opt/statics:rw
+  {% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+  {% endif %}
+    environment:
+      - VIRTUAL_HOST={{ marketplace_back_dns_name }}
+      - ENV={{ app_env }}
+
+      - ALLOWED_HOSTS="{{ marketplace_back_dns_name }}"
+      - MASTER_TOKEN="{{ master_token }}"
+      - MARKETPLACE_BACK_URL="{{ marketplace_back_url }}"
+      - MARKETPLACE_URL="{{ marketplace_url }}"
+      - OIDC_RP_SIGN_ALGO="RS256"
+
+      - OIDC_OP_ISSUER="{{ iam_url }}"
+      - API_URL="{{ api_url }}"
+      - APP_URL="{{ platform_url }}"
+      - SECRET_KEY="{{ marketplace_back_secret_key }}"
+
+  {% if SMTP_HOST is defined and SMTP_HOST | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+  {% endif %}
+      - DB_HOST={{ db_marketplace_host }}
+      - DB_PORT={{ db_marketplace_port }}
+      - DB_NAME={{ db_marketplace_name }}
+      - DB_USER={{ db_marketplace_user }}
+      - DB_PASSWORD={{ db_marketplace_password }}
+  {% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+  {% endif %}
+    restart: unless-stopped
+  {% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+  {% endif %}
+    depends_on:
+  {% if not use_external_db and inventory_hostname in groups['db'] %}
+      marketplace-db:
+        condition: service_healthy
+  {% endif %}
+      nginx-proxy:
+        condition: service_started
+
+  marketplace:
+    container_name: marketplace-front
+    image: {{ docker_marketplace_front_image }}:{{ docker_marketplace_front_tag }}
+    expose:
+      - 8080
+    environment:
+      - VIRTUAL_HOST={{ marketplace_front_dns_name }}
+      - ENV={{ app_env }}
+
+      - APP_URL={{ marketplace_front_url }}
+      - OIDC_ISSUER={{ iam_url }}/auth/realms/bimdata
+      - API_URL={{ api_url }}
+      - BACKEND_URL={{ marketplace_back_url }}
+      - WORKERS_NB={{ Marketplace_front_workers }}
+
+      - CLIENT_ID={{ marketplace_front_client_id }}
+
+  restart: unless-stopped
+  {% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+  {% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+{% endif %}
 {% if inventory_hostname in groups['workers'] %}
   # Workers
   {{ compose_workers | to_nice_yaml(indent=2) | indent(2) }}

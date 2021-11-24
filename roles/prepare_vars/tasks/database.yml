@@ -18,11 +18,13 @@
       db_platform_host: "{{ external_db_host }}"
       db_iam_host: "{{ external_db_host }}"
       db_share_host: "{{ external_db_host }}"
+      db_marketplace_host:  "{{ external_db_host }}"
       db_api_port: "{{ external_db_port }}"
       db_connect_port: "{{ external_db_port }}"
       db_platform_port: "{{ external_db_port }}"
       db_iam_port: "{{ external_db_port }}"
       db_share_port: "{{ external_db_port }}"
+      db_marketplace_port: "{{ external_db_port }}"
 
 # Not external DB
 - when: not use_external_db | bool
@@ -38,12 +40,14 @@
       db_platform_host: "{{ db_on_app | ternary('platform-db', db_server_addr) }}"
       db_iam_host: "{{ db_on_app | ternary('iam-db', db_server_addr) }}"
       db_share_host: "{{ db_on_app | ternary('share-db', db_server_addr) }}"
+      db_marketplace_host: "{{ db_on_app | ternary('marketplace-db', db_server_addr) }}"
 
       db_api_port: "{{ db_on_app | ternary(5432, db_api_external_port) }}"
       db_connect_port: "{{ db_on_app | ternary(5432, db_connect_external_port) }}"
       db_platform_port: "{{ db_on_app | ternary(5432, db_platform_external_port) }}"
       db_iam_port: "{{ db_on_app | ternary(5432, db_iam_external_port) }}"
       db_share_port: "{{ db_on_app | ternary(5432, db_share_external_port) }}"
+      db_marketplace_port: "{{ db_on_app | ternary(5432, db_marketplace_external_port) }}"
 
   - name: "Set docker-compose definition for databases."
     set_fact:

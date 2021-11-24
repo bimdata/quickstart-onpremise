@@ -15,6 +15,8 @@
       - documentation
       - share
       - archive
+      - marketplace_back
+      - marketplace_front
 
 - when: tls_enabled | bool
   block:
