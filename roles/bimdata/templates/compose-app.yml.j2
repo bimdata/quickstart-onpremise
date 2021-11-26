@@ -124,9 +124,9 @@ services:
       - RABBITMQ_PORT={{ rabbitmq_port }}
       - RABBITMQ_USER={{ rabbitmq_user }}
       - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-      - OIDC_PROVIDER_ENDPOINT={{ iam_url }}
-      - OIDC_PROVIDER_ADMIN_LOGIN={{ iam_user }}
-      - OIDC_PROVIDER_ADMIN_PASSWORD={{ iam_password }}
+      - IAM_URL={{ iam_url }}
+      - IAM_ADMIN_LOGIN={{ iam_user }}
+      - IAM_ADMIN_PASSWORD={{ iam_password }}
 {% if SMTP_HOST is defined and SMTP_HOST | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
@@ -304,6 +304,8 @@ services:
       - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
       - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
       - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
+      - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
+      - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}

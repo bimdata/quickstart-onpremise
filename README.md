@@ -127,52 +127,54 @@ Object storage (Swift):
 
 #### Applications configuration
 
-| Variables                           | Default value                                                            | Description                                                 |
-|-------------------------------------|--------------------------------------------------------------------------|-------------------------------------------------------------|
-| api_secret_key                      | "{{ vault_api_secret_key }}"                                             | You should not change this.                                 |
+| Variables                                  | Default value                                                            | Description                                                      |
+|--------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
+| api_secret_key                             | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
 ||||
-| connect_secret_key                  | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                 |
-| connect_client_id                   | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                 |
-| connect_client_secret               | "{{ 'connect_client_secret' \| to_uuid(namespace=uuid_namespace) }}"     | You should not change this.                                 |
-| connect_invitation_secret           | "{{ vault_connect_invitation_secret }}"                                  | You should not change this.                                 |
-| connect_invitation_client           | "{{ 'connect_invitation_client' \| to_uuid(namespace=uuid_namespace) }}" | You should not change this.                                 |
-| connect_invitation_client_secret    | "{{ vault_connect_invitation_client_secret }}"                           | You should not change this.                                 |
+| connect_secret_key                         | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
+| connect_client_id                          | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |
+| connect_client_secret                      | "{{ 'connect_client_secret' \| to_uuid(namespace=uuid_namespace) }}"     | You should not change this.                                      |
+| connect_invitation_secret                  | "{{ vault_connect_invitation_secret }}"                                  | You should not change this.                                      |
+| connect_invitation_client                  | "{{ 'connect_invitation_client' \| to_uuid(namespace=uuid_namespace) }}" | You should not change this.                                      |
+| connect_invitation_client_secret           | "{{ vault_connect_invitation_client_secret }}"                           | You should not change this.                                      |
 ||||
-| platform_back_secret_key            | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                 |
-| platform_back_webhook_secret        | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                 |
+| platform_back_secret_key                   | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                      |
+| platform_back_webhook_secret               | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                      |
 ||||
-| platform_front_client_id            | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                 |
+| platform_front_client_id                   | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
+| platform_front_project_status_limit_new    | "5"                                                                      | Number of days during which the project is considered new.       |
+| platform_front_project_status_limit_active | "15"                                                                     | Number of days during before the project is considered inactive. |
 ||||
-| iam_user                            | "admin"                                                                  | Keycloak administrator user.                                |
-| iam_password                        | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                            |
+| iam_user                                   | "admin"                                                                  | Keycloak administrator user.                                     |
+| iam_password                               | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                                 |
 ||||
-| marketplace_enabled                 | false                                                                    | Enable / disable marketplace.                               |
-| marketplace_back_secret_key         | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                 |
+| marketplace_enabled                        | false                                                                    | Enable / disable marketplace.                                    |
+| marketplace_back_secret_key                | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                      |
 ||||
-| marketplace_front_client_id         | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                 |
-| marketplace_front_workers           | 2                                                                        | Number of node workers.                                     |
+| marketplace_front_client_id                | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
+| marketplace_front_workers                  | 2                                                                        | Number of node workers.                                          |
 ||||
-| workers_export_instance             | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_export_cpu                  | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_gltf_instance               | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_gltf_cpu                    | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_extract_instance            | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_extract_cpu                 | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_extract_quantities_instance | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_extract_quantities_cpu      | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_svg_instance                | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_svg_cpu                     | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_merge_instance              | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_merge_cpu                   | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_xkt_instance                | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_xkt_cpu                     | 1                                                                        | Number of CPUs allocated for each replicas.                 |
-| workers_preview_instance            | 1                                                                        | Number of replicas deployed on *each* server.               |
-| workers_preview_cpu                 | 1                                                                        | Number of CPUs allocated for each replicas.                 |
+| workers_export_instance                    | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_export_cpu                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_gltf_instance                      | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_gltf_cpu                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_extract_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_extract_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_extract_quantities_instance        | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_extract_quantities_cpu             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_svg_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_svg_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_merge_instance                     | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_merge_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_xkt_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
+| workers_preview_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 ||||
-| uuid_namespace                      | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                               |
-| master_token                        | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.|
-| app_env                             | "staging"                                                                | Environnement definition for some app. Must not be changed. |
-| mapbox_token                        | "{{ vault_mapbox_token }}"                                               | Token for authentication on the Mapbox API.                 |
+| uuid_namespace                             | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
+| master_token                               | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
+| app_env                                    | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
+| mapbox_token                               | "{{ vault_mapbox_token }}"                                               | Token for authentication on the Mapbox API.                      |
 
 ### connectivity.yml
 #### Ansible connectivity
