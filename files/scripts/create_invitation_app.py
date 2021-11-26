@@ -17,6 +17,8 @@ platform_client_id = sys.argv[4]
 client_id = sys.argv[5]
 client_secret = sys.argv[6]
 platform_url = sys.argv[7]
+marketplace_url = sys.argv[8]
+marketplace_client_id = sys.argv[9]
 
 # create provider
 idp = IdentityProvider.objects.get(
@@ -54,6 +56,19 @@ platform_app, created = App.objects.get_or_create(
 )
 if created:
     platform_app.scopes.set(Scope.objects.all())
+
+# create marketplace app
+marketplace_app, created = App.objects.get_or_create(
+    name="BIMData Marketplace",
+    redirect_uris=[marketplace_url + "/*"],
+    creator=None,
+    access_type=App.TYPE_PUBLIC,
+    implicit_flow_enabled=False,
+    client_id=marketplace_client_id,
+    base_url=marketplace_url
+)
+if created:
+    marketplace_app.scopes.set(Scope.objects.all())
 
 # Keycloak config
 data = {
@@ -142,23 +157,23 @@ for mapper in keycloak_mappers:
     if not next((x for x in existing_mappers if x['name'] == mapper['name']), None):
         request("post", "/identity-provider/instances/bimdataconnect/mappers", json=mapper)
 
+for app, role_name in zip([platform_app, marketplace_app], ['bimdata_platform', 'bimdata_marketplace']):
+    bimdata_mapper = {
+        "name": role_name,
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-hardcoded-role-mapper",
+        "config": {"role": role_name}
+    }
 
-bimdata_platform_mapper = {
-    "name": "bimdata_platform",
-    "protocol": "openid-connect",
-    "protocolMapper": "oidc-hardcoded-role-mapper",
-    "config": {"role": "bimdata_platform"}
-}
+    response = request(
+        "get",
+        f"/clients/{app.keycloak_id}/protocol-mappers/models",
+        raise_for_status=True
+    ).json()
 
-response = request(
-    "get",
-    f"/clients/{platform_app.keycloak_id}/protocol-mappers/models",
-    raise_for_status=True
-).json()
-
-if not next((x for x in response if x["name"] == "bimdata_platform"), None):
-    request(
-        "post",
-        f"/clients/{platform_app.keycloak_id}/protocol-mappers/models",
-        json=bimdata_platform_mapper
-    )
+    if not next((x for x in response if x["name"] == "bimdata_platform"), None):
+        request(
+            "post",
+            f"/clients/{app.keycloak_id}/protocol-mappers/models",
+            json=bimdata_mapper
+        )

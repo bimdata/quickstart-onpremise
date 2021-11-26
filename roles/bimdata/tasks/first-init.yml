@@ -75,5 +75,5 @@
     api python create_invitation_app.py {{ connect_invitation_secret }}
     {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
     {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
-    {{ platform_front_url }}
+    {{ platform_front_url }} {{ marketplace_front_url }} {{ marketplace_front_client_id }}
   no_log: true
