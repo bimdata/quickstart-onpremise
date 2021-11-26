@@ -36,9 +36,6 @@ docker_iam_tag: latest
 docker_documentation_image: "{{ docker_private_registry }}/on-prem/documentation"
 docker_documentation_tag: latest
 
-docker_share_image: "{{ docker_private_registry }}/on-prem/share"
-docker_share_tag: latest
-
 docker_archive_image: "{{ docker_private_registry }}/on-prem/archive"
 docker_archive_tag: latest
 

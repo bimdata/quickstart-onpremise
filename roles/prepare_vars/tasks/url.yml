@@ -35,11 +35,6 @@
       - tls_documentation_cert is defined
       - tls_documentation_cert | length
 
-      - tls_share_key is defined
-      - tls_share_key | length
-      - tls_share_cert is defined
-      - tls_share_cert | length
-
       - tls_archive_key is defined
       - tls_archive_key | length
       - tls_archive_cert is defined

@@ -40,10 +40,6 @@ tls_rabbitmq_admin_cert: ""
 tls_documentation_key: "{{ vault_tls_documentation_key }}"
 tls_documentation_cert: ""
 
-# Share TLS Certs and key: need to match the name define in "{{ share_dns_name }}"
-tls_share_key: "{{ vault_tls_share_key }}"
-tls_share_cert: ""
-
 # Archive TLS Certs and key: need to match the name define in "{{ archive_dns_name }}"
 tls_archive_key: "{{ vault_tls_archive_key }}"
 tls_archive_cert: ""

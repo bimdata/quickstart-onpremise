@@ -230,10 +230,6 @@ to access our docker registry for example.
 | db_iam_user             | "iam"                                 | Postgres user for Keycloak.            |
 | db_iam_password         | "{{ vault_db_iam_password }}"         | Postgres password for Keycloak.        |
 ||||
-| db_share_name           | "share"                               | Database name for Share.               |
-| db_share_user           | "share"                               | Postgres user for Share.               |
-| db_share_password       | "{{ vault_db_share_password }}"       | Postgres password for Share.           |
-||||
 | db_marketplace_name     | "marketplace"                         | Database name for the Marketplace.     |
 | db_marketplace_user     | "marketplace"                         | Postgres user for the Marketplace.     |
 | db_marketplace_password | "{{ vault_db_marketplace_password }}" | Postgres password for the Marketplace. |
@@ -249,8 +245,7 @@ with the [db] server on these ports.
 | db_connect_external_port     | 5433                                                                 | Postgres external port for Connect.                                                      |
 | db_platform_external_port    | 5434                                                                 | Postgres external port for the Platform.                                                 |
 | db_iam_external_port         | 5435                                                                 | Postgres external port for Keycloak.                                                     |
-| db_share_external_port       | 5436                                                                 | Postgres external port for Share.                                                        |
-| db_marketplace_external_port | 5437                                                                 | Postgres external port for Keycloak.                                                     |
+| db_marketplace_external_port | 5436                                                                 | Postgres external port for Keycloak.                                                     |
 | db_server_addr               | "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}" | Use to determine the IP that will be use for Postgres connection between [app] and [db]. |
 
 ### docker_images.yml
@@ -274,8 +269,6 @@ with the [db] server on these ports.
 | docker_iam_tag                          | latest                                                      | Keycloak docker tag.                                                      |
 | docker_documentation_image              | "{{ docker_private_registry }}/on-prem/documentation"    | Documentation docker image.                                               |
 | docker_documentation_tag                | latest                                                      | Documentation docker tag.                                                 |
-| docker_share_image                      | "{{ docker_private_registry }}/on-prem/share"            | Share docker image.                                                       |
-| docker_share_tag                        | latest                                                      | Share docker tag.                                                         |
 | docker_archive_image                    | "{{ docker_private_registry }}/on-prem/archive"          | Archive docker image.                                                     |
 | docker_archive_tag                      | latest                                                      | Archive docker tag.                                                       |
 | docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back" | Marketplace back images.                                                  |
@@ -364,8 +357,6 @@ You should not have to modified these variables in most cases.
 | tls_rabbitmq_admin_cert    | ""                                      | RabbitMQ TLS Certificate (PEM format). (Only needed if use_external_rabbitmq: false.)                                          |
 | tls_documentation_key      | "{{ vault_tls_documentation_key }}"     | Documentation TLS key (PEM format).                                                                                            |
 | tls_documentation_cert     | ""                                      | Documentation TLS Certificate (PEM format).                                                                                    |
-| tls_share_key              | "{{ vault_tls_share_key }}"             | Share TLS key (PEM format).                                                                                                    |
-| tls_share_cert             | ""                                      | Share TLS Certificate (PEM format).                                                                                            |
 | tls_archive_key            | "{{ vault_tls_archive_key }}"           | Archive TLS key (PEM format).                                                                                                  |
 | tls_archive_cert           | ""                                      | Archive TLS Certificate (PEM format).                                                                                          |
 | tls_marketplace_back_key   | "{{ vault_tls_marketplace_back_key }}"  | Marketplace back TLS key (PEM format).                                                                                         |

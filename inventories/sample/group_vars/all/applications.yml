@@ -69,9 +69,6 @@ iam_password: "{{ vault_iam_password }}"  # Change me in the vault
 # Documentation
 playground_client_id: none
 
-# Share
-share_secret_key: "{{ vault_share_secret_key }}"
-
 # Archive
 archive_workers_nb: 2
 

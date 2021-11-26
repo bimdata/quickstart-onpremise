@@ -327,38 +327,6 @@ services:
       nginx-proxy:
         condition: service_started
 
-  share:
-    container_name: share
-    image: {{ docker_share_image }}:{{ docker_share_tag }}
-    expose:
-      - 8000
-    volumes:
-      - {{ bimdata_docker_volume_path }}/web/static/share:/opt/statics:rw
-    environment:
-      - VIRTUAL_HOST={{ share_dns_name }}
-      - ENV={{ app_env }}
-      - ALLOWED_HOSTS={{ share_dns_name }}
-      - ADMIN_INTERFACE=True
-      - OIDC_OP_ISSUER"{{ iam_url }}
-      - API_URL={{ api_url }}
-      - SECRET_KEY={{ share_secret_key }}
-      - DB_HOST={{ db_share_host }}
-      - DB_PORT={{ db_share_port }}
-      - DB_NAME={{ db_share_name }}
-      - DB_USER={{ db_share_user }}
-      - DB_PASSWORD={{ db_share_password }}
-    restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-    extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-    depends_on:
-{% if not use_external_db and inventory_hostname in groups['db'] %}
-      share-db:
-        condition: service_healthy
-{% endif %}
-      nginx-proxy:
-        condition: service_started
-
   archive:
     container_name: archive
     image: {{ docker_archive_image }}:{{ docker_archive_tag }}
