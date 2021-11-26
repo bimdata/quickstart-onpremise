@@ -42,7 +42,6 @@ docker_extra_hosts:
   - "{{ iam_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ rabbitmq_admin_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ documentation_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ share_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ archive_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ marketplace_back_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
   - "{{ marketplace_front_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"

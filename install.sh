@@ -7,7 +7,7 @@ trap clean_exit SIGINT SIGTERM ERR EXIT
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 VENV_PATH="${SCRIPT_DIR}/venv"
 STORAGE_TYPES=("local" "swift")
-DATABASES=("api" "connect" "platform" "iam" "share" "marketplace")
+DATABASES=("api" "connect" "platform" "iam" "marketplace")
 TLS_APPS=(
   "api"
   "connect"
@@ -16,7 +16,6 @@ TLS_APPS=(
   "iam"
   "rabbitmq_admin"
   "documentation"
-  "share"
   "archive"
   "marketplace_back"
   "marketplace_front"

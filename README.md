@@ -70,7 +70,6 @@ Then, you need to modify the variables to match your needs.
 | platform_front_dns_name     | "platform.{{ app_dns_domain }}"        | DNS name use for the Platform URL.                     |
 | iam_dns_name                | "iam.{{ app_dns_domain }}"             | DNS name use for the Keycloak (identity provider) URL. |
 | documentation_dns_name      |"doc.{{ app_dns_domain }}"              | DNS name use for the documentation URL.                |
-| share_dns_name              |"share.{{ app_dns_domain }}"            | DNS name use for the share URL.                        |  
 | archive_dns_name            |"archive.{{ app_dns_domain }}"          | DNS name use for the archive URL.                      |
 | marketplace_back_dns_name   |"marketplace-back.{{ app_dns_domain }}" | DNS name use for the marketplace back URL.             |
 | marketplace_front_dns_name  |"marketplace.{{ app_dns_domain }}"      | DNS name use for fhe marketplace URL.                  |

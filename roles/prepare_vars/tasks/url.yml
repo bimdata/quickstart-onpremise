@@ -78,7 +78,6 @@
     platform_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
     rabbitmq_admin_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
     documentation_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ documentation_dns_name }}"
-    share_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ share_dns_name }}"
     archive_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ archive_dns_name }}"
     marketplace_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
     marketplace_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"

@@ -13,7 +13,6 @@
       - platform_front
       - iam
       - documentation
-      - share
       - archive
       - marketplace_back
       - marketplace_front
