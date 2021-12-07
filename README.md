@@ -258,39 +258,39 @@ with the [db] server on these ports.
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                     | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                  | Postgres docker image (use Dockerhub by default).                         |
 | docker_postgres_tag                     | "10-alpine"                                                 | Postgres docker tag.                                                      |
-| docker_api_image                        | "{{ docker_private_registry }}/on-prem/api"              | API docker image.                                                         |
+| docker_api_image                        | "{{ docker_private_registry }}/on-prem/api"                 | API docker image.                                                         |
 | docker_api_tag                          | latest                                                      | API docker tag.                                                           |
-| docker_connect_image                    | "{{ docker_private_registry }}/on-prem/connect"          | Connect docker image.                                                     |
+| docker_connect_image                    | "{{ docker_private_registry }}/on-prem/connect"             | Connect docker image.                                                     |
 | docker_connect_tag                      | latest                                                      | Connect docker tag.                                                       |
-| docker_platform_back_image              | "{{ docker_private_registry }}/on-prem/platform_back"    | Platform back docker image.                                               |
+| docker_platform_back_image              | "{{ docker_private_registry }}/on-prem/platform_back"       | Platform back docker image.                                               |
 | docker_platform_back_tag                | latest                                                      | Platform back docker tag.                                                 |
-| docker_platform_front_image             | "{{ docker_private_registry }}/on-prem/platform"         | Platform front docker image.                                              |
+| docker_platform_front_image             | "{{ docker_private_registry }}/on-prem/platform"            | Platform front docker image.                                              |
 | docker_platform_front_tag               | latest                                                      | Platform front docker tag.                                                |
-| docker_iam_image                        | "{{ docker_private_registry }}/on-prem/iam"              | Keycloak docker image.                                                    |
+| docker_iam_image                        | "{{ docker_private_registry }}/on-prem/iam"                 | Keycloak docker image.                                                    |
 | docker_iam_tag                          | latest                                                      | Keycloak docker tag.                                                      |
-| docker_documentation_image              | "{{ docker_private_registry }}/on-prem/documentation"    | Documentation docker image.                                               |
+| docker_documentation_image              | "{{ docker_private_registry }}/on-prem/documentation"       | Documentation docker image.                                               |
 | docker_documentation_tag                | latest                                                      | Documentation docker tag.                                                 |
-| docker_archive_image                    | "{{ docker_private_registry }}/on-prem/archive"          | Archive docker image.                                                     |
+| docker_archive_image                    | "{{ docker_private_registry }}/on-prem/archive"             | Archive docker image.                                                     |
 | docker_archive_tag                      | latest                                                      | Archive docker tag.                                                       |
 | docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back" | Marketplace back images.                                                  |
 | docker_marketplace_back_tag             | latest                                                      | Marketplace back docker tag.                                              |
 | docker_marketplace_front_image          | "{{ docker_private_registry }}/on-premise/marketplace"      | Marketplace front docker image.                                           |
 | docker_marketplace_front_tag            | latest                                                      | Marketplace front docker tag.                                             |
-| docker_workers_export_image             | "{{ docker_private_registry }}/on-prem/workers"          | Worker export docker image.                                               |
+| docker_workers_export_image             | "{{ docker_private_registry }}/on-prem/workers"             | Worker export docker image.                                               |
 | docker_workers_export_tag               | latest                                                      | Worker export docker tag.                                                 |
-| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-prem/workers"          | Worker GLTF docker image.                                                 |
+| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-prem/workers"             | Worker GLTF docker image.                                                 |
 | docker_workers_gltf_tag                 | latest                                                      | Worker GLTF docker tag.                                                   |
-| docker_workers_extract_image            | "{{ docker_private_registry }}/on-prem/workers"          | Worker extract docker image.                                              |
+| docker_workers_extract_image            | "{{ docker_private_registry }}/on-prem/workers"             | Worker extract docker image.                                              |
 | docker_workers_extract_tag              | latest                                                      | Worker extract docker tag.                                                |
-| docker_workers_extract_quantities_image | "{{ docker_private_registry }}/on-prem/workers"          | Worker extract quantities docker image.                                   |
+| docker_workers_extract_quantities_image | "{{ docker_private_registry }}/on-prem/workers"             | Worker extract quantities docker image.                                   |
 | docker_workers_extract_quantities_tag   | latest                                                      | Worker extract quantities docker tag.                                     |
-| docker_workers_svg_image                | "{{ docker_private_registry }}/on-prem/workers"          | Worker SVG docker image.                                                  |
+| docker_workers_svg_image                | "{{ docker_private_registry }}/on-prem/workers"             | Worker SVG docker image.                                                  |
 | docker_workers_svg_tag                  | latest                                                      | Worker SVG docker tag.                                                    |
-| docker_workers_merge_image              | "{{ docker_private_registry }}/on-prem/workers"          | Worker merge docker image.                                                |
+| docker_workers_merge_image              | "{{ docker_private_registry }}/on-prem/workers"             | Worker merge docker image.                                                |
 | docker_workers_merge_tag                | latest                                                      | Worker merge docker tag.                                                  |
-| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-prem/xkt_worker"       | Worker XKT docker image.                                                  |
+| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-prem/xkt_worker"          | Worker XKT docker image.                                                  |
 | docker_workers_xkt_tag                  | latest                                                      | Worker XKT docker tag.                                                    |
-| docker_workers_preview_image            | "{{ docker_private_registry }}/on-prem/viewer_360"       | Worker preview docker image.                                              |
+| docker_workers_preview_image            | "{{ docker_private_registry }}/on-prem/viewer_360"          | Worker preview docker image.                                              |
 | docker_workers_preview_tag              | latest                                                      | Worker preview docker tag.                                                |
 
 ### docker.yml

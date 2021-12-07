@@ -67,9 +67,6 @@ platform_front_project_status_limit_active: "15"
 iam_user: "admin"
 iam_password: "{{ vault_iam_password }}"  # Change me in the vault
 
-# Documentation
-playground_client_id: none
-
 # Archive
 archive_workers_nb: 2
 

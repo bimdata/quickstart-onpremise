@@ -1,3 +1,4 @@
+.project
 *.retry
 inventories/*
 !inventories/sample
