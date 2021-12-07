@@ -1,0 +1,54 @@
+---
+- name: "Create docker-compose file."
+  template:
+    src: compose-migration-apps.yml.j2
+    dest: "{{ bimdata_path }}/docker-compose.yml"
+    mode: 0640
+  vars:
+    docker_api_tag: apps_from_connect_to_api
+
+- name: "Pull needed images."
+  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
+
+- name: "Start containers"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
+
+- name: "Copy scripts"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ bimdata_path }}/{{ item }}"
+    mode: 0640
+  loop:
+    - restore_apps.py
+    - loaddata.py
+
+- name: Install script migration requirements
+  pip:
+    name: docker==5.0.3
+
+- name: "Launch apps migration"
+  command: "python {{ bimdata_path }}/restore_apps.py"
+  register: migration
+
+- name: "Fix migration dependancies"
+  command: "docker exec {{ db_api_name }}-db psql -U {{ db_api_user }} -d {{ db_api_name }} -c \"UPDATE django_migrations SET name = '0065_ifc_gltf_with_openings_file' WHERE name = '0064_ifc_gltf_with_openings_file'\""
+
+- name: "Stop containers"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml stop"
+
+- name: "Remove containers"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml rm"
+
+- name: remove docker-compose migration file
+  file:
+    state: absent
+    path: "{{ bimdata_path }}/docker-compose.yml"
+
+- name: Add migration name
+  lineinfile:
+    path: "{{ bimdata_path }}/.migration"
+    regexp: "^apps_from_connect_to_api:"
+    line: "apps_from_connect_to_api: ok"
+    create: true
+    mode: 0640
+

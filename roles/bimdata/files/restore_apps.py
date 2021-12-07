@@ -2,8 +2,7 @@ import docker
 import os
 import sys
 
-archive_name = sys.argv[1] if len(sys.argv) == 2 else "/tmp/dumpdata.keycloak.tar"
-
+archive_name = "/var/tmp/dumpdata.keycloak.tar"
 
 client = docker.from_env()
 api = client.containers.get("api")
@@ -25,7 +24,7 @@ def copy_to(container, src, dst):
     container.put_archive(os.path.dirname(dst), data)
 
 # Copy from local
-copy_to(api, "/tmp/dumpdata.keycloak.tar", "/tmp/dumpdata.keycloak.json")
+copy_to(api, archive_name, "/tmp/dumpdata.keycloak.json")
 
 
 # Exec data migration

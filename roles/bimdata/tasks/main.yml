@@ -84,57 +84,9 @@
     dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
     mode: 0640
 
-- name: "Create docker-compose file."
-  template:
-    src: compose-migration-apps.yml.j2
-    dest: "{{ bimdata_path }}/docker-compose.yml"
-    mode: 0640
-  vars:
-    docker_api_tag: checkpoint_app_migrations
-
-- name: "Pull needed images."
-  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
-
-- name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
-
-# for dev
-# - name: restore api db
-#   command: "bash -c 'cat /tmp/bimdata_edf.dump | docker exec -i api-db psql -U api -d api'"
-
-- name: "Copy restore apps script"
-  copy:
-    src: restore_apps.py
-    dest: "{{ bimdata_path }}/restore_apps.py"
-    mode: 0640
-
-- name: "Copy load data script"
-  copy:
-    src: loaddata.py
-    dest: "{{ bimdata_path }}/loaddata.py"
-    mode: 0640
-
-- name: Install script migration requirements
-  pip:
-    name: docker==5.0.3
-
-- name: "Launch apps migration"
-  command: "python {{ bimdata_path }}/restore_apps.py"
-  register: migration
-
-- name: "Fix migration dependancies"
-  command: "docker exec {{ db_api_name }}-db psql -U {{ db_api_user }} -d {{ db_api_name }} -c \"UPDATE django_migrations SET name = '0065_ifc_gltf_with_openings_file' WHERE name = '0064_ifc_gltf_with_openings_file'\""
-
-- name: "Stop containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml stop"
-
-- name: "Remove containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml rm"
-
-- name: remove docker-compose migration file
-  file:
-    state: absent
-    path: "{{ bimdata_path }}/docker-compose.yml"
+- name: "Make app migrations from connect to api"
+  include_tasks: migrations/apps_from_connect_to_api.yml
+  when: 
 
 - name: "Create docker-compose file."
   template:
