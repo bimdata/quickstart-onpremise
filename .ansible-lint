@@ -1,0 +1,6 @@
+---
+parseable: true
+skip_list:
+  # Intensive use of the command module, can't always use changed_when for now.
+  # This will be improve in the futur.
+   - no-changed-when

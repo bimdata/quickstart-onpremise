@@ -1,0 +1,4 @@
+---
+- name: "Compute easy to use proxy configuration."
+  set_fact:
+    proxy_env: "{{ lookup('template', 'proxy.j2') | from_yaml }}"

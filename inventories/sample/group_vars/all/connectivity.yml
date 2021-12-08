@@ -1,0 +1,18 @@
+---
+# Ansible connection
+ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_pipelining: true
+
+# If you can't connect directly to the machines via SSH, you can define a bastion.
+# It will proxy the ssh connection between ansible and the remote servers.
+use_bastion: false
+bastion_ssh_addr: ""
+bastion_ssh_port: 22
+bastion_ssh_user: "{{ lookup('env', 'USER') }}"
+# bastion_ssh_extra_options:
+
+# Proxy configuration
+# If the target server can't access the web directly, you need to configure this.
+http_proxy: ""   # http://username:password@proxy.company.tld:PORT/
+https_proxy: "{{ http_proxy }}"  # https://username:password@proxy.company.tld:PORT/
+no_proxy: []     # List of domains that do not need to be access through proxy

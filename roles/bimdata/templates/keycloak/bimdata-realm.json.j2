@@ -1,0 +1,18 @@
+{
+  "id": "bimdata",
+  "realm": "bimdata",
+  "loginTheme": "bimdata",
+  "enabled": true,
+{% if tls_enabled | bool %}
+  "sslRequired": "external",
+{% else %}
+  "sslRequired": "none",
+{% endif %}
+  "accessTokenLifespan": 3600,
+  "accessTokenLifespanForImplicitFlow": 3600,
+  "ssoSessionIdleTimeout": 3600,
+  "ssoSessionMaxLifespan": 36000,
+  "accessCodeLifespanLogin": 3600,
+  "actionTokenGeneratedByAdminLifespan": 43200,
+  "actionTokenGeneratedByUserLifespan": 300
+}

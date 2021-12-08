@@ -1,0 +1,4 @@
+{{ lookup('vars', 'tls_'+item+'_cert') }}
+{% if tls_subca_certificates is defined and tls_subca_certificates | length %}
+{{ tls_subca_certificates }}
+{% endif %}

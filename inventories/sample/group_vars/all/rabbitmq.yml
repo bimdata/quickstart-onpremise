@@ -1,0 +1,22 @@
+---
+# RabbitMQ
+# By default, the host will be compute from the inventory.
+# If you use an external rabbitmq cluster, you need to set these variables.
+use_external_rabbitmq: false
+external_rabbitmq_host: ""
+external_rabbitmq_port: 5672
+
+# These credentials are used by the apps to connect to the rabbitmq
+rabbitmq_user: bimdata
+rabbitmq_password: "{{ vault_rabbitmq_password }}"  # Change me in the vault
+
+# Address for admin interface
+rabbitmq_admin_dns_name: "rabbitmq.{{ app_dns_domain }}"
+
+# Need to be able to contact this port from [workers] to [app]
+# Only use if use_external_rabbitmq: false
+rabbitmq_external_port: 5672
+
+# This is the variable use to determine which address will be use by worker server
+# to contact the rabbitmq
+rabbitmq_server_addr: "{{ rabbitmq_admin_dns_name }}"

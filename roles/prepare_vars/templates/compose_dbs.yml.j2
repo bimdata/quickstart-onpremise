@@ -1,0 +1,21 @@
+{%- set db_name = lookup('vars', 'db_'+item+'_name') -%}
+{{ db_name }}-db:
+  container_name: {{ db_name }}-db
+  image: {{ docker_postgres_image }}:{{ docker_postgres_tag }}
+  volumes:
+    - {{ bimdata_docker_volume_path }}/db/{{ db_name }}:/var/lib/postgresql/data
+{% if not db_on_app %}
+  ports:
+    - {{ lookup('vars', 'db_'+item+'_external_port') }}:5432
+{% endif %}
+  environment:
+    - POSTGRES_DB={{ db_name }}
+    - POSTGRES_USER={{ lookup('vars', 'db_'+item+'_user') }}
+    - POSTGRES_PASSWORD={{ lookup('vars', 'db_'+item+'_password') }}
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U {{ lookup('vars', 'db_'+item+'_user') }}"]
+    interval: 5s
+    timeout: 5s
+    start_period: 10s
+    retries: 5
+  restart: unless-stopped

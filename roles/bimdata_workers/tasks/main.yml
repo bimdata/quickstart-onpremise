@@ -1,0 +1,39 @@
+---
+- name: "Create needed directories."
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - "{{ bimdata_path }}"
+    - "{{ bimdata_dockerfiles_path }}"
+    - "{{ bimdata_docker_volume_path }}/web/certs"
+
+- name: "Copy the TLS CA."
+  template:
+    src: templates/tls/ca.crt.j2
+    dest: "{{ bimdata_docker_volume_path }}/ca.crt"
+    owner: root
+    group: root
+    mode: 0644
+  when: tls_enabled | bool
+
+- name: "Copy .dockerignore file."
+  copy:
+    src: dockerignore
+    dest: "{{ bimdata_docker_volume_path }}/.dockerignore"
+    mode: 0640
+
+- name: "Create docker-compose file."
+  template:
+    src: compose-workers.yml.j2
+    dest: "{{ bimdata_path }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0640
+
+- name: "Pull needed images."
+  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
+
+- name: "Start containers"
+  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"

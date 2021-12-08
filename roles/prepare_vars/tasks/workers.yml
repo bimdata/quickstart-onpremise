@@ -1,0 +1,4 @@
+---
+- name: "Set docker-compose definition for workers."
+  set_fact:
+    compose_workers: "{{ lookup('template', 'compose_workers.yml.j2') | from_yaml }}"

@@ -1,0 +1,443 @@
+---
+version: "3.8"
+services:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+  # Databases
+  {{ compose_dbs | to_nice_yaml(indent=2) | indent(2) }}
+{%- endif %}
+
+{% if not use_external_rabbitmq %}
+  # RabbitMQ
+  rabbitmq:
+    container_name: rabbitmq
+    image: {{ docker_rabbitmq_image }}:{{ docker_rabbitmq_tag }}
+    ports:
+      - {{ rabbitmq_port }}:5672
+    expose:
+      - 15672
+    environment:
+      - VIRTUAL_HOST={{ rabbitmq_admin_dns_name }}
+      - VIRTUAL_PORT=15672
+      - RABBITMQ_DEFAULT_USER={{ rabbitmq_user }}
+      - RABBITMQ_DEFAULT_PASS={{ rabbitmq_password }}
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+{% endif %}
+
+  # Web frontal
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: {{ docker_nginx_image }}:{{ docker_nginx_tag }}
+    ports:
+      - {{ external_port_http }}:80
+      - {{ external_port_https }}:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - {{ bimdata_docker_volume_path }}/web/conf.d:/etc/nginx/conf.d:rw
+      - {{ bimdata_docker_volume_path }}/web/vhost.d:/etc/nginx/vhost.d:ro
+      - {{ bimdata_docker_volume_path }}/web/certs:/etc/nginx/certs:ro
+      - {{ bimdata_docker_volume_path }}/web/dhparam.pem:/etc/nginx/dhparam/dhparam.pem:ro
+      - {{ bimdata_docker_volume_path }}/web/api_storage:/var/www/static/api_storage/:ro
+      - {{ bimdata_docker_volume_path }}/web/connect_storage:/var/www/static/connect_storage/:ro
+    restart: unless-stopped
+
+  iam:
+    container_name: iam
+    image: {{ docker_iam_image }}:{{ docker_iam_tag }}
+    expose:
+      - 8080
+    volumes:
+      - {{ bimdata_docker_volume_path }}/keycloak:/opt/custom:ro
+{% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ iam_dns_name }}
+      - VIRTUAL_PORT=8080
+      - ENV={{ app_env }}
+      - DB_VENDOR=POSTGRES
+      - PROXY_ADDRESS_FORWARDING=true
+      - DB_ADDR={{ db_iam_host }}
+      - DB_PORT={{ db_iam_port }}
+      - DB_SCHEMA=public
+      - DB_DATABASE={{ db_iam_name }}
+      - DB_USER={{ db_iam_user }}
+      - DB_PASSWORD={{ db_iam_password }}
+      - KEYCLOAK_HOSTNAME={{ iam_dns_name }}
+      - KEYCLOAK_USER={{ iam_user }}
+      - KEYCLOAK_PASSWORD={{ iam_password }}
+      - KEYCLOAK_IMPORT=/opt/custom/bimdata-realm.json
+{% if tls_enabled  | bool %}
+      - X509_CA_BUNDLE=/opt/onprem-ca.crt
+{% endif %}
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/auth/realms/bimdata"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 1m
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      iam-db:
+        condition: service_healthy
+{% endif %}
+      nginx-proxy:
+        condition: service_started
+
+  api:
+    container_name: api
+    image: {{ docker_api_image }}:{{ docker_api_tag }}
+    expose:
+      - 8000
+{% if not swift_enabled | bool or tls_enabled  | bool %}
+    volumes:
+{% if not swift_enabled | bool %}
+      - {{ bimdata_docker_volume_path }}/web/api_storage:/opt/storage:rw
+{% endif %}
+{% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ api_dns_name }}
+      - ENV={{ app_env }}
+      - WORKERS=8
+      - API_URL={{ api_url }}
+      - DOC_URL={{ documentation_url }}
+      - CONNECT_URL={{ connect_url }}
+      - ALLOWED_HOSTS={{ api_dns_name }}
+      - MASTER_TOKEN={{ master_token }}
+      - SECRET_KEY={{ api_secret_key }}
+      - DB_HOST={{ db_api_host }}
+      - DB_PORT={{ db_api_port }}
+      - DB_NAME={{ db_api_name }}
+      - DB_USER={{ db_api_user }}
+      - DB_PASSWORD={{ db_api_password }}
+      - RABBITMQ_HOST={{ rabbitmq_host }}
+      - RABBITMQ_PORT={{ rabbitmq_port }}
+      - RABBITMQ_USER={{ rabbitmq_user }}
+      - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+      - IAM_URL={{ iam_url }}
+      - IAM_ADMIN_LOGIN={{ iam_user }}
+      - IAM_ADMIN_PASSWORD={{ iam_password }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% endif %}
+{% if swift_enabled | bool %}
+      - SWIFT_AUTH_URL={{ swift_auth_url }}
+      - SWIFT_TENANT_ID={{ swift_tenant_id }}
+      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
+      - SWIFT_USERNAME={{ swift_username }}
+      - SWIFT_PASSWORD={{ swift_password }}
+      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
+      - SWIFT_CONTAINER_NAME={{ swift_container_name }}
+{% endif %}
+      - ADMIN_INTERFACE=True
+      - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      api-db:
+        condition: service_healthy
+{% endif %}
+{% if not use_external_rabbitmq %}
+      rabbitmq:
+        condition: service_healthy
+{% endif %}
+      nginx-proxy:
+        condition: service_started
+      iam:
+        condition: service_healthy
+
+  connect:
+    container_name: connect
+    image: {{ docker_connect_image }}:{{ docker_connect_tag }}
+    expose:
+      - 8000
+{% if not swift_enabled | bool or tls_enabled  | bool %}
+    volumes:
+{% if not swift_enabled | bool %}
+      - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
+{% endif %}
+{% if tls_enabled | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ connect_dns_name }}
+      - ENV={{ app_env }}
+      - COMPILE_SCSS=true
+      - PROCESS_TASKS=true
+      - API_URL={{ api_url }}
+      - DOC_URL={{ documentation_url }}
+      - SITE_URL={{ connect_url }}
+      - PLATFORM_URL={{ platform_front_url }}
+      - IAM_URL={{ iam_url }}
+      - IAM_ADMIN_LOGIN={{ iam_user }}
+      - IAM_ADMIN_PASSWORD={{ iam_password }}
+      - ALLOWED_HOSTS={{ connect_dns_name }}
+      - API_TOKEN={{ master_token }}
+      - SECRET_KEY={{ connect_secret_key }}
+      - DB_HOST={{ db_connect_host }}
+      - DB_PORT={{ db_connect_port }}
+      - DB_NAME={{ db_connect_name }}
+      - DB_USER={{ db_connect_user }}
+      - DB_PASSWORD={{ db_connect_password }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+{% endif %}
+{% if swift_enabled | bool and swift_connect_container_name | length %}
+      - SWIFT_AUTH_URL={{ swift_auth_url }}
+      - SWIFT_TENANT_ID={{ swift_tenant_id }}
+      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
+      - SWIFT_USERNAME={{ swift_username }}
+      - SWIFT_PASSWORD={{ swift_password }}
+      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
+      - SWIFT_CONTAINER_NAME={{ swift_container_name }}
+{% endif %}
+      - INVITATION_SECRET={{ connect_invitation_secret }}
+      - INVITATION_CLIENT_ID={{ connect_invitation_client }}
+      - INVITATION_CLIENT_SECRET={{ connect_invitation_client_secret }}
+      - ADMIN_INTERFACE=True
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      connect-db:
+        condition: service_healthy
+{% endif %}
+      iam:
+        condition: service_healthy
+      nginx-proxy:
+        condition: service_started
+
+  platform-back:
+    container_name: platform-back
+    image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
+    expose:
+      - 8000
+{% if tls_enabled  | bool %}
+    volumes:
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ platform_back_dns_name }}
+      - ENV={{ app_env }}
+      - API_URL={{ api_url }}
+      - PLATFORM_BACK_URL={{ platform_back_url }}
+      - APP_URL={{ platform_front_url }}
+      - ALLOWED_HOSTS={{ platform_back_dns_name }}
+      - SECRET_KEY={{ platform_back_secret_key }}
+      - IAM_URL={{ iam_url }}
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% endif %}
+      - WEBHOOK_SECRET={{ platform_back_webhook_secret }}
+      - DB_HOST={{ db_platform_host }}
+      - DB_PORT={{ db_platform_port }}
+      - DB_NAME={{ db_platform_name }}
+      - DB_USER={{ db_platform_user }}
+      - DB_PASSWORD={{ db_platform_password }}
+      - ADMIN_INTERFACE=True
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      platform-db:
+        condition: service_healthy
+{% endif %}
+      nginx-proxy:
+        condition: service_started
+
+  platform:
+    container_name: platform-front
+    image: {{ docker_platform_front_image }}:{{ docker_platform_front_tag }}
+    expose:
+      - 8080
+    environment:
+      - VIRTUAL_HOST={{ platform_front_dns_name }}
+      - HOST=0.0.0.0
+      - VUE_APP_BASE_URL={{ platform_front_url }}
+      - VUE_APP_IAM_BASE_URL={{ iam_url }}
+      - VUE_APP_API_BASE_URL={{ api_url }}
+      - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
+      - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
+      - VUE_APP_MAPBOX_TOKEN={{ mapbox_token }}
+      - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
+      - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
+      - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
+      - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
+      - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
+      - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
+      - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+
+  documentation:
+    container_name: documentation
+    image: {{ docker_documentation_image }}:{{ docker_documentation_tag }}
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST={{ documentation_dns_name }}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+
+  archive:
+    container_name: archive
+    image: {{ docker_archive_image }}:{{ docker_archive_tag }}
+    expose:
+      - 8000
+{% if tls_enabled  | bool %}
+    volumes:
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ archive_dns_name }}
+      - ENV={{ app_env }}
+      - APP_NAME=archive
+      - SERVER_PORT=8000
+      - API_URL={{ api_url }}
+      - WORKERS_NB={{ archive_workers_nb }}
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+
+{% if marketplace_enabled | bool %}
+  marketplace-back:
+    container_name: marketplace-back
+    image: {{ docker_marketplace_back_image }}:{{ docker_marketplace_back_tag }}
+    expose:
+      - 8000
+{% if tls_enabled  | bool %}
+    volumes:
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ marketplace_back_dns_name }}
+      - ENV={{ app_env }}
+
+      - ALLOWED_HOSTS="{{ marketplace_back_dns_name }}"
+      - MASTER_TOKEN="{{ master_token }}"
+      - MARKETPLACE_BACK_URL="{{ marketplace_back_url }}"
+      - MARKETPLACE_URL="{{ marketplace_url }}"
+      - OIDC_RP_SIGN_ALGO="RS256"
+
+      - OIDC_OP_ISSUER="{{ iam_url }}"
+      - API_URL="{{ api_url }}"
+      - APP_URL="{{ platform_url }}"
+      - SECRET_KEY="{{ marketplace_back_secret_key }}"
+
+{% if SMTP_HOST is defined and SMTP_HOST | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% endif %}
+      - DB_HOST={{ db_marketplace_host }}
+      - DB_PORT={{ db_marketplace_port }}
+      - DB_NAME={{ db_marketplace_name }}
+      - DB_USER={{ db_marketplace_user }}
+      - DB_PASSWORD={{ db_marketplace_password }}
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      marketplace-db:
+        condition: service_healthy
+{% endif %}
+      nginx-proxy:
+        condition: service_started
+
+  marketplace:
+    container_name: marketplace-front
+    image: {{ docker_marketplace_front_image }}:{{ docker_marketplace_front_tag }}
+    expose:
+      - 8080
+    environment:
+      - VIRTUAL_HOST={{ marketplace_front_dns_name }}
+      - ENV={{ app_env }}
+
+      - APP_URL={{ marketplace_front_url }}
+      - OIDC_ISSUER={{ iam_url }}/auth/realms/bimdata
+      - API_URL={{ api_url }}
+      - BACKEND_URL={{ marketplace_back_url }}
+      - WORKERS_NB={{ Marketplace_front_workers }}
+
+      - CLIENT_ID={{ marketplace_front_client_id }}
+
+  restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+{% endif %}
+{% if inventory_hostname in groups['workers'] %}
+  # Workers
+  {{ compose_workers | to_nice_yaml(indent=2) | indent(2) }}
+{%- endif %}

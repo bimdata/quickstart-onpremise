@@ -1,0 +1,6 @@
+.project
+*.retry
+inventories/*
+!inventories/sample
+venv
+files/old_env
