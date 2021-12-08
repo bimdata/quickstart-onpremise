@@ -15,12 +15,12 @@
 
 - name: "Copy scripts"
   copy:
-    src: "{{ item }}"
+    src: "apps_from_connect_to_api/{{ item }}"
     dest: "{{ bimdata_path }}/{{ item }}"
     mode: 0640
   loop:
     - restore_apps.py
-    - loaddata.py
+    - create_apps_in_django.py
 
 - name: Install script migration requirements
   pip:

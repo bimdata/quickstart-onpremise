@@ -1,6 +1,5 @@
 import docker
 import os
-import sys
 
 archive_name = "/var/tmp/dumpdata.keycloak.tar"
 
@@ -15,7 +14,7 @@ def exec_run(container, cmd):
     if len(output.decode("utf-8")) > 0:
         print(output.decode("utf-8"))
 
-script_file = f"{os.path.abspath(os.path.split(__file__)[0])}/loaddata.py"
+script_file = f"{os.path.abspath(os.path.split(__file__)[0])}/create_apps_in_django.py"
 
 def copy_to(container, src, dst):
     os.chdir(os.path.dirname(src))
