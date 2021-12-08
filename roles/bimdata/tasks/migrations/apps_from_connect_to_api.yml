@@ -15,7 +15,7 @@
 
 - name: "Copy scripts"
   copy:
-    src: "apps_from_connect_to_api/{{ item }}"
+    src: "migrations/apps_from_connect_to_api/{{ item }}"
     dest: "{{ bimdata_path }}/{{ item }}"
     mode: 0640
   loop:
@@ -51,4 +51,3 @@
     line: "apps_from_connect_to_api: ok"
     create: true
     mode: 0640
-
