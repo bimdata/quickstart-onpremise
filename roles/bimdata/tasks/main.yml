@@ -84,6 +84,10 @@
     dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
     mode: 0640
 
+- name: "Make app migrations from connect to api"
+  include_tasks: migrations/apps_from_connect_to_api.yml
+  when: 
+
 - name: "Create docker-compose file."
   template:
     src: compose-app.yml.j2
