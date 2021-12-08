@@ -18,53 +18,53 @@ docker_nginx_image: nginxproxy/nginx-proxy
 docker_nginx_tag: alpine
 
 # Use private registry
-docker_api_image: "{{ docker_private_registry }}/on-prem/api"
-docker_api_tag: latest
+docker_api_image: "{{ docker_private_registry }}/on-premises/api"
+docker_api_tag: 20211208
 
-docker_connect_image: "{{ docker_private_registry }}/on-prem/connect"
-docker_connect_tag: latest
+docker_connect_image: "{{ docker_private_registry }}/on-premises/connect"
+docker_connect_tag: 20211208
 
-docker_platform_back_image: "{{ docker_private_registry }}/on-prem/platform_back"
-docker_platform_back_tag: latest
+docker_platform_back_image: "{{ docker_private_registry }}/on-premises/platform_back"
+docker_platform_back_tag: 20211208
 
-docker_platform_front_image: "{{ docker_private_registry }}/on-prem/platform"
-docker_platform_front_tag: latest
+docker_platform_front_image: "{{ docker_private_registry }}/on-premises/platform"
+docker_platform_front_tag: 20211208
 
-docker_iam_image: "{{ docker_private_registry }}/on-prem/iam"
-docker_iam_tag: latest
+docker_iam_image: "{{ docker_private_registry }}/on-premises/iam"
+docker_iam_tag: 20211208
 
-docker_documentation_image: "{{ docker_private_registry }}/on-prem/documentation"
-docker_documentation_tag: latest
+docker_documentation_image: "{{ docker_private_registry }}/on-premises/documentation"
+docker_documentation_tag: 20211208
 
-docker_archive_image: "{{ docker_private_registry }}/on-prem/archive"
-docker_archive_tag: latest
+docker_archive_image: "{{ docker_private_registry }}/on-premises/archive"
+docker_archive_tag: 20211208
 
-docker_marketplace_back_image: "{{ docker_private_registry }}/on-premise/marketplace_back"
-docker_marketplace_back_tag: latest
+docker_marketplace_back_image: "{{ docker_private_registry }}/on-premisesise/marketplace_back"
+docker_marketplace_back_tag: 20211208
 
-docker_marketplace_front_image: "{{ docker_private_registry }}/on-premise/marketplace"
-docker_marketplace_front_tag: latest
+docker_marketplace_front_image: "{{ docker_private_registry }}/on-premisesise/marketplace"
+docker_marketplace_front_tag: 20211208
 
-docker_workers_export_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_export_tag: latest
+docker_workers_export_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_export_tag: 20211208
 
-docker_workers_gltf_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_gltf_tag: latest
+docker_workers_gltf_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_gltf_tag: 20211208
 
-docker_workers_extract_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_extract_tag: latest
+docker_workers_extract_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_extract_tag: 20211208
 
-docker_workers_extract_quantities_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_extract_quantities_tag: latest
+docker_workers_extract_quantities_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_extract_quantities_tag: 20211208
 
-docker_workers_svg_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_svg_tag: latest
+docker_workers_svg_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_svg_tag: 20211208
 
-docker_workers_merge_image: "{{ docker_private_registry }}/on-prem/workers"
-docker_workers_merge_tag: latest
+docker_workers_merge_image: "{{ docker_private_registry }}/on-premises/workers"
+docker_workers_merge_tag: 20211208
 
-docker_workers_xkt_image: "{{ docker_private_registry }}/on-prem/xkt_worker"
-docker_workers_xkt_tag: latest
+docker_workers_xkt_image: "{{ docker_private_registry }}/on-premises/xkt_worker"
+docker_workers_xkt_tag: 20211208
 
-docker_workers_preview_image: "{{ docker_private_registry }}/on-prem/viewer_360"
-docker_workers_preview_tag: latest
+docker_workers_preview_image: "{{ docker_private_registry }}/on-premises/viewer_360"
+docker_workers_preview_tag: 20211208
