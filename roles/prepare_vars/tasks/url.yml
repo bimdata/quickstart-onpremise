@@ -39,7 +39,14 @@
       - tls_archive_key | length
       - tls_archive_cert is defined
       - tls_archive_cert | length
+    fail_msg: >
+      You choose to enable TLS (tls_enabled: true),
+      you need to defined all the keys and certificates in group_vars/all/tls.yml.
+  when: tls_enabled | bool
 
+- name: "Check if all needed variables for marketplace TLS are defined if needed."
+  assert:
+    that:
       - tls_marketplace_back_key is defined
       - tls_marketplace_back_key | length
       - tls_marketplace_back_cert is defined
@@ -49,11 +56,12 @@
       - tls_marketplace_front_key | length
       - tls_marketplace_front_cert is defined
       - tls_marketplace_front_cert | length
-
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
       you need to defined all the keys and certificates in group_vars/all/tls.yml.
-  when: tls_enabled | bool
+  when:
+    - tls_enabled | bool
+    - marketplace_enabled | bool
 
 - name: "Check if all needed variables for TLS are defined if needed."
   assert:

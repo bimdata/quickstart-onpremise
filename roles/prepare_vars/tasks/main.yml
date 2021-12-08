@@ -20,7 +20,7 @@
 - name: "Include tasks to compute rabbitmq variables."
   include_tasks: rabbitmq.yml
 
-- name: "Include tasks to compute variables."
+- name: "Include tasks to compute URL variables."
   include_tasks: url.yml
 
 - name: "Include tasks to check swift variables."

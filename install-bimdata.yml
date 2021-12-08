@@ -7,6 +7,7 @@
       tags: ['always']
     - role: docker
       tags: ['docker']
+      when: install_docker | bool
 
 - hosts: db
   gather_facts: false

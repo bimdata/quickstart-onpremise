@@ -39,7 +39,7 @@ invitation_app, created = App.objects.get_or_create(
     client_id=invitation_client_id,
     client_secret=invitation_client_secret,
     base_url=settings.CONNECT_URL,
-    provider=idp
+    provider=idp,
 )
 if created:
     invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
@@ -52,7 +52,7 @@ platform_app, created = App.objects.get_or_create(
     access_type=App.TYPE_PUBLIC,
     implicit_flow_enabled=False,
     client_id=platform_client_id,
-    base_url=platform_url
+    base_url=platform_url,
 )
 if created:
     platform_app.scopes.set(Scope.objects.all())
@@ -65,7 +65,7 @@ marketplace_app, created = App.objects.get_or_create(
     access_type=App.TYPE_PUBLIC,
     implicit_flow_enabled=False,
     client_id=marketplace_client_id,
-    base_url=marketplace_url
+    base_url=marketplace_url,
 )
 if created:
     marketplace_app.scopes.set(Scope.objects.all())
@@ -108,7 +108,7 @@ data = {
 if request("get", "/identity-provider/instances/bimdataconnect", raise_for_status=False).status_code != 200:
     request("post", "/identity-provider/instances", json=data)
 
-keycloak_mappers=(
+keycloak_mappers = (
     {
         "identityProviderAlias": "bimdataconnect",
         "config": {"user.attribute": "lastName", "claim": "family_name"},
@@ -144,36 +144,42 @@ keycloak_mappers=(
         "config": {"template": "${ALIAS}.${CLAIM.email}"},
         "name": "username",
         "identityProviderMapper": "oidc-username-idp-mapper",
-    }
+    },
 )
 
 existing_mappers = []
 
-response = request("get", "/identity-provider/instances/bimdataconnect/mappers", raise_for_status=False)
+response = request(
+    "get", "/identity-provider/instances/bimdataconnect/mappers", raise_for_status=False
+)
 if response.status_code == 200:
     existing_mappers = response.json()
 
 for mapper in keycloak_mappers:
-    if not next((x for x in existing_mappers if x['name'] == mapper['name']), None):
-        request("post", "/identity-provider/instances/bimdataconnect/mappers", json=mapper)
+    if not next((x for x in existing_mappers if x["name"] == mapper["name"]), None):
+        request(
+            "post", "/identity-provider/instances/bimdataconnect/mappers", json=mapper
+        )
 
-for app, role_name in zip([platform_app, marketplace_app], ['bimdata_platform', 'bimdata_marketplace']):
+for app, role_name in zip(
+    [platform_app, marketplace_app], ["bimdata_platform", "bimdata_marketplace"]
+):
     bimdata_mapper = {
         "name": role_name,
         "protocol": "openid-connect",
         "protocolMapper": "oidc-hardcoded-role-mapper",
-        "config": {"role": role_name}
+        "config": {"role": role_name},
     }
 
     response = request(
         "get",
         f"/clients/{app.keycloak_id}/protocol-mappers/models",
-        raise_for_status=True
+        raise_for_status=True,
     ).json()
 
-    if not next((x for x in response if x["name"] == "bimdata_platform"), None):
+    if not next((x for x in response if x["name"] == role_name), None):
         request(
             "post",
             f"/clients/{app.keycloak_id}/protocol-mappers/models",
-            json=bimdata_mapper
+            json=bimdata_mapper,
         )

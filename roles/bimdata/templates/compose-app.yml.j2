@@ -42,6 +42,8 @@ services:
       - {{ bimdata_docker_volume_path }}/web/vhost.d:/etc/nginx/vhost.d:ro
       - {{ bimdata_docker_volume_path }}/web/certs:/etc/nginx/certs:ro
       - {{ bimdata_docker_volume_path }}/web/dhparam.pem:/etc/nginx/dhparam/dhparam.pem:ro
+      - {{ bimdata_docker_volume_path }}/web/api_storage:/var/www/static/api_storage/:ro
+      - {{ bimdata_docker_volume_path }}/web/connect_storage:/var/www/static/connect_storage/:ro
     restart: unless-stopped
 
   iam:
@@ -99,7 +101,7 @@ services:
 {% if not swift_enabled | bool or tls_enabled  | bool %}
     volumes:
 {% if not swift_enabled | bool %}
-      - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
+      - {{ bimdata_docker_volume_path }}/web/api_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -175,7 +177,7 @@ services:
 {% if not swift_enabled | bool or tls_enabled  | bool %}
     volumes:
 {% if not swift_enabled | bool %}
-      - {{ bimdata_docker_volume_path }}/web/static/connect_storage:/opt/storage:rw
+      - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro

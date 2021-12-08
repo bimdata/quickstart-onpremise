@@ -11,25 +11,20 @@ nginx_custom_conf: |
   gzip_vary on;
   gzip_comp_level 6;
 
+  proxy_connect_timeout       20m;
+  proxy_send_timeout          20m;
+  proxy_read_timeout          20m;
+  send_timeout                20m;
+
   gzip_types application/octet-stream;
 
 nginx_vhost_override:
   - vhost: "{{ api_dns_name }}"
     config: |
-      proxy_connect_timeout       20m;
-      proxy_send_timeout          20m;
-      proxy_read_timeout          20m;
-      send_timeout                20m;
-
-      location /static/ {
-          alias /var/www/static/api/;
-      }
-
       {% if not swift_enabled | bool %}
       location /storage/ {
         alias /var/www/static/api_storage/;
         add_header 'Access-Control-Allow-Origin' '*';
-
         # Preflighted requests
         if ($request_method = OPTIONS ) {
           add_header 'Access-Control-Allow-Origin'  '*';
@@ -39,23 +34,12 @@ nginx_vhost_override:
         }
       }
       {% endif %}
-
   - vhost: "{{ connect_dns_name }}"
     config: |
-      proxy_connect_timeout       20m;
-      proxy_send_timeout          20m;
-      proxy_read_timeout          20m;
-      send_timeout                20m;
-
-      location /static/ {
-          alias /var/www/static/connect/;
-      }
-
       {% if not swift_enabled | bool %}
       location /storage/ {
         alias /var/www/static/connect_storage/;
         add_header 'Access-Control-Allow-Origin' '*';
-
         # Preflighted requests
         if ($request_method = OPTIONS ) {
           add_header 'Access-Control-Allow-Origin'  '*';
@@ -65,17 +49,6 @@ nginx_vhost_override:
         }
       }
       {% endif %}
-
-  - vhost: "{{ platform_back_dns_name }}"
-    config: |
-      proxy_connect_timeout       20m;
-      proxy_send_timeout          20m;
-      proxy_read_timeout          20m;
-      send_timeout                20m;
-
-      location /static/ {
-          alias /var/www/static/platform_back/;
-      }
   - vhost: "{{ iam_dns_name }}"
     config: |
       proxy_buffer_size          128k;

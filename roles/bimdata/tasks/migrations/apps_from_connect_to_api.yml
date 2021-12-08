@@ -7,11 +7,28 @@
   vars:
     docker_api_tag: apps_from_connect_to_api
 
+- name: "Create dump folder."
+  file:
+    path: "{{ bimdata_path }}/dump"
+    state: directory
+    mode: 0750
+
+- name: "Copy database dumps."
+  copy:
+    src: "old_env/dump/{{ item }}.sql"
+    dest: "{{ bimdata_path }}/dump/{{ item }}.sql"
+    mode: 0640
+  loop: "{{ db_list }}"
+
 - name: "Pull needed images."
   command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
 
 - name: "Start containers"
   command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
+
+- name: "Restore the dump."
+  shell: "cat {{ bimdata_path }}/dump/{{ item }}.sql | /usr/bin/docker exec -i {{ item }}-db psql -U {{ lookup('vars', 'db_'+item+'_user') }} -d {{ item }} 1>/dev/null"
+  loop: "{{ db_list }}"
 
 - name: "Copy scripts"
   copy:
@@ -27,7 +44,7 @@
     name: docker==5.0.3
 
 - name: "Launch apps migration"
-  command: "python {{ bimdata_path }}/restore_apps.py"
+  command: "python3 {{ bimdata_path }}/restore_apps.py"
   register: migration
 
 - name: "Fix migration dependancies"
@@ -46,7 +63,7 @@
 
 - name: Add migration name
   lineinfile:
-    path: "{{ bimdata_path }}/.migration"
+    path: "{{ bimdata_path }}/.migrations"
     regexp: "^apps_from_connect_to_api:"
     line: "apps_from_connect_to_api: ok"
     create: true

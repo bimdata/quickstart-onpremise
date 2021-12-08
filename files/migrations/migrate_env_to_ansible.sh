@@ -9,7 +9,7 @@ MAIN_DIR="$(readlink -f "$0" | rev | cut -d '/' -f 4- | rev)"
 # You may want to customize this
 APP_ENV_FILE_PATH=${MAIN_DIR}/files/old_env/app_env
 WORKER_ENV_FILE_PATH=${MAIN_DIR}/files/old_env/worker_env
-INVENTORY_NAME=sample
+INVENTORY_NAME=main
 
 # This should be ok
 INVENTORY_PATH="$MAIN_DIR/inventories/$INVENTORY_NAME"
