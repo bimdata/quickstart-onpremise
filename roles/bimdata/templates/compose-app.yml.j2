@@ -129,7 +129,7 @@ services:
       - IAM_URL={{ iam_url }}
       - IAM_ADMIN_LOGIN={{ iam_user }}
       - IAM_ADMIN_PASSWORD={{ iam_password }}
-{% if SMTP_HOST is defined and SMTP_HOST | length %}
+{% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
@@ -203,7 +203,7 @@ services:
       - DB_NAME={{ db_connect_name }}
       - DB_USER={{ db_connect_user }}
       - DB_PASSWORD={{ db_connect_password }}
-{% if SMTP_HOST is defined and SMTP_HOST | length %}
+{% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
@@ -258,7 +258,7 @@ services:
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
       - IAM_URL={{ iam_url }}
-{% if SMTP_HOST is defined and SMTP_HOST | length %}
+{% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
@@ -384,7 +384,7 @@ services:
       - APP_URL="{{ platform_url }}"
       - SECRET_KEY="{{ marketplace_back_secret_key }}"
 
-{% if SMTP_HOST is defined and SMTP_HOST | length %}
+{% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
       - SMTP_USER={{ smtp_user }}
