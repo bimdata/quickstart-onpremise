@@ -3,6 +3,7 @@
   apt:
     name: "{{ docker_apt_dependencies }}"
     state: present
+    update_cache: true
   environment: "{{ proxy_env }}"
 
 - name: "Add Docker key."
