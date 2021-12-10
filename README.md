@@ -93,6 +93,7 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 | smtp_pass          | "{{ vault_smtp_pass }}" | Password used for the authentication on the SMTP server. |
 | smtp_use_tls       | true                    | If the SMTP connection should use TLS or not.            |
 | smtp_default_email | ""                      | Email address use as default sender.                     |
+| debug_mail_to      | ""                      | Email address use to send application exceptions.        |
 
 #### Web configuration
 | Variables           | Default value | Description                                       |

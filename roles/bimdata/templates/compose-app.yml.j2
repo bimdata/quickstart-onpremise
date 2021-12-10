@@ -136,6 +136,7 @@ services:
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+      - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
 {% if swift_enabled | bool %}
       - SWIFT_AUTH_URL={{ swift_auth_url }}
@@ -209,6 +210,7 @@ services:
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
 {% if swift_enabled | bool and swift_connect_container_name | length %}
       - SWIFT_AUTH_URL={{ swift_auth_url }}
@@ -265,6 +267,7 @@ services:
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+      - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
       - WEBHOOK_SECRET={{ platform_back_webhook_secret }}
       - DB_HOST={{ db_platform_host }}
@@ -391,6 +394,7 @@ services:
       - SMTP_PASS={{ smtp_pass }}
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+      - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
       - DB_HOST={{ db_marketplace_host }}
       - DB_PORT={{ db_marketplace_port }}
