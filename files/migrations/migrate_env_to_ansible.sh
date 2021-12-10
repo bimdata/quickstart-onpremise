@@ -36,8 +36,8 @@ function get_old_var {
 # Update the variable 'var_name' with the value 'var_value' in the $INVENTORY_PATH
 write_new_var(){
   local var_name="${1}"
-  # Escape '/' in value to preserve sed syntax
-  local var_value=${2//\//\\/}
+  # Escape special sed caracters
+  local var_value=$(printf '%s\n' "$2" | sed -e 's/[\/&]/\\&/g')
 
   # We use a wildcard, can't put the path between ", so we need to escape space if there is some
   local path="${INVENTORY_PATH// /\\ }/group_vars/all/*.yml"

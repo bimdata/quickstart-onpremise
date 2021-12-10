@@ -120,9 +120,8 @@ config_var_value(){
   fi
 
   if [[ -n "$value" ]] ; then
-    # ${value//\//\\/}: string substitution, replace all '/' by '\/'
-    # Needed because if there is a '/' in a variables, this broke sed syntax
-    value=${value//\//\\/}
+    # Escape all special caracters use by sed (\, / and &)
+    value=$(printf '%s\n' "$value" | sed -e 's/[\/&]/\\&/g')
     if [[ $lookup -eq 1 ]] ; then
       sed -ri "s/^([[:space:]]*${var_name}: ).*/\1\"\{\{ lookup('file', '${value}') \}\}\"/g" $path
     else
@@ -142,6 +141,7 @@ config_ini_value(){
 
   # If non empty input, replace the value in the inventory
   if [[ -n "$value" ]] ; then
+    value=$(printf '%s\n' "$value" | sed -e 's/[\/&]/\\&/g')
     sed -i "/^\[${group}\]$/{n;s/.*/${value}/}" "$ini_path"
   fi
 }
