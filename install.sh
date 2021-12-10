@@ -359,6 +359,7 @@ if [[ "$conf_smtp" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "SMTP Password" "vault_smtp_password"
   config_var_value "SMTP TLS enabled" "smtp_use_tls"
   config_var_value "SMTP default email" "smtp_default_email"
+  config_var_value "Debug to email" "debug_mail_to"
 fi
 
 config_var_value "Mapbox token (https://docs.mapbox.com/help/tutorials/get-started-tokens-api/#creating-temporary-tokens)" "vault_mapbox_token"

@@ -20,6 +20,7 @@ smtp_user: ""
 smtp_pass: "{{ vault_smtp_pass }}"
 smtp_use_tls: true
 smtp_default_email: ""
+debug_mail_to: ""
 
 # Web frontal
 external_port_http: 80
