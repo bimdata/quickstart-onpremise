@@ -11,8 +11,6 @@
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
-    - "{{ bimdata_docker_volume_path }}/web/api_storage"
-    - "{{ bimdata_docker_volume_path }}/web/connect_storage"
 
 - name: "Create needed directories for local storage."
   file:
@@ -20,8 +18,8 @@
     state: directory
     mode: 0755
   loop:
-    - "{{ bimdata_docker_volume_path }}/api_storage"
-    - "{{ bimdata_docker_volume_path }}/connect_storage"
+    - "{{ bimdata_docker_volume_path }}/web/api_storage"
+    - "{{ bimdata_docker_volume_path }}/web/connect_storage"
   when: not swift_enabled | bool
 
 - name: "Create needed directories for db if needed."
