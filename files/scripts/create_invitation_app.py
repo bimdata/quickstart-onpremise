@@ -30,44 +30,48 @@ idp.invitation_url = f"{settings.CONNECT_URL}/api/invitation"
 idp.save()
 
 # create invitation app
-invitation_app, created = App.objects.get_or_create(
-    name="BIMData Connect IDP",
-    redirect_uris=[settings.CONNECT_URL],
-    creator=None,
-    access_type=App.TYPE_CONFIDENTIAL,
-    implicit_flow_enabled=False,
-    client_id=invitation_client_id,
-    client_secret=invitation_client_secret,
-    base_url=settings.CONNECT_URL,
-    provider=idp,
-)
-if created:
+if not App.objects.filter(client_id=invitation_client_id).exists():
+    invitation_app = App.objects.create(
+        name="BIMData Connect IDP",
+        redirect_uris=[settings.CONNECT_URL],
+        creator=None,
+        access_type=App.TYPE_CONFIDENTIAL,
+        implicit_flow_enabled=False,
+        client_id=invitation_client_id,
+        client_secret=invitation_client_secret,
+        base_url=settings.CONNECT_URL,
+        provider=idp,
+    )
     invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
 
 # create plarform app
-platform_app, created = App.objects.get_or_create(
-    name="BIMData Platform",
-    redirect_uris=[platform_url + "/*"],
-    creator=None,
-    access_type=App.TYPE_PUBLIC,
-    implicit_flow_enabled=False,
-    client_id=platform_client_id,
-    base_url=platform_url,
-)
-if created:
+try:
+    platform_app = App.objects.get(client_id=platform_client_id)
+except App.DoesNotExist:
+    platform_app = App.objects.create(
+        name="BIMData Platform",
+        redirect_uris=[platform_url + "/*"],
+        creator=None,
+        access_type=App.TYPE_PUBLIC,
+        implicit_flow_enabled=False,
+        client_id=platform_client_id,
+        base_url=platform_url,
+    )
     platform_app.scopes.set(Scope.objects.all())
 
 # create marketplace app
-marketplace_app, created = App.objects.get_or_create(
-    name="BIMData Marketplace",
-    redirect_uris=[marketplace_url + "/*"],
-    creator=None,
-    access_type=App.TYPE_PUBLIC,
-    implicit_flow_enabled=False,
-    client_id=marketplace_client_id,
-    base_url=marketplace_url,
-)
-if created:
+try:
+    marketplace_app = App.objects.get(client_id=marketplace_client_id)
+except App.DoesNotExist:
+    marketplace_app = App.objects.create(
+        name="BIMData Marketplace",
+        redirect_uris=[marketplace_url + "/*"],
+        creator=None,
+        access_type=App.TYPE_PUBLIC,
+        implicit_flow_enabled=False,
+        client_id=marketplace_client_id,
+        base_url=marketplace_url,
+    )
     marketplace_app.scopes.set(Scope.objects.all())
 
 # Keycloak config
