@@ -45,27 +45,24 @@
     dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
     mode: 0640
   when: nginx_use_pregen_dh
+  notify: "Restart nginx."
 
 - name: "Generate custom DH params."
   openssl_dhparam:
     path: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
     size: "{{ nginx_dhparam_size | default(omit) }}"
   when: not nginx_use_pregen_dh | bool
+  notify: "Restart nginx."
 
 - name: "Include tasks for TLS."
   include_tasks: tls.yml
-
-- name: "Copy .dockerignore file."
-  copy:
-    src: dockerignore
-    dest: "{{ bimdata_docker_volume_path }}/.dockerignore"
-    mode: 0640
 
 - name: "Copy nginx custom configuration."
   template:
     src: web/custom.conf.j2
     dest: "{{ bimdata_docker_volume_path }}/web/conf.d/custom.conf"
     mode: 0640
+  notify: "Restart nginx."
 
 - name: "Copy vhost override configuration."
   template:
@@ -73,12 +70,14 @@
     dest: "{{ bimdata_docker_volume_path }}/web/vhost.d/{{ item.vhost }}"
     mode: 0640
   loop: "{{ nginx_vhost_override }}"
+  notify: "Restart nginx."
 
 - name: "Copy keycloak realm."
   template:
     src: "keycloak/bimdata-realm.json.j2"
     dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
     mode: 0640
+  notify: "Restart iam."
 
 - name: "Check if migration already apply."
   stat:
@@ -95,11 +94,14 @@
     dest: "{{ bimdata_path }}/docker-compose.yml"
     mode: 0640
 
-- name: "Pull needed images."
-  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
-
-- name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --remove-orphans --detach"
+- name: "Start the containers."
+  docker_compose:
+    project_src: "{{ bimdata_path }}"
+    pull: true
+    remove_orphans: true
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
 
 # - name: "Include tasks for initialization."
 #   include_tasks: first-init.yml

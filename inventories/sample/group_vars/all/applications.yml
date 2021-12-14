@@ -31,6 +31,7 @@ max_upload_size: 1g
 bimdata_path: /opt/bimdata
 bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_dockerfiles_path: "{{ bimdata_path }}/dockerfiles"
+bimdata_venv: "{{ bimdata_path }}/venv"
 
 # Obect storage
 swift_enabled: false

@@ -1,0 +1,21 @@
+---
+- name: "Restart nginx."
+  docker_compose:
+    project_src: "{{ bimdata_path }}"
+    services: nginx-proxy
+    restarted: true
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
+
+- name: "Restart iam."
+  docker_compose:
+    project_src: "{{ bimdata_path }}"
+    services: iam
+    restarted: true
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
+
+# Restart doesn't respect depends_on and other stuff, so down + up instead
+# Cant' use block in handlers, so include_tasks instead
+- name: "Restart all services."
+  include_tasks: restart.yml

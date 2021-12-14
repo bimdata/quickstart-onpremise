@@ -1,0 +1,5 @@
+---
+# Restart doesn't respect depends_on and other stuff, so down + up instead
+# Cant' use block in handlers, so include_tasks instead
+- name: "Restart all services."
+  include_tasks: restart.yml

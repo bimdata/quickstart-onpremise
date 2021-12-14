@@ -39,10 +39,10 @@ docker_documentation_tag: 20211208
 docker_archive_image: "{{ docker_private_registry }}/on-premises/archive"
 docker_archive_tag: 20211208
 
-docker_marketplace_back_image: "{{ docker_private_registry }}/on-premisesise/marketplace_back"
+docker_marketplace_back_image: "{{ docker_private_registry }}/on-premises/marketplace_back"
 docker_marketplace_back_tag: 20211208
 
-docker_marketplace_front_image: "{{ docker_private_registry }}/on-premisesise/marketplace"
+docker_marketplace_front_image: "{{ docker_private_registry }}/on-premises/marketplace"
 docker_marketplace_front_tag: 20211208
 
 docker_workers_export_image: "{{ docker_private_registry }}/on-premises/workers"

@@ -26,10 +26,13 @@ install_docker: true
 # docker_svc_name: docker
 #
 # # Docker compose configuration
-# docker_install_compose: true
-# docker_compose_version: 1.29.2
-# docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
-# docker_compose_path: /usr/local/bin/docker-compose
+# docker_compose_apt_dependencies:
+#   - python3-pip
+#   - virtualenv
+#   - python3-setuptools
+#   - python3-wheel
+# docker_compose_pkg_name: docker-compose
+# docker_compose_pkg_version: "==1.29.1"
 
 # If for some reason the containers can't resolv the DNS, this will defined the
 # needed values in their host files.

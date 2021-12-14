@@ -22,8 +22,11 @@
     group: root
     mode: 0640
 
-- name: "Pull needed images."
-  command: docker-compose -f {{ bimdata_path }}/docker-compose.yml pull
-
-- name: "Start containers"
-  command: "docker-compose -f {{ bimdata_path }}/docker-compose.yml up --detach"
+- name: "Start the containers."
+  docker_compose:
+    project_src: "{{ bimdata_path }}"
+    pull: true
+    remove_orphans: true
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
