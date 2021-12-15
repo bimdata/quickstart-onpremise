@@ -43,7 +43,7 @@
     src: pregen-dhparams.pem
     dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
     mode: 0640
-  when: nginx_use_pregen_dh
+  when: nginx_use_pregen_dh | bool
   notify: "Restart nginx."
 
 - name: "Generate custom DH params."
@@ -93,5 +93,5 @@
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
 
-# - name: "Include tasks for initialization."
-#   include_tasks: first-init.yml
+- name: "Include tasks for initialization."
+  include_tasks: apps-init.yml
