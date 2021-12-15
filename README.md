@@ -44,10 +44,10 @@ pip install -r requirements.txt
 
 This playbook come with and example inventory. The easiest way to start is to copy this inventory and modify the copy:
 ```
-cp -rp inventories/sample inventories/my-own-inventory
+cp -rp inventories/sample inventories/main
 ```
 
-First, you need to edit the inventory file `inventories/my-own-inventory/inventory.ini`.
+First, you need to edit the inventory file `inventories/main/inventory.ini`.
 There are three groups:
   - `app`: this is where all the web app will be deploy,
   - `db`: this is where all database will be deploy if you don't use an external Postgres cluster.
@@ -370,7 +370,7 @@ You should replace all the values and encrypt the file with `ansible-vault`.
 
 When everything is configured, you can deploy:
 ```
-ansible-playbook -i inventories/my-own-inventory/inventory.ini install-bimdata.yml
+ansible-playbook -i inventories/main/inventory.ini install-bimdata.yml
 ```
 
 You may need to add options:
