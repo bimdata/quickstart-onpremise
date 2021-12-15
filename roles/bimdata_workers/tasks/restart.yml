@@ -8,4 +8,4 @@
       docker_compose:
         project_src: "{{ bimdata_path }}"
   vars:
-    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
+    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"

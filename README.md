@@ -108,6 +108,7 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
+| bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
 | bimdata_dockerfiles_path   | "{{ bimdata_path }}/dockerfiles" | Where we store the dockerfiles use to start the containers. |
 
@@ -295,28 +296,26 @@ with the [db] server on these ports.
 | docker_workers_preview_tag              | latest                                                      | Worker preview docker tag.                                                |
 
 ### docker.yml
-| Variables                  | Default value                                                                                                                                     | Description                                                                                                  |
-|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| install_docker             | true                                                                                                                                              | Install Docker or not (if not, docker need to be already installed).                                         |
-| docker_apt_dependencies    | ["python3-docker", "gnupg", "apt-transport-https", "ca-certificates"]                                                                             | List of APT packages to install before Docker.                                                               |
-| docker_apt_release_channel | "stable"                                                                                                                                          | Docker version that will be installed.                                                                       |
-| docker_repo_base_url       | "https://download.docker.com/linux"                                                                                                               | Docker APT repository.                                                                                       |
-| docker_apt_key_url         | "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}/gpg"                                                                               | URL of APT GPG key needed for Docker installation.                                                           |
-| docker_apt_repo_url        | "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}"                                                                                   | URL of APT repository for Docker installation.                                                               |
+| Variables                       | Default value                                                         | Description                                                                                                  |
+|---------------------------------|-----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| install_docker                  | true                                                                  | Install Docker or not (if not, docker need to be already installed).                                         |
+| docker_apt_dependencies         | ["python3-docker", "gnupg", "apt-transport-https", "ca-certificates"] | List of APT packages to install before Docker.                                                               |
+| docker_apt_release_channel      | "stable"                                                              | Docker version that will be installed.                                                                       |
+| docker_repo_base_url            | "https://download.docker.com/linux"                                   | Docker APT repository.                                                                                       |
+| docker_apt_key_url              | "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}/gpg"   | URL of APT GPG key needed for Docker installation.                                                           |
+| docker_apt_repo_url             | "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}"       | URL of APT repository for Docker installation.                                                               |
 ||||
-| docker_edition             | ce                                                                                                                                                | Docker edition that will be installed ('ee' for 'Enterprise Edition' or 'ce' for 'Community Edition')        |
-| docker_pkg_name            | "docker-{{ docker_edition }}"                                                                                                                     | Docker APT package name that will be installed.                                                              |
-| docker_pkg_version         | ""                                                                                                                                                | Docker APT package version that will be installed.                                                           |
-| docker_pkg_version_hold    | "{{ docker_pkg_version | default(false) | ternary(true, false) }}"                                                                                | Should APT be configure to hold the Docker version (false by default, true if docker_pkg_version is defined) |
+| docker_edition                  | ce                                                                    | Docker edition that will be installed ('ee' for 'Enterprise Edition' or 'ce' for 'Community Edition')        |
+| docker_pkg_name                 | "docker-{{ docker_edition }}"                                         | Docker APT package name that will be installed.                                                              |
+| docker_pkg_version              | ""                                                                    | Docker APT package version that will be installed.                                                           |
+| docker_pkg_version_hold         | "{{ docker_pkg_version | default(false) | ternary(true, false) }}"    | Should APT be configure to hold the Docker version (false by default, true if docker_pkg_version is defined) |
 ||||
-| docker_svc_name            | "docker"                                                                                                                                          | Docker service name.                                                                                         |
-| docker_install_compose     | true                                                                                                                                              | Install Docker compose or not (if noot, need to be already installed.)                                       |
-| docker_compose_version     | "1.29.2"                                                                                                                                          | Docker compose version to install.                                                                           |
-| docker_compose_url         | "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}" | URL to download docker compose.                                                                              |
-| docker_compose_path        | "/usr/local/bin/docker-compose"                                                                                                                   | Path of where Docker compose will be installed.                                                              |
+| docker_compose_apt_dependencies | ["python3-pip", "virtualenv", "python3-setuptools", "python3-wheel "] | Apt packages installed before docker-compose.                                                                |
+| docker_compose_pkg_name         | docker-compose                                                        | Name of the docker-compose pip package.                                                                      |
+| docker_compose_pkg_version      | "==1.29.2"                                                            | Version of the docker-compose pip package.                                                                   |
 ||||
-| docker_use_extra_hosts     | false                                                                                                                                             | Add /etc/hosts value in containers if needed.                                                                |
-| docker_extra_hosts         | []                                                                                                                                                | list of hosts that will be added to /etc/hosts of containers.                                                |
+| docker_use_extra_hosts          | false                                                                 | Add /etc/hosts value in containers if needed.                                                                |
+| docker_extra_hosts              | []                                                                    | list of hosts that will be added to /etc/hosts of containers.                                                |
 
 ### nginx.yml
 You should not have to modified these variables in most cases.

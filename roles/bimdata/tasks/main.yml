@@ -101,7 +101,7 @@
     remove_orphans: true
     state: present
   vars:
-    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"
+    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
 
 # - name: "Include tasks for initialization."
 #   include_tasks: first-init.yml
