@@ -6,7 +6,6 @@
     mode: 0755
   loop:
     - "{{ bimdata_path }}/scripts"
-    - "{{ bimdata_dockerfiles_path }}"
     - "{{ bimdata_docker_volume_path }}/keycloak"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
@@ -78,15 +77,6 @@
     dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
     mode: 0640
   notify: "Restart iam."
-
-- name: "Check if migration already apply."
-  stat:
-    path: "{{ bimdata_path }}/.migrations"
-  register: migration_status
-
-- name: "Make app migrations from connect to api"
-  include_tasks: migrations/apps_from_connect_to_api.yml
-  when: not migration_status.stat.exists
 
 - name: "Create docker-compose file."
   template:

@@ -110,7 +110,6 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
 | bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
-| bimdata_dockerfiles_path   | "{{ bimdata_path }}/dockerfiles" | Where we store the dockerfiles use to start the containers. |
 
 Object storage (Swift):
 
