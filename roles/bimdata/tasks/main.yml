@@ -92,6 +92,7 @@
     state: present
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+  register: _compose_up
 
 - name: "Include tasks for initialization."
   include_tasks: apps-init.yml
