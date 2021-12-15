@@ -18,9 +18,3 @@ docker_pkg_version_hold: "{{ docker_pkg_version | default(false) | ternary(true,
 
 # Docker service configuration
 docker_svc_name: docker
-
-# Docker compose configuration
-docker_install_compose: true
-docker_compose_version: 1.29.2
-docker_compose_url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
-docker_compose_path: /usr/local/bin/docker-compose

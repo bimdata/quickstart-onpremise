@@ -83,10 +83,6 @@
     enabled: true
   ignore_errors: "{{ ansible_check_mode }}"
 
-- name: "Include tasks to install docker-compose if needed."
-  include_tasks: compose.yml
-  when: docker_install_compose | bool
-
 - name: "Include tasks to login to the docker registries."
   include_tasks: registries.yml
   when:

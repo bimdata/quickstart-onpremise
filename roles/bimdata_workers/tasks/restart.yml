@@ -1,0 +1,11 @@
+---
+- block:
+    - name: "Stop all bimdata services."
+      docker_compose:
+        project_src: "{{ bimdata_path }}"
+        stopped: true
+    - name: "Start all bimdata services."
+      docker_compose:
+        project_src: "{{ bimdata_path }}"
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv }}/bin/python"

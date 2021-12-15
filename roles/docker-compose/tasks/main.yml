@@ -1,0 +1,13 @@
+---
+- name: "Install Docker compose prerequisites."
+  apt:
+    name: "{{ docker_compose_apt_dependencies }}"
+    state: present
+    update_cache: true
+  environment: "{{ proxy_env }}"
+
+- name: "Install Docker compose in the Bimdata virtualenv."
+  pip:
+    name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
+    virtualenv: "{{ bimdata_venv }}"
+  environment: "{{ proxy_env }}"
