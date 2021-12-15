@@ -12,6 +12,17 @@
     virtualenv: "{{ bimdata_venv_path }}"
   environment: "{{ proxy_env }}"
 
+- name: "Login to the define docker registries."
+  docker_login:
+    registry: "{{ item.url }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+  loop: "{{ docker_registries }}"
+  environment: "{{ proxy_env }}"
+  no_log: true
+  when:
+    - docker_registries is defined
+
 # If the docker-compose file doesn't exist, we assume this is the first deployment
 # This will be use to not run handler that could restart service when some stuff
 - name: "Check if compose file already exist."

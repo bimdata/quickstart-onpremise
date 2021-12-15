@@ -1,9 +1,0 @@
----
-- name: "Login to the define docker registries."
-  docker_login:
-    registry: "{{ item.url }}"
-    username: "{{ item.username }}"
-    password: "{{ item.password }}"
-  loop: "{{ docker_registries }}"
-  environment: "{{ proxy_env }}"
-  no_log: true
