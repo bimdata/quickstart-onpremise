@@ -15,7 +15,6 @@ client_id = sys.argv[1]
 client_secret = sys.argv[2]
 iam_url = sys.argv[3]
 
-print(sys.argv)
 # create provider
 
 if not OidcClient.objects.filter(client_id=client_id).exists():
@@ -28,3 +27,7 @@ if not OidcClient.objects.filter(client_id=client_id).exists():
         _post_logout_redirect_uris=f"{iam_url}/auth/realms/bimdata/broker/bimdataconnect/endpoint/logout_response",
     )
     app.response_types.add(ResponseType.objects.get(value="code"))
+    print({"changed": True})
+else:
+    print({"changed": False})
+

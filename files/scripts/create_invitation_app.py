@@ -20,14 +20,18 @@ platform_url = sys.argv[7]
 marketplace_url = sys.argv[8]
 marketplace_client_id = sys.argv[9]
 
+changed = False
+
 # create provider
 idp = IdentityProvider.objects.get(
     slug="bimdataconnect",
 )
-idp.secret = secret
-idp.invitation_url = f"{settings.CONNECT_URL}/api/invitation"
 
-idp.save()
+if idp.secret != secret or idp.invitation_url != f"{settings.CONNECT_URL}/api/invitation":
+    idp.secret = secret
+    idp.invitation_url = f"{settings.CONNECT_URL}/api/invitation"
+    idp.save()
+    changed = True
 
 # create invitation app
 if not App.objects.filter(client_id=invitation_client_id).exists():
@@ -43,6 +47,7 @@ if not App.objects.filter(client_id=invitation_client_id).exists():
         provider=idp,
     )
     invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
+    changed = True
 
 # create plarform app
 try:
@@ -58,6 +63,7 @@ except App.DoesNotExist:
         base_url=platform_url,
     )
     platform_app.scopes.set(Scope.objects.all())
+    changed = True
 
 # create marketplace app
 try:
@@ -73,6 +79,7 @@ except App.DoesNotExist:
         base_url=marketplace_url,
     )
     marketplace_app.scopes.set(Scope.objects.all())
+    changed = True
 
 # Keycloak config
 data = {
@@ -111,6 +118,7 @@ data = {
 
 if request("get", "/identity-provider/instances/bimdataconnect", raise_for_status=False).status_code != 200:
     request("post", "/identity-provider/instances", json=data)
+    changed = True
 
 keycloak_mappers = (
     {
@@ -164,6 +172,8 @@ for mapper in keycloak_mappers:
         request(
             "post", "/identity-provider/instances/bimdataconnect/mappers", json=mapper
         )
+        changed = True
+
 
 for app, role_name in zip(
     [platform_app, marketplace_app], ["bimdata_platform", "bimdata_marketplace"]
@@ -187,3 +197,6 @@ for app, role_name in zip(
             f"/clients/{app.keycloak_id}/protocol-mappers/models",
             json=bimdata_mapper,
         )
+        changed = True
+
+print({"changed": changed})
