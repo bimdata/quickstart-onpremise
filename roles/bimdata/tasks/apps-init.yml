@@ -22,7 +22,6 @@
     method: GET
     status_code: 200
     ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
-  environment: "{{ proxy_env }}"
   register: iam_get
   until: iam_get.status == 200
   retries: 36
@@ -51,7 +50,6 @@
     method: GET
     status_code: 200
     ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
-  environment: "{{ proxy_env }}"
   register: connect_get
   until: connect_get.status == 200
   retries: 36
