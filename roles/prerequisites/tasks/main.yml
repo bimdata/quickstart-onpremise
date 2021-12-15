@@ -9,5 +9,5 @@
 - name: "Install Docker compose in the Bimdata virtualenv."
   pip:
     name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
-    virtualenv: "{{ bimdata_venv }}"
+    virtualenv: "{{ bimdata_venv_path }}"
   environment: "{{ proxy_env }}"

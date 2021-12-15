@@ -30,13 +30,10 @@
   - name: "Check if app and db are the same host."
     set_fact:
       db_on_app: "{{ groups['db'] | default(None) == groups['app'] | default(false) }}"
-      db_list:
-        - api
-        - connect
-        - platform
-        - iam
-        - |-
-          {% if marketplace_enabled | bool %}marketplace{% else %}omit{% endif %}
+      db_list: "{{
+        ['api', 'connect', 'platform', 'iam']
+        + (marketplace_enabled | ternary(['marketplace'], []))
+      }}"
 
   - name: "Set database connection variable accordingly."
     set_fact:
@@ -51,8 +48,6 @@
       db_platform_port: "{{ db_on_app | ternary(5432, db_platform_external_port) }}"
       db_iam_port: "{{ db_on_app | ternary(5432, db_iam_external_port) }}"
       db_marketplace_port: "{{ db_on_app | ternary(5432, db_marketplace_external_port) }}"
-
-      db_list: "{{ db_list | reject('equalto', 'omit') }}"
 
   - name: "Set docker-compose definition for databases."
     set_fact:

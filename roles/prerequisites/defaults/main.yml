@@ -5,4 +5,4 @@ docker_compose_apt_dependencies:
   - python3-setuptools
   - python3-wheel
 docker_compose_pkg_name: docker-compose
-docker_compose_pkg_version: "==1.29.1"
+docker_compose_pkg_version: "==1.29.2"
