@@ -1,3 +1,3 @@
-ansible==5.0.1
+ansible==4.10.0 # Version 5.x required python >=3.8, keeping 4.10 for Buster
 yamllint==1.26.1
 ansible-lint==5.0.12

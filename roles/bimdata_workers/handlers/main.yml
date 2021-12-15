@@ -3,3 +3,4 @@
 # Cant' use block in handlers, so include_tasks instead
 - name: "Restart all services."
   include_tasks: restart.yml
+  when: not _first_deploy | bool

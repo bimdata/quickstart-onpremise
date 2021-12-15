@@ -9,5 +9,30 @@
 - name: "Install Docker compose in the Bimdata virtualenv."
   pip:
     name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
-    virtualenv: "{{ bimdata_venv }}"
+    virtualenv: "{{ bimdata_venv_path }}"
   environment: "{{ proxy_env }}"
+
+- name: "Login to the define docker registries."
+  docker_login:
+    registry: "{{ item.url }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+  loop: "{{ docker_registries }}"
+  environment: "{{ proxy_env }}"
+  no_log: true
+  when:
+    - docker_registries is defined
+
+# If the docker-compose file doesn't exist, we assume this is the first deployment
+# This will be use to not run handler that could restart service when some stuff
+- name: "Check if compose file already exist."
+  stat:
+    path: "{{ bimdata_path }}/docker-compose.yml"
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: _compose_file
+
+- name: "Set a fact to be able to easly check if it's the first deployment."
+  set_fact:
+    _first_deploy: "{{ not _compose_file.stat.exists }}"

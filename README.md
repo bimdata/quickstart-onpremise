@@ -44,10 +44,10 @@ pip install -r requirements.txt
 
 This playbook come with and example inventory. The easiest way to start is to copy this inventory and modify the copy:
 ```
-cp -rp inventories/sample inventories/my-own-inventory
+cp -rp inventories/sample inventories/main
 ```
 
-First, you need to edit the inventory file `inventories/my-own-inventory/inventory.ini`.
+First, you need to edit the inventory file `inventories/main/inventory.ini`.
 There are three groups:
   - `app`: this is where all the web app will be deploy,
   - `db`: this is where all database will be deploy if you don't use an external Postgres cluster.
@@ -110,7 +110,6 @@ Right now, you can't use Swift storage for the uploaded files, but this will be 
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
 | bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
-| bimdata_dockerfiles_path   | "{{ bimdata_path }}/dockerfiles" | Where we store the dockerfiles use to start the containers. |
 
 Object storage (Swift):
 
@@ -371,7 +370,7 @@ You should replace all the values and encrypt the file with `ansible-vault`.
 
 When everything is configured, you can deploy:
 ```
-ansible-playbook -i inventories/my-own-inventory/inventory.ini install-bimdata.yml
+ansible-playbook -i inventories/main/inventory.ini install-bimdata.yml
 ```
 
 You may need to add options:

@@ -89,3 +89,8 @@
     archive_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ archive_dns_name }}"
     marketplace_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
     marketplace_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
+    needed_cert_tls: "{{
+      ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
+      + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
+      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], []))
+    }}"

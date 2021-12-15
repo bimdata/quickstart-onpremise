@@ -1,0 +1,130 @@
+---
+- name: "Copy some init scripts."
+  copy:
+    src: "scripts/{{ item }}"
+    dest: "{{ bimdata_path }}/scripts/"
+    mode: 0640
+  loop:
+    - create_connect_provider.py
+    - create_invitation_app.py
+
+- name: "Copy the scripts into the needed containers."
+  command: "docker cp {{ bimdata_path }}/scripts/{{ item.script }} {{ item.container }}:/opt/{{ item.script }}"
+  loop:
+    - container: connect
+      script: create_connect_provider.py
+    - container: api
+      script: create_invitation_app.py
+  changed_when: false
+
+- name: "Wait for IAM to respond."
+  uri:
+    url: "{{ iam_url }}"
+    method: GET
+    status_code: 200
+    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+  register: iam_get
+  until: iam_get.status == 200
+  retries: 36
+  delay: 5
+
+- name: "IAM: configure default provider."
+  community.general.keycloak_authentication:
+    auth_keycloak_url: "{{ iam_url }}/auth"
+    auth_realm: master
+    auth_username: "{{ iam_user}}"
+    auth_password: "{{ iam_password }}"
+    alias: browser
+    realm: bimdata
+    authenticationExecutions:
+      - displayName: Identity Provider Redirector
+        flowAlias: browser
+        requirement: "ALTERNATIVE"
+        index: 2
+        authenticationConfig:
+          alias: bimdata_connect_as_default
+          config:
+            defaultProvider: bimdataconnect
+  environment:
+    REQUESTS_CA_BUNDLE: /opt/bimdata/data/ca.crt
+    SSL_CERT_FILE: /opt/bimdata/data/ca.crt
+
+- name: "Wait for connect migrations."
+  command: "docker exec connect bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+  register: connect_migration
+  until: connect_migration.stdout == "0"
+  failed_when: connect_migration.rc != 1
+  changed_when: false
+  retries: 36
+  delay: 10
+
+- name: "Connect: initialization."
+  vars:
+    container_name: "{{ (_compose_up.services['connect'].keys() | from_yaml)[0] }}"
+  block:
+    - name: "Connect: copy the needed scripts."
+      command: "docker cp {{ bimdata_path }}/scripts/create_connect_provider.py {{ container_name }}:/opt/"
+      changed_when: false
+
+    - name: "Connect: check if we need to initialize the RSA key."
+      command: docker exec {{ container_name }} python manage.py shell -c 'from oidc_provider.models import RSAKey; print(RSAKey.objects.count())'
+      changed_when: false
+      register: _connect_rsa_status
+
+    - name: "Connect: init needed rsa key."
+      command: "docker exec {{ container_name }} python manage.py creatersakey"
+      when: _connect_rsa_status.stdout == "0"
+      vars:
+        container_name: "{{ (_compose_up.services['connect'].keys() | from_yaml)[0] }}"
+
+    - name: "Connect: init provider."
+      command: |
+        docker exec connect python create_connect_provider.py
+        {{ connect_client_id }} {{ connect_client_secret }} {{ iam_url }}
+      register: exec_return
+      changed_when: (exec_return.stdout | lower | replace("'",'"') | from_json).changed | bool
+      no_log: true
+# End of block
+
+- name: "Wait for API to respond."
+  uri:
+    url: "{{ api_url }}"
+    method: GET
+    status_code: 200
+    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+  register: connect_get
+  until: connect_get.status == 200
+  retries: 36
+  delay: 5
+
+- name: "Wait for API migrations."
+  command: "docker exec api bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+  register: api_migration
+  until: api_migration.stdout == "0"
+  failed_when: api_migration.rc != 1
+  changed_when: false
+  retries: 36
+  delay: 10
+
+- name: "API: initialization"
+  vars:
+    container_name: "{{ (_compose_up.services['api'].keys() | from_yaml)[0] }}"
+  block:
+    - name: "API: copy the needed scripts."
+      command: "docker cp {{ bimdata_path }}/scripts/create_invitation_app.py {{ container_name }}:/opt/"
+      changed_when: false
+    - name: "API: init apps."
+      command: |
+        docker exec
+        {% if tls_enabled | bool %}
+        -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+        -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+        {% endif %}
+        {{ container_name }} python create_invitation_app.py {{ connect_invitation_secret }}
+        {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
+        {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
+        {{ platform_front_url }} {{ marketplace_front_url }} {{ marketplace_front_client_id }}
+      no_log: false
+      register: exec_return
+      changed_when: (exec_return.stdout | lower | replace("'",'"') | from_json).changed | bool
+# End of block

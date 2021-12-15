@@ -1,22 +1,4 @@
 ---
-- name: "Check what tls / cert needed to be present/absent."
-  set_fact:
-    app_list_tls: "{{ default_app_list }}
-      {% if not use_external_rabbitmq | bool %}
-        + ['rabbitmq_admin']
-      {% endif %}"
-  vars:
-    default_app_list:
-      - api
-      - connect
-      - platform_back
-      - platform_front
-      - iam
-      - documentation
-      - archive
-      - marketplace_back
-      - marketplace_front
-
 - when: tls_enabled | bool
   block:
   - name: "Copy the TLS CA."
@@ -35,7 +17,7 @@
       owner: root
       group: root
       mode: 0640
-    loop: "{{ app_list_tls }}"
+    loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."
 
   - name: "Copy the app TLS cert."
@@ -45,7 +27,7 @@
       owner: root
       group: root
       mode: 0640
-    loop: "{{ app_list_tls }}"
+    loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."
 
 - when: not tls_enabled | bool
@@ -54,12 +36,12 @@
     file:
       path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
       state: absent
-    loop: "{{ app_list_tls }}"
+    loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."
 
   - name: "Delete the app TLS cert."
     file:
       path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
       state: absent
-    loop: "{{ app_list_tls }}"
+    loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."

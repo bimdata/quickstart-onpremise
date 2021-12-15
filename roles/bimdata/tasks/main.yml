@@ -6,7 +6,6 @@
     mode: 0755
   loop:
     - "{{ bimdata_path }}/scripts"
-    - "{{ bimdata_dockerfiles_path }}"
     - "{{ bimdata_docker_volume_path }}/keycloak"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
@@ -44,7 +43,7 @@
     src: pregen-dhparams.pem
     dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
     mode: 0640
-  when: nginx_use_pregen_dh
+  when: nginx_use_pregen_dh | bool
   notify: "Restart nginx."
 
 - name: "Generate custom DH params."
@@ -79,15 +78,6 @@
     mode: 0640
   notify: "Restart iam."
 
-- name: "Check if migration already apply."
-  stat:
-    path: "{{ bimdata_path }}/.migrations"
-  register: migration_status
-
-- name: "Make app migrations from connect to api"
-  include_tasks: migrations/apps_from_connect_to_api.yml
-  when: not migration_status.stat.exists
-
 - name: "Create docker-compose file."
   template:
     src: compose-app.yml.j2
@@ -102,6 +92,7 @@
     state: present
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+  register: _compose_up
 
-# - name: "Include tasks for initialization."
-#   include_tasks: first-init.yml
+- name: "Include tasks for initialization."
+  include_tasks: apps-init.yml

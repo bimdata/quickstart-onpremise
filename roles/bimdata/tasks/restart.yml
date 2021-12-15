@@ -7,5 +7,8 @@
     - name: "Start all bimdata services."
       docker_compose:
         project_src: "{{ bimdata_path }}"
+    - name: "Set fact that all container where restart"
+      set_fact:
+        _app_all_restart: true
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"

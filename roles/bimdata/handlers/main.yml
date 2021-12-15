@@ -1,4 +1,10 @@
 ---
+# Restart doesn't respect depends_on and other stuff, so down + up instead
+# Cant' use block in handlers, so include_tasks instead
+- name: "Restart all services."
+  include_tasks: restart.yml
+  when: not _first_deploy | bool
+
 - name: "Restart nginx."
   docker_compose:
     project_src: "{{ bimdata_path }}"
@@ -6,6 +12,9 @@
     restarted: true
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+  when:
+    - not _first_deploy | bool
+    - _app_all_restart is not defined or not _app_all_restart | bool
 
 - name: "Restart iam."
   docker_compose:
@@ -14,8 +23,6 @@
     restarted: true
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
-
-# Restart doesn't respect depends_on and other stuff, so down + up instead
-# Cant' use block in handlers, so include_tasks instead
-- name: "Restart all services."
-  include_tasks: restart.yml
+  when:
+    - not _first_deploy | bool
+    - _app_all_restart is not defined or not _app_all_restart | bool
