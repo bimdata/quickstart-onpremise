@@ -28,6 +28,27 @@
   retries: 36
   delay: 5
 
+- name: "IAM: configure default provider."
+  community.general.keycloak_authentication:
+    auth_keycloak_url: "{{ iam_url }}/auth"
+    auth_realm: master
+    auth_username: "{{ iam_user}}"
+    auth_password: "{{ iam_password }}"
+    alias: browser
+    realm: bimdata
+    authenticationExecutions:
+      - displayName: Identity Provider Redirector
+        flowAlias: browser
+        requirement: "ALTERNATIVE"
+        index: 2
+        authenticationConfig:
+          alias: bimdata_connect_as_default
+          config:
+            defaultProvider: bimdataconnect
+  environment:
+    REQUESTS_CA_BUNDLE: /opt/bimdata/data/ca.crt
+    SSL_CERT_FILE: /opt/bimdata/data/ca.crt
+
 - name: "Wait for connect migrations."
   command: "docker exec connect bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
   register: connect_migration
