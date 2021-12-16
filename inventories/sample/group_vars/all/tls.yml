@@ -1,5 +1,6 @@
 ---
 tls_enabled: false
+tls_external: false
 
 # Use pre-generated dhparam?
 nginx_use_pregen_dh: true

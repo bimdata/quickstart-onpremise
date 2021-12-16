@@ -340,6 +340,7 @@ You should not have to modified these variables in most cases.
 | Variables                  | Default value                           | Description                                                                                                                    |
 |----------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | tls_enabled                | false                                   | Enable external TLS or not.                                                                                                    |
+| tls_external               | false                                   | Set it to true if the TLS is manage by another web server, like a reverse proxy.                                               |
 | nginx_use_pregen_dh        | true                                    | Use pre-defined diffie hellman parameters. If false it'll generate new one. This take a lot of time.                           |
 | tls_ca_certificate         | ""                                      | CA certificate of the CA used to sign the certificates for the applications. (PEM format.)                                     |
 | tls_subca_certificates     | []                                      | If a complexe CA architecture is used, tls_ca_certificate should contain the main CA, and this list all the intermediate ones. |

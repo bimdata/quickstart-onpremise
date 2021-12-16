@@ -79,16 +79,16 @@
 
 - name: "Set URL variable."
   set_fact:
-    api_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ api_dns_name }}"
-    iam_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ iam_dns_name }}"
-    connect_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ connect_dns_name }}"
-    platform_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
-    platform_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
-    rabbitmq_admin_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
-    documentation_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ documentation_dns_name }}"
-    archive_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ archive_dns_name }}"
-    marketplace_back_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
-    marketplace_front_url: "{{ tls_enabled | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
+    api_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ api_dns_name }}"
+    iam_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ iam_dns_name }}"
+    connect_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ connect_dns_name }}"
+    platform_back_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
+    platform_front_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
+    rabbitmq_admin_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
+    documentation_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ documentation_dns_name }}"
+    archive_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ archive_dns_name }}"
+    marketplace_back_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
+    marketplace_front_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
     needed_cert_tls: "{{
       ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
       + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
