@@ -20,6 +20,7 @@ services:
       - VIRTUAL_PORT=15672
       - RABBITMQ_DEFAULT_USER={{ rabbitmq_user }}
       - RABBITMQ_DEFAULT_PASS={{ rabbitmq_password }}
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit consumer_timeout 28800000  # 8 hours
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status"]
       interval: 5s

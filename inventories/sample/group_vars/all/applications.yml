@@ -84,34 +84,42 @@ marketplace_front_client_id: "{{ 'marketplace_front_client_id' | to_uuid(namespa
 ## export
 workers_export_instance: 1
 workers_export_cpu: 1
+workers_export_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## gltf
 workers_gltf_instance: 1
 workers_gltf_cpu: 1
+workers_gltf_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## extract
 workers_extract_instance: 1
 workers_extract_cpu: 1
+workers_extract_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## extract with quantities
 workers_extract_quantities_instance: 1
 workers_extract_quantities_cpu: 1
+workers_extract_quantities_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## svg
 workers_svg_instance: 1
 workers_svg_cpu: 1
+workers_svg_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## merge
 workers_merge_instance: 1
 workers_merge_cpu: 1
+workers_merge_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## xkt
 workers_xkt_instance: 1
 workers_xkt_cpu: 1
+workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 ## preview
 workers_preview_instance: 1
 workers_preview_cpu: 1
+workers_preview_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
 # Misc
 uuid_namespace: "{{ app_dns_domain | to_uuid }}"

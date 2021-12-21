@@ -9,6 +9,7 @@
   setup:
     gather_subset:
       - '!all'
+      - hardware
       - network
 
 - name: "Include tasks to compute proxy variables."
