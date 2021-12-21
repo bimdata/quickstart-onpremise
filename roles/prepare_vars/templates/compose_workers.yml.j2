@@ -2,6 +2,10 @@ workers-export:
   image: {{ docker_workers_export_image }}:{{ docker_workers_export_tag }}
   deploy:
     replicas: {{ workers_export_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_export_cpu }}"
+        memory: "{{ workers_export_ram }}"
   environment:
     - WORKER_SCRIPT=workers.export
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -26,6 +30,10 @@ workers-gltf:
   image: {{ docker_workers_gltf_image }}:{{ docker_workers_gltf_tag }}
   deploy:
     replicas: {{ workers_gltf_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_gltf_cpu }}"
+        memory: "{{ workers_gltf_ram }}"
   environment:
     - WORKER_SCRIPT=workers.gltf
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -50,6 +58,10 @@ workers-extract:
   image: {{ docker_workers_extract_image }}:{{ docker_workers_extract_tag }}
   deploy:
     replicas: {{ workers_extract_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_extract_cpu }}"
+        memory: "{{ workers_extract_ram }}"
   environment:
     - WORKER_SCRIPT=workers.extract
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -74,6 +86,10 @@ workers-extract-with-quantities:
   image: {{ docker_workers_extract_quantities_image }}:{{ docker_workers_extract_quantities_tag }}
   deploy:
     replicas: {{ workers_extract_quantities_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_extract_quantities_cpu }}"
+        memory: "{{ workers_extract_quantities_ram }}"
   environment:
     - WORKER_SCRIPT=workers.extract_with_quantities
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -98,6 +114,10 @@ workers-svg:
   image: {{ docker_workers_svg_image }}:{{ docker_workers_svg_tag }}
   deploy:
     replicas: {{ workers_svg_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_svg_cpu }}"
+        memory: "{{ workers_svg_ram }}"
   environment:
     - WORKER_SCRIPT=workers.svg
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -122,6 +142,10 @@ workers-merge:
   image: {{ docker_workers_merge_image }}:{{ docker_workers_merge_tag }}
   deploy:
     replicas: {{ workers_merge_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_merge_cpu }}"
+        memory: "{{ workers_merge_ram }}"
   environment:
     - WORKER_SCRIPT=workers.merge
     - RABBITMQ_HOST={{ rabbitmq_host }}
@@ -146,6 +170,10 @@ workers-xkt:
   image: {{ docker_workers_xkt_image }}:{{ docker_workers_xkt_tag }}
   deploy:
     replicas: {{ workers_xkt_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_xkt_cpu }}"
+        memory: "{{ workers_xkt_ram }}"
   environment:
     - RABBITMQ_HOST={{ rabbitmq_host }}
     - RABBITMQ_PORT={{ rabbitmq_port }}
@@ -169,6 +197,10 @@ workers-preview:
   image: {{ docker_workers_preview_image }}:{{ docker_workers_preview_tag }}
   deploy:
     replicas: {{ workers_preview_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_preview_cpu }}"
+        memory: "{{ workers_preview_ram }}"
   environment:
     - ENV={{ app_env }}
     - RABBITMQ_HOST={{ rabbitmq_host }}
