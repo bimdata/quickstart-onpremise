@@ -19,6 +19,7 @@ client_secret = sys.argv[6]
 platform_url = sys.argv[7]
 marketplace_url = sys.argv[8]
 marketplace_client_id = sys.argv[9]
+connect_url = sys.argv[10]
 
 changed = False
 
@@ -27,9 +28,9 @@ idp = IdentityProvider.objects.get(
     slug="bimdataconnect",
 )
 
-if idp.secret != secret or idp.invitation_url != f"{settings.CONNECT_URL}/api/invitation":
+if idp.secret != secret or idp.invitation_url != f"{connect_url}/api/invitation":
     idp.secret = secret
-    idp.invitation_url = f"{settings.CONNECT_URL}/api/invitation"
+    idp.invitation_url = f"{connect_url}/api/invitation"
     idp.save()
     changed = True
 
@@ -37,13 +38,13 @@ if idp.secret != secret or idp.invitation_url != f"{settings.CONNECT_URL}/api/in
 if not App.objects.filter(client_id=invitation_client_id).exists():
     invitation_app = App.objects.create(
         name="BIMData Connect IDP",
-        redirect_uris=[settings.CONNECT_URL],
+        redirect_uris=[connect_url],
         creator=None,
         access_type=App.TYPE_CONFIDENTIAL,
         implicit_flow_enabled=False,
         client_id=invitation_client_id,
         client_secret=invitation_client_secret,
-        base_url=settings.CONNECT_URL,
+        base_url=connect_url,
         provider=idp,
     )
     invitation_app.scopes.add(Scope.objects.get(name="org:manage"))
@@ -92,16 +93,16 @@ data = {
         "disableUserInfo": "",
         "acceptsPromptNoneForwardFromClient": "",
         "validateSignature": "true",
-        "authorizationUrl": f"{settings.CONNECT_URL}/authorize",
-        "tokenUrl": f"{settings.CONNECT_URL}/token",
-        "logoutUrl": f"{settings.CONNECT_URL}/end-session",
-        "userInfoUrl": f"{settings.CONNECT_URL}/userinfo",
+        "authorizationUrl": f"{connect_url}/authorize",
+        "tokenUrl": f"{connect_url}/token",
+        "logoutUrl": f"{connect_url}/end-session",
+        "userInfoUrl": f"{connect_url}/userinfo",
         "clientAuthMethod": "client_secret_post",
         "clientId": client_id,
         "clientSecret": client_secret,
-        "issuer": f"{settings.CONNECT_URL}",
+        "issuer": f"{connect_url}",
         "defaultScope": "openid profile email",
-        "jwksUrl": f"{settings.CONNECT_URL}/jwks",
+        "jwksUrl": f"{connect_url}/jwks",
     },
     "alias": "bimdataconnect",
     "providerId": "oidc",
