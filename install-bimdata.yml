@@ -7,7 +7,9 @@
       tags: ['always']
     - role: docker
       tags: ['docker']
-      when: install_docker | bool
+      when:
+        - install_docker | bool
+        - not install_offline | bool
 
 - hosts: db
   gather_facts: false

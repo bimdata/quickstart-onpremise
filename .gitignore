@@ -5,3 +5,4 @@ inventories/*
 !inventories/main
 venv
 files/old_env
+files/offline

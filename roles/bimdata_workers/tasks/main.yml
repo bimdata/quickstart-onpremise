@@ -29,7 +29,7 @@
 - name: "Start the containers."
   docker_compose:
     project_src: "{{ bimdata_path }}"
-    pull: true
+    pull: "{{ not install_offline | bool }}"
     remove_orphans: true
     state: present
   vars:

@@ -384,3 +384,17 @@ You may need to add options:
 
 If you can't use `sudo`, you can check the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/become.html)
 on how to configure other way to manage privilege escalation.
+
+## Offline installation
+On each server you need to have:
+* Docker 20.10
+* python3
+* pip3
+* virtualenv
+* bzip2
+
+You will need to do these steps before each installation or upgrade.:
+* Retrieve the docker image archives and put them in `files/offline/docker`
+* Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script do not need Docker but require the other previously dependancies.
+* Run the script and retrieve the created archive and put it in `file/offline/pip`
+* Update `inventories/your_inventory/group_vars/all/docker_images.yml`: `docker_bimdata_tag` need to have the same value as the date in the docker archive name. For example if there archive is named `docker-app-images-20211208.tar.vz2`, you need to have `docker_bimdata_tag: 20211208`

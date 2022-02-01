@@ -1,0 +1,44 @@
+---
+- name: "Install Docker compose prerequisites (APT)."
+  apt:
+    name: "{{ docker_compose_apt_dependencies }}"
+    state: present
+    update_cache: true
+  environment: "{{ proxy_env }}"
+  when: ansible_os_family | lower == "debian"
+
+- name: "Install Docker compose prerequisites (YUM)."
+  yum:
+    name: "{{ docker_compose_yum_dependencies }}"
+    state: present
+    update_cache: true
+  environment: "{{ proxy_env }}"
+  when: ansible_os_family | lower == "redhat"
+
+- name: "Create virtualenv and update pip if needed."
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ bimdata_venv_path }}"
+  environment: "{{ proxy_env }}"
+
+- name: "Install Docker compose in the Bimdata virtualenv."
+  pip:
+    name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
+    virtualenv: "{{ bimdata_venv_path }}"
+  environment: "{{ proxy_env }}"
+
+- name: "Chenge the python interperter to use the venv."
+  set_fact:
+    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+
+- name: "Login to the define docker registries."
+  docker_login:
+    registry: "{{ item.url }}"
+    username: "{{ item.username }}"
+    password: "{{ item.password }}"
+  loop: "{{ docker_registries }}"
+  environment: "{{ proxy_env }}"
+  no_log: true
+  when:
+    - docker_registries is defined
