@@ -4,5 +4,12 @@ docker_compose_apt_dependencies:
   - virtualenv
   - python3-setuptools
   - python3-wheel
+
+docker_compose_yum_dependencies:
+  - python3-pip
+  - python3-setuptools
+  - python3-wheel
+  - python-virtualenv
+
 docker_compose_pkg_name: docker-compose
 docker_compose_pkg_version: "==1.29.2"

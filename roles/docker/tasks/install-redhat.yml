@@ -1,0 +1,23 @@
+---
+- name: "Add Docker key."
+  rpm_key:
+    key: "{{ docker_repo_key_url }}"
+    state: present
+  environment: "{{ proxy_env }}"
+
+- name: "Add Docker repository."
+  get_url:
+    url: "{{ docker_yum_repo }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+  environment: "{{ proxy_env }}"
+
+- name: "Install Docker."
+  yum:
+    name: "{{ docker_pkg_name }}{% if docker_pkg_version is defined and docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
+    update_cache: true
+    state: present
+  environment: "{{ proxy_env }}"
+  notify: "Restart Docker."

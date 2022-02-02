@@ -1,0 +1,24 @@
+---
+# Offline installation: no dependancy will be pull from Internet
+install_offline: false
+
+install_offline_docker:
+  - name: docker-app-images
+    src: "docker-app-images-{{ docker_bimdata_tag }}.tar.bz2"
+    dest: "{{ bimdata_path }}/offline"
+    group: app
+
+  - name: docker-bdd-images
+    src: "docker-bdd-images-{{ docker_bimdata_tag }}.tar.bz2"
+    dest: "{{ bimdata_path }}/offline"
+    group: db
+
+  - name: docker-worker-images
+    src: "docker-worker-images-{{ docker_bimdata_tag }}.tar.bz2"
+    dest: "{{ bimdata_path }}/offline"
+    group: workers
+
+install_offline_python:
+  name: pip-archives
+  src: "pip-archives.tar.bz2"
+  dest: "{{ bimdata_path }}/offline"

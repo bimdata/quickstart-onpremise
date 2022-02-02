@@ -1,27 +1,6 @@
 ---
-- name: "Install Docker compose prerequisites."
-  apt:
-    name: "{{ docker_compose_apt_dependencies }}"
-    state: present
-    update_cache: true
-  environment: "{{ proxy_env }}"
-
-- name: "Install Docker compose in the Bimdata virtualenv."
-  pip:
-    name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
-    virtualenv: "{{ bimdata_venv_path }}"
-  environment: "{{ proxy_env }}"
-
-- name: "Login to the define docker registries."
-  docker_login:
-    registry: "{{ item.url }}"
-    username: "{{ item.username }}"
-    password: "{{ item.password }}"
-  loop: "{{ docker_registries }}"
-  environment: "{{ proxy_env }}"
-  no_log: true
-  when:
-    - docker_registries is defined
+- name: "Include tasks for prerequisites installation."
+  include_tasks: "{{ install_offline | bool | ternary('offline.yml', 'online.yml') }}"
 
 # If the docker-compose file doesn't exist, we assume this is the first deployment
 # This will be use to not run handler that could restart service when some stuff

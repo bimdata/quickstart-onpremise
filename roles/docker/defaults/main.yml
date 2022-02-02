@@ -5,10 +5,14 @@ docker_apt_dependencies:
   - gnupg
   - apt-transport-https
   - ca-certificates
+
+docker_repo_url: https://download.docker.com/linux
+docker_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
+
 docker_apt_release_channel: stable
-docker_repo_base_url: https://download.docker.com/linux
-docker_apt_key_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}/gpg"
-docker_apt_repo_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}"
+docker_apt_repo: "deb [arch={{ deb_arch.stdout }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+
+docker_yum_repo: "{{ docker_repo_url }}/centos/docker-{{ docker_edition }}.repo"
 
 # Docker package selection
 docker_edition: ce  # 'ee' for 'Enterprise Edition' or 'ce' for 'Community Edition'

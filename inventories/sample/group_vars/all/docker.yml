@@ -38,13 +38,43 @@ install_docker: true
 # needed values in their host files.
 docker_use_extra_hosts: false
 docker_extra_hosts:
-  - "{{ api_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ connect_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ platform_back_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ platform_front_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ iam_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ rabbitmq_admin_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ documentation_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ archive_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ marketplace_back_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
-  - "{{ marketplace_front_dns_name }}:{{ hostvars[groups['app'][0]]['ansible_default_ipv4']['address'] }}"
+  - "{{ api_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ connect_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ platform_back_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ platform_front_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ iam_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ rabbitmq_admin_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ documentation_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ archive_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ marketplace_back_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
+  - "{{ marketplace_front_dns_name }}:{{
+      hostvars[groups['app'][0]]['ansible_default_ipv4']['address']
+      | default(hostvars[groups['app'][0]]['ansible_all_ipv4_addresses'] | first)
+    }}"
