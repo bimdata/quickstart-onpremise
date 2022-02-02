@@ -24,7 +24,7 @@ echo -n "Downloading prerequisites…"
 "${WORKING_DIR}/venv/bin/pip" download -d "${WORKING_DIR}/pip-archives" -r "${WORKING_DIR}/requirements.txt" > /dev/null
 echo "Ok."
 
-echo -n "Comrpessing the archive…"
+echo -n "Compressing the archive…"
 tar -cjf "$WORKING_DIR/pip-archives.tar.bz2" -C "${WORKING_DIR}" pip-archives
 echo -e "Ok.\n"
 

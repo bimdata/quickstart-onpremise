@@ -395,6 +395,6 @@ On each server you need to have:
 
 You will need to do these steps before each installation or upgrade.:
 * Retrieve the docker image archives and put them in `files/offline/docker`
-* Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script do not need Docker but require the other previously dependancies.
+* Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script doesn't need Docker but requires the other previously list dependencies.
 * Run the script and retrieve the created archive and put it in `file/offline/pip`
-* Update `inventories/your_inventory/group_vars/all/docker_images.yml`: `docker_bimdata_tag` need to have the same value as the date in the docker archive name. For example if there archive is named `docker-app-images-20211208.tar.vz2`, you need to have `docker_bimdata_tag: 20211208`
+* Update `inventories/your_inventory/group_vars/all/docker_images.yml`: `docker_bimdata_tag` needs to have the same value as the date in the docker archive name. For example if, the archive is named `docker-app-images-20211208.tar.vz2`, you need to have `docker_bimdata_tag: 20211208`
