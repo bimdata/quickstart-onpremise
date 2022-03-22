@@ -1,0 +1,10 @@
+---
+# Use include tasks to be able to loop over multiple tasks
+- name: "{{ db_info.name }} - Include tasks to upgrade postgres."
+  include_tasks: pg_upgrade.yml
+  loop: "{{ _postgres_infos }}"
+  loop_control:
+    loop_var: db_info
+  when:
+    - db_info.current_version != ""
+    - db_info.current_version is version(db_pg_version | string | split('.') | first, '<')

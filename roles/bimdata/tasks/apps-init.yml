@@ -46,8 +46,8 @@
           config:
             defaultProvider: bimdataconnect
   environment:
-    REQUESTS_CA_BUNDLE: /opt/bimdata/data/ca.crt
-    SSL_CERT_FILE: /opt/bimdata/data/ca.crt
+    REQUESTS_CA_BUNDLE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+    SSL_CERT_FILE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
 
 - name: "Wait for connect migrations."
   command: "docker exec connect bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"

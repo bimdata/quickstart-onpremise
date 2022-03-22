@@ -29,11 +29,41 @@
   block:
   - name: "Check if app and db are the same host."
     set_fact:
-      db_on_app: "{{ groups['db'] | default(None) == groups['app'] | default(false) }}"
+      db_on_app: "{{ (groups['db'] | default(None) == groups['app']) | default(false) }}"
       db_list: "{{
         ['api', 'connect', 'platform', 'iam']
         + (marketplace_enabled | ternary(['marketplace'], []))
       }}"
+
+  - when: inventory_hostname in groups['db']
+    block:
+      - name: "Retrieve current postgres version if already installed."
+        slurp:
+          src: "{{ bimdata_docker_volume_path }}/db/{{ item }}/PG_VERSION"
+        loop: "{{ db_list }}"
+        register: _get_current_pg_version
+        failed_when: false
+
+      - name: "Compute variable needed for postgres upgrade."
+        set_fact:
+          _postgres_infos: "{{
+            _postgres_infos | default([]) + 
+            [{
+              'name': item.item,
+              'current_version': item.content | default('') | b64decode | trim
+            }] }}"
+        loop: "{{ _get_current_pg_version.results }}"
+
+      - name: "Check that we do not try to downgrade postgres."
+        assert:
+          that: >
+            item.current_version == "" or
+            item.current_version is version(
+              db_pg_version |  string | split('.') | first, '<='
+            )
+          fail_msg: "We cant' downgrade posgres: {{ item.name }} is currently in version {{ item.current_version }}, requested: {{ db_pg_version }}."
+        loop: "{{ _postgres_infos }}"
+  # End of block
 
   - name: "Set database connection variable accordingly."
     set_fact:
@@ -53,3 +83,4 @@
     set_fact:
       compose_dbs: "{{ compose_dbs | default({}) | combine(lookup('template', 'compose_dbs.yml.j2') | from_yaml) }}"
     loop: "{{ db_list }}"
+# End of block
