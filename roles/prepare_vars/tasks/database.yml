@@ -61,7 +61,7 @@
             item.current_version is version(
               db_pg_version |  string | split('.') | first, '<='
             )
-          fail_msg: "We cant' downgrade posgres: {{ item.name }} is currently in version {{ item.current_version }}, requested: {{ db_pg_version }}."
+          fail_msg: "We can't downgrade posgres: {{ item.name }} is currently in version {{ item.current_version }}, requested: {{ db_pg_version }}."
         loop: "{{ _postgres_infos }}"
   # End of block
 
