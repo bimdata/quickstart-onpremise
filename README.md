@@ -243,6 +243,7 @@ with the [db] server on these ports.
 
 | Variables                    | Default value                                                        | Description                                                                              |
 |------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| db_pg_version                | 13                                                                   | Postgres version.                                                                        |
 | db_api_external_port         | 5432                                                                 | Postgres external port for the API.                                                      |
 | db_connect_external_port     | 5433                                                                 | Postgres external port for Connect.                                                      |
 | db_platform_external_port    | 5434                                                                 | Postgres external port for the Platform.                                                 |
@@ -258,7 +259,7 @@ with the [db] server on these ports.
 | docker_rabbitmq_image                   | "rabbitmq"                                                  | RabbitMQ docker image (use Dockerhub by default).                         |
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                     | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                  | Postgres docker image (use Dockerhub by default).                         |
-| docker_postgres_tag                     | "10-alpine"                                                 | Postgres docker tag.                                                      |
+| docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                | Postgres docker tag.                                                      |
 | docker_api_image                        | "{{ docker_private_registry }}/on-prem/api"                 | API docker image.                                                         |
 | docker_api_tag                          | latest                                                      | API docker tag.                                                           |
 | docker_connect_image                    | "{{ docker_private_registry }}/on-prem/connect"             | Connect docker image.                                                     |

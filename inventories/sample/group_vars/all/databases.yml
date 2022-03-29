@@ -34,6 +34,11 @@ db_marketplace_password: "{{ vault_db_marketplace_password }}"
 # After this line, all variables are only use if:
 # use_external_db: false *AND* the [db] server is different from the [app] server (in the inventory)
 
+# This variable define which version of postgres will be installed
+# It's not use for external postgres cluster
+# This need to be define for when postgres need data upgrade
+db_pg_version: 13
+
 # [app] server will needed to be able to contact [db] server on these ports
 db_api_external_port: 5432
 db_connect_external_port: 5433

@@ -10,11 +10,15 @@
       when:
         - install_docker | bool
         - not install_offline | bool
+    - role: prerequisites
+      tags: ['prerequisites']
 
 - hosts: db
   gather_facts: false
   become: true
   roles:
+    - role: pg_upgrade
+      tags: ['database', 'db']
     - role: bimdata_db
       tags: ['database', 'db']
       when: inventory_hostname not in groups['app']
