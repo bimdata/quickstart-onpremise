@@ -4,7 +4,7 @@ docker_private_registry: docker-registry.bimdata.io
 # Used to login on the registry, this is a list, you can add registry if needed
 docker_registries:
   - url: "https://{{ docker_private_registry }}"
-    username: "ext_edf_docker"  # Change me
+    username: "my_example_user"  # Change me
     password: "{{ vault_docker_private_registry_password }}"  # Change me in VAULT
 
 # Use public default registry

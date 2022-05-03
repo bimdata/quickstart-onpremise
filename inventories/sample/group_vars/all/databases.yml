@@ -50,5 +50,4 @@ db_marketplace_external_port: 5436
 # to contact the dbs
 db_server_addr: "{{
   hostvars[groups['db'][0]]['ansible_default_ipv4']['address']
-  | default(hostvars[groups['db'][0]]['ansible_all_ipv4_addresses'] | first)
-}}"
+  | default(hostvars[groups['db'][0]]['ansible_all_ipv4_addresses'] | first) }}"

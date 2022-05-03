@@ -41,7 +41,7 @@
   community.general.keycloak_authentication:
     auth_keycloak_url: "{{ iam_url }}/auth"
     auth_realm: master
-    auth_username: "{{ iam_user}}"
+    auth_username: "{{ iam_user }}"
     auth_password: "{{ iam_password }}"
     alias: browser
     realm: bimdata
