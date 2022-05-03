@@ -3,7 +3,7 @@
   "realm": "bimdata",
   "loginTheme": "bimdata",
   "enabled": true,
-{% if tls_enabled | bool %}
+{% if tls_enabled | bool or tls_external | bool or tls_acme | bool %}
   "sslRequired": "external",
 {% else %}
   "sslRequired": "none",

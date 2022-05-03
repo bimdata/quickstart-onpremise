@@ -21,18 +21,6 @@
 # Not external RabbitMQ
 - when: not use_external_rabbitmq | bool
   block:
-  - name: "Check if the needed TLS vars are defined."
-    assert:
-      that:
-        - tls_rabbitmq_admin_key is defined
-        - tls_rabbitmq_admin_key | length
-        - tls_rabbitmq_admin_cert is defined
-        - tls_rabbitmq_admin_cert | length
-      fail_msg: >
-        You choose to use an internal rabbitMQ server (use_external_rabbitmq: false),
-        tls_rabbitmq_admin_key, tls_rabbitmq_admin_cert must be defined and not empty.
-    when: tls_enabled | bool
-
   - name: "Check if rabbitmq is on the same same host."
     set_fact:
       rabbit_is_local: "{{ inventory_hostname in groups['app'] | default(false) }}"

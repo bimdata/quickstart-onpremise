@@ -1,10 +1,16 @@
 ---
+# Only one of the tree modes can be enable at the same time
+# tls_enabled: when you use custom ca / cert / keys managed by what we deploy
+# tls_external: when there is another server managed by you that manage the TLS part
+# tls_acme: when you want to use letsencrypt managed by what we deploy
 tls_enabled: false
 tls_external: false
+tls_acme: false
 
 # Use pre-generated dhparam?
 nginx_use_pregen_dh: true
 
+# when tls_enabled: true, you need to define all the cert / key values
 # You need to put the CA of the PKI used to generate certificates for the app
 tls_ca_certificate: ""
 
@@ -52,3 +58,6 @@ tls_marketplace_back_cert: ""
 # Marketplace front TLS Certs and key: need to match the name define in "{{ marketplace_front_dns_name }}"
 tls_marketplace_front_key: "{{ vault_tls_marketplace_front_key }}"
 tls_marketplace_front_cert: ""
+
+# ACME configuration
+tls_acme_email: "{{ debug_mail_to }}"

@@ -256,6 +256,10 @@ with the [db] server on these ports.
 |-----------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------------------|
 | docker_private_registry                 | "docker-registry.bimdata.io"                                | Define the registry address from which most of the images will come from. |
 | docker_registries                       |                                                             | List of registries informations use to configure docker authentication.   |
+| docker_nginx_image                      | nginxproxy/nginx-proxy                                      | Nginx docker image (use Dockerhub by default).                            |
+| docker_nginx_tag                        | alpine                                                      | Nginx docker tag.                                                         |
+| docker_acme_companion_image             | nginxproxy/acme-companion                                   | ACME companion (Needed only for Letsencrypt, use Dockerhub by default).   |
+| docker_acme_companion_tag               | 2.2                                                         | ACME companion tag.                                                       |
 | docker_rabbitmq_image                   | "rabbitmq"                                                  | RabbitMQ docker image (use Dockerhub by default).                         |
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                     | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                  | Postgres docker image (use Dockerhub by default).                         |
@@ -338,6 +342,12 @@ You should not have to modified these variables in most cases.
 | rabbitmq_server_addr    | "{{ rabbitmq_admin_dns_name }}" | RabbitMQ server address.                                   |
 
 ### tls.yml
+We currently support 3 ways to manage TLS configuration:
+  - our reverse proxy use your tls custom ca / keys / certs: you need to set `tls_enabled` to `true` and define all the certs/keys variables.
+  - you set your own custom reverse proxy for TLS manage in front of what we deploy: you need to set `tls_external` to `true`.
+  - our reverse proxy manage letsencrypt certificate: you need to set `tls_acme` to `true`. Note that the server need to be accessible on internet for Letsencrypt verification.
+`tls_enabled`, `tls_external` and `tls_acme` are mutualy exclusive, only one can be `true`.
+
 | Variables                  | Default value                           | Description                                                                                                                    |
 |----------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | tls_enabled                | false                                   | Enable external TLS or not.                                                                                                    |
@@ -365,6 +375,8 @@ You should not have to modified these variables in most cases.
 | tls_marketplace_back_cert  | ""                                      | Marketplace back TLS Certificate (PEM format).                                                                                 |
 | tls_marketplace_front_key  | "{{ vault_tls_marketplace_front_key }}" | Marketplace front TLS key (PEM format).                                                                                        |
 | tls_marketplace_front_cert | ""                                      | Marketplace front TLS Certificate (PEM format).                                                                                |
+| tls_acme                   | false                                   | Use ACME (Letsencrypt) to generate TLS certificarte.                                                                           |
+| tls_acme_email             | "{{ debug_mail_to }}"                   | Email for Letsencrypt notification.                                                                                            |
 
 ### vault.yml
 In this file, all private informations are defined. Like password, TLS keys or other security stuff.

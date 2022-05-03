@@ -21,6 +21,9 @@ services:
       - RABBITMQ_DEFAULT_USER={{ rabbitmq_user }}
       - RABBITMQ_DEFAULT_PASS={{ rabbitmq_password }}
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit consumer_timeout 28800000  # 8 hours
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ rabbitmq_admin_dns_name }}
+{% endif %}
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status"]
       interval: 5s
@@ -45,7 +48,29 @@ services:
       - {{ bimdata_docker_volume_path }}/web/dhparam.pem:/etc/nginx/dhparam/dhparam.pem:ro
       - {{ bimdata_docker_volume_path }}/web/api_storage:/var/www/static/api_storage/:ro
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/var/www/static/connect_storage/:ro
+{% if tls_acme | bool %}
+      - {{ bimdata_docker_volume_path }}/web/html:/usr/share/nginx/html:ro
+{% endif %}
     restart: unless-stopped
+
+
+{% if tls_acme | bool %}
+
+  # ACME companion
+  nginx-acme-companion:
+    container_name: nginx-acme-companion
+    image: {{ docker_acme_companion_image }}:{{ docker_acme_companion_tag }}
+    environment:
+      - DEFAULT_EMAIL={{ tls_acme_email }}
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - {{ bimdata_docker_volume_path }}/web/acme:/etc/acme.sh:rw
+      - {{ bimdata_docker_volume_path }}/web/vhost.d:/etc/nginx/vhost.d:rw
+      - {{ bimdata_docker_volume_path }}/web/certs:/etc/nginx/certs:rw
+      - {{ bimdata_docker_volume_path }}/web/html:/usr/share/nginx/html:rw
+    restart: unless-stopped
+{% endif %}
 
   iam:
     container_name: iam
@@ -75,6 +100,9 @@ services:
       - KEYCLOAK_IMPORT=/opt/custom/bimdata-realm.json
 {% if tls_enabled  | bool %}
       - X509_CA_BUNDLE=/opt/onprem-ca.crt
+{% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ iam_dns_name }}
 {% endif %}
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/auth/realms/bimdata"]
@@ -152,6 +180,9 @@ services:
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ api_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -228,6 +259,9 @@ services:
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ connect_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -279,6 +313,9 @@ services:
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ platform_back_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -312,6 +349,9 @@ services:
       - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
       - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ platform_front_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -327,6 +367,9 @@ services:
       - 80
     environment:
       - VIRTUAL_HOST={{ documentation_dns_name }}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ documentation_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -353,6 +396,9 @@ services:
       - WORKERS_NB={{ archive_workers_nb }}
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ archive_dns_name }}
 {% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
@@ -404,6 +450,9 @@ services:
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ marketplace_back_dns_name }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -433,6 +482,9 @@ services:
 
       - CLIENT_ID={{ marketplace_front_client_id }}
 
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ marketplace_front_dns_name }}
+{% endif %}
   restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
