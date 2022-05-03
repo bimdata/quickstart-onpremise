@@ -1,5 +1,5 @@
 ---
-- name: "Check for incopatibility in the TLS configuration."
+- name: "Check for incompatibilities in the TLS configuration."
   fail:
     msg: "Only one of 'tls_enabled', 'tls_external' and 'tls_acme' can be set to true in the same time."
   when: _checklist | select() | list | length > 1
