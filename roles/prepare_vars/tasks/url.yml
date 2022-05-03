@@ -1,4 +1,14 @@
 ---
+- name: "Check for incopatibility in the TLS configuration."
+  fail:
+    msg: "Only one of 'tls_enabled', 'tls_external' and 'tls_acme' can be set to true in the same time."
+  when: _checklist | select() | list | length > 1
+  vars:
+    _checklist:
+      - "{{ tls_enabled | bool }}"
+      - "{{ tls_external | bool }}"
+      - "{{ tls_acme | bool }}"
+
 - name: "Check if all needed variables for TLS are defined if needed."
   assert:
     that:
@@ -79,18 +89,17 @@
 
 - name: "Set URL variable."
   set_fact:
-    api_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ api_dns_name }}"
-    iam_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ iam_dns_name }}"
-    connect_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ connect_dns_name }}"
-    platform_back_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
-    platform_front_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
-    rabbitmq_admin_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
-    documentation_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ documentation_dns_name }}"
-    archive_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ archive_dns_name }}"
-    marketplace_back_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
-    marketplace_front_url: "{{ (tls_enabled or tls_external) | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
+    api_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ api_dns_name }}"
+    iam_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ iam_dns_name }}"
+    connect_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ connect_dns_name }}"
+    platform_back_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
+    platform_front_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
+    rabbitmq_admin_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
+    documentation_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ documentation_dns_name }}"
+    archive_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ archive_dns_name }}"
+    marketplace_back_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
+    marketplace_front_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
     needed_cert_tls: "{{
       ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
       + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
-      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], []))
-    }}"
+      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], []))}}"

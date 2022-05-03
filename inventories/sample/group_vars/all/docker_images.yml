@@ -17,6 +17,10 @@ docker_postgres_tag: "{{ db_pg_version }}-alpine"
 docker_nginx_image: nginxproxy/nginx-proxy
 docker_nginx_tag: alpine
 
+# Only need when tls_acme: true
+docker_acme_companion_image: nginxproxy/acme-companion
+docker_acme_companion_tag: 2.2
+
 docker_bimdata_tag: 20211208
 
 # Use private registry

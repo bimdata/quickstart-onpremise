@@ -30,18 +30,43 @@
     loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."
 
-- when: not tls_enabled | bool
+# ACME
+- name: "ACME related tasks if needed."
+  when: tls_acme | bool
   block:
-  - name: "Delete the app TLS key."
+  - name: "Create needed acme directory."
     file:
-      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
-      state: absent
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+    loop:
+      - "{{ bimdata_docker_volume_path }}/web/acme"
+      - "{{ bimdata_docker_volume_path }}/web/html"
+  - name: "Check if acme cert alreaxy exist."
+    stat:
+      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.chain.pem"
+      get_checksum: false
+    register: _acme_existing_certs
     loop: "{{ needed_cert_tls }}"
-    notify: "Restart nginx."
+# End of block
 
-  - name: "Delete the app TLS cert."
+- when:
+  - not tls_enabled | bool
+  - not tls_acme | bool
+  block:
+  - name: "Retrieve TLS directory content."
+    find:
+      path: "{{ bimdata_docker_volume_path }}/web/certs/"
+      file_type: any
+      hidden: true
+    register: _certs_dir
+
+  - name: "Delete old TLS files."
     file:
-      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
+      path: "{{ item.path }}"
       state: absent
-    loop: "{{ needed_cert_tls }}"
+    loop: "{{ _certs_dir.files }}"
+    loop_control:
+      label: "{{ item.path }}"
     notify: "Restart nginx."
+# End of block

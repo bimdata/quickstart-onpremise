@@ -1,4 +1,13 @@
 ---
+- name: "Wait for ACME certificates if needed."
+  wait_for:
+    path: "{{ item }}"
+    sleep: 10
+  loop: "{{ _acme_existing_certs.results | selectattr('stat.exists', '==', false) | map(attribute='invocation.module_args.path') }}"
+  when:
+    - tls_acme | bool
+    - _acme_missing_certs | length
+
 - name: "Copy some init scripts."
   copy:
     src: "scripts/{{ item }}"

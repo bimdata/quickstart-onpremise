@@ -1,0 +1,5 @@
+---
+- name: "Define TLS default value if unset."
+  set_fact:
+    tls_acme: false
+  when: tls_acme is not defined
