@@ -102,4 +102,4 @@
     needed_cert_tls: "{{
       ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
       + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
-      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], []))}}"
+      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], [])) }}"

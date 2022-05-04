@@ -37,6 +37,7 @@ swift_enabled: false
 swift_auth_url: ""
 swift_tenant_id: ""
 swift_tenant_name: ""
+swift_region_name: ""
 swift_username: ""
 swift_password: "{{ vault_swift_password }}"
 swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
