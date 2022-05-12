@@ -3,3 +3,8 @@
   set_fact:
     tls_acme: false
   when: tls_acme is not defined
+
+- name: "Define offline default value if unset."
+  set_fact:
+    install_offline: false
+  when: install_offline is not defined
