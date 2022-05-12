@@ -427,20 +427,20 @@ services:
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
     environment:
-      - VIRTUAL_HOST={{ marketplace_back_dns_name }}
       - ENV={{ app_env }}
-
+      - VIRTUAL_HOST={{ marketplace_back_dns_name }}
+      - DB_HOST={{ db_marketplace_host }}
+      - DB_PORT={{ db_marketplace_port }}
+      - DB_NAME={{ db_marketplace_name }}
+      - DB_USER={{ db_marketplace_user }}
+      - DB_PASSWORD={{ db_marketplace_password }}
       - ALLOWED_HOSTS="{{ marketplace_back_dns_name }}"
       - MASTER_TOKEN="{{ master_token }}"
-      - MARKETPLACE_BACK_URL="{{ marketplace_back_url }}"
-      - MARKETPLACE_URL="{{ marketplace_url }}"
-      - OIDC_RP_SIGN_ALGO="RS256"
-
-      - OIDC_OP_ISSUER="{{ iam_url }}"
+      - MARKETPLACE_URL="{{ marketplace_front_url }}"
+      - IAM_URL="{{ iam_url }}"
       - API_URL="{{ api_url }}"
-      - APP_URL="{{ platform_url }}"
       - SECRET_KEY="{{ marketplace_back_secret_key }}"
-
+      - ADMIN_INTERFACE=true
 {% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
@@ -450,11 +450,6 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
-      - DB_HOST={{ db_marketplace_host }}
-      - DB_PORT={{ db_marketplace_port }}
-      - DB_NAME={{ db_marketplace_name }}
-      - DB_USER={{ db_marketplace_user }}
-      - DB_PASSWORD={{ db_marketplace_password }}
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
@@ -477,7 +472,7 @@ services:
     container_name: marketplace-front
     image: {{ docker_marketplace_front_image }}:{{ docker_marketplace_front_tag }}
     expose:
-      - 8080
+      - 8000
     environment:
       - VIRTUAL_HOST={{ marketplace_front_dns_name }}
       - ENV={{ app_env }}
@@ -486,14 +481,14 @@ services:
       - OIDC_ISSUER={{ iam_url }}/auth/realms/bimdata
       - API_URL={{ api_url }}
       - BACKEND_URL={{ marketplace_back_url }}
-      - WORKERS_NB={{ Marketplace_front_workers }}
+      - WORKERS_NB={{ marketplace_front_workers }}
 
       - CLIENT_ID={{ marketplace_front_client_id }}
 
 {% if tls_acme | bool %}
       - LETSENCRYPT_HOST={{ marketplace_front_dns_name }}
 {% endif %}
-  restart: unless-stopped
+    restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}

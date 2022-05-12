@@ -18,6 +18,10 @@ nginx_custom_conf: |
 
   gzip_types application/octet-stream;
 
+  proxy_buffer_size          128k;
+  proxy_buffers              4 256k;
+  proxy_busy_buffers_size    256k;
+
 nginx_vhost_override:
   - vhost: "{{ api_dns_name }}"
     config: |
@@ -49,8 +53,3 @@ nginx_vhost_override:
         }
       }
       {% endif %}
-  - vhost: "{{ iam_dns_name }}"
-    config: |
-      proxy_buffer_size          128k;
-      proxy_buffers              4 256k;
-      proxy_busy_buffers_size    256k;
