@@ -434,12 +434,12 @@ services:
       - DB_NAME={{ db_marketplace_name }}
       - DB_USER={{ db_marketplace_user }}
       - DB_PASSWORD={{ db_marketplace_password }}
-      - ALLOWED_HOSTS="{{ marketplace_back_dns_name }}"
-      - MASTER_TOKEN="{{ master_token }}"
-      - MARKETPLACE_URL="{{ marketplace_front_url }}"
-      - IAM_URL="{{ iam_url }}"
-      - API_URL="{{ api_url }}"
-      - SECRET_KEY="{{ marketplace_back_secret_key }}"
+      - ALLOWED_HOSTS={{ marketplace_back_dns_name }}
+      - MASTER_TOKEN={{ master_token }}
+      - MARKETPLACE_URL={{ marketplace_front_url }}
+      - IAM_URL={{ iam_url }}
+      - API_URL={{ api_url }}
+      - SECRET_KEY={{ marketplace_back_secret_key }}
       - ADMIN_INTERFACE=true
 {% if smtp_host is defined and smtp_host | length %}
       - SMTP_HOST={{ smtp_host }}
