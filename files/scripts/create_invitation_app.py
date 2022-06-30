@@ -82,6 +82,9 @@ except App.DoesNotExist:
     marketplace_app.scopes.set(Scope.objects.all())
     changed = True
 
+for app in [invitation_app, platform_app, marketplace_app]:
+    request(verb="put", endpoint=f"/clients/{app.keycloak_id}", json={"consentRequired": False})
+
 # Keycloak config
 data = {
     "config": {
