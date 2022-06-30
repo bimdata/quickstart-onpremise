@@ -77,8 +77,9 @@ services:
     image: {{ docker_iam_image }}:{{ docker_iam_tag }}
     expose:
       - 8080
+    command: --import-realm
     volumes:
-      - {{ bimdata_docker_volume_path }}/keycloak:/opt/custom:ro
+      - {{ bimdata_docker_volume_path }}/keycloak:/opt/keycloak/data/import:ro
 {% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
@@ -86,18 +87,19 @@ services:
       - VIRTUAL_HOST={{ iam_dns_name }}
       - VIRTUAL_PORT=8080
       - ENV={{ app_env }}
-      - DB_VENDOR=POSTGRES
-      - PROXY_ADDRESS_FORWARDING=true
-      - DB_ADDR={{ db_iam_host }}
-      - DB_PORT={{ db_iam_port }}
-      - DB_SCHEMA=public
-      - DB_DATABASE={{ db_iam_name }}
-      - DB_USER={{ db_iam_user }}
-      - DB_PASSWORD={{ db_iam_password }}
-      - KEYCLOAK_HOSTNAME={{ iam_dns_name }}
-      - KEYCLOAK_USER={{ iam_user }}
-      - KEYCLOAK_PASSWORD={{ iam_password }}
-      - KEYCLOAK_IMPORT=/opt/custom/bimdata-realm.json
+      - KC_HOSTNAME={{ iam_dns_name }}
+      - KC_PROXY=edge
+      - KC_DB_SCHEMA=public
+      - KC_DB_URL_DATABASE={{ db_iam_name }}
+      - KC_DB_USERNAME={{ db_iam_user }}
+      - KC_DB_PASSWORD={{ db_iam_password }}
+      - KC_DB_URL_HOST={{ db_iam_host }}
+      - KC_DB_URL_PORT={{ db_iam_port }}
+      - KEYCLOAK_ADMIN={{ iam_user }}
+      - KEYCLOAK_ADMIN_PASSWORD={{ iam_password }}
+{% if not tls_enabled and not tls_external and not tls_acme %}
+      - KC_HOSTNAME_STRICT_HTTPS=false
+{% endif %}
 {% if tls_enabled  | bool %}
       - X509_CA_BUNDLE=/opt/onprem-ca.crt
 {% endif %}
@@ -109,7 +111,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 1m
+      start_period: 30s
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}

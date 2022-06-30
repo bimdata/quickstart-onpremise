@@ -26,7 +26,7 @@
 
 - name: "Wait for IAM to respond."
   uri:
-    url: "{{ iam_url }}"
+    url: "{{ iam_url }}/auth/"
     method: GET
     status_code: 200
     ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
