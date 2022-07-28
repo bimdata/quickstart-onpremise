@@ -28,6 +28,7 @@
       {{ item | split(':') | last }} {{ item | split(':') | first }}
       {% endfor %}
     marker: "# Ansible managed {mark}"
+    unsafe_writes: true
     state: present
   when: 
     - ansible_use_extra_hosts is defined
