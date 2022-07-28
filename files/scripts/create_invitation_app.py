@@ -35,7 +35,9 @@ if idp.secret != secret or idp.invitation_url != f"{connect_url}/api/invitation"
     changed = True
 
 # create invitation app
-if not App.objects.filter(client_id=invitation_client_id).exists():
+try:
+    invitation_app = App.objects.get(client_id=invitation_client_id)
+except App.DoesNotExist:
     invitation_app = App.objects.create(
         name="BIMData Connect IDP",
         redirect_uris=[connect_url],
