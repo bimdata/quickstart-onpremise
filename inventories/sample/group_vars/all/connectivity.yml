@@ -16,3 +16,7 @@ bastion_ssh_user: "{{ lookup('env', 'USER') }}"
 http_proxy: ""   # http://username:password@proxy.company.tld:PORT/
 https_proxy: "{{ http_proxy }}"  # https://username:password@proxy.company.tld:PORT/
 no_proxy: []     # List of domains that do not need to be access through proxy
+
+# Extra hosts, this will edit /etc/hosts on ansible machine to add the same value
+# as in docker_extra_hosts, it should not be use but can be usefull for testing
+ansible_use_extra_hosts: false

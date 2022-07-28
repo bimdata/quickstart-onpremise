@@ -15,3 +15,20 @@
 - name: "Set a fact to be able to easly check if it's the first deployment."
   set_fact:
     _first_deploy: "{{ not _compose_file.stat.exists }}"
+
+- name: "Configure local /etc/hosts if needed."
+  delegate_to: localhost
+  connection: local
+  delegate_facts: true
+  run_once: true
+  blockinfile:
+    path: /etc/hosts
+    block: |-
+      {% for item in docker_extra_hosts %}
+      {{ item | split(':') | last }} {{ item | split(':') | first }}
+      {% endfor %}
+    marker: "# Ansible managed {mark}"
+    state: present
+  when: 
+    - ansible_use_extra_hosts is defined
+    - ansible_use_extra_hosts | bool
