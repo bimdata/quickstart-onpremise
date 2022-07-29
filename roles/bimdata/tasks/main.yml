@@ -94,5 +94,10 @@
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
   register: _compose_up
 
+# Service may need to restart before we can talk the API / other for the init
+# Like if CA change
+- name: Flush handlers
+  meta: flush_handlers
+
 - name: "Include tasks for initialization."
   include_tasks: apps-init.yml
