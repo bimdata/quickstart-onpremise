@@ -79,9 +79,11 @@ services:
       - 8080
     command: --import-realm
     volumes:
-      - {{ bimdata_docker_volume_path }}/keycloak:/opt/keycloak/data/import:ro
+      - {{ bimdata_docker_volume_path }}/keycloak/realms:/opt/keycloak/data/import:ro
 {% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/keycloak/scripts:/opt/keycloak/scripts:ro
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+    entrypoint: /opt/keycloak/scripts/entrypoint.sh
 {% endif %}
     environment:
       - VIRTUAL_HOST={{ iam_dns_name }}
