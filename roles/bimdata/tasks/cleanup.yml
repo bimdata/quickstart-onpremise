@@ -1,0 +1,7 @@
+---
+- name: "Remove legacy unused files/directory."
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"

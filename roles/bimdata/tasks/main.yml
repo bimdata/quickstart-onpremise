@@ -6,7 +6,8 @@
     mode: 0755
   loop:
     - "{{ bimdata_path }}/scripts"
-    - "{{ bimdata_docker_volume_path }}/keycloak"
+    - "{{ bimdata_docker_volume_path }}/keycloak/realms"
+    - "{{ bimdata_docker_volume_path }}/keycloak/scripts"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
@@ -74,7 +75,7 @@
 - name: "Copy keycloak realm."
   template:
     src: "keycloak/bimdata-realm.json.j2"
-    dest: "{{ bimdata_docker_volume_path }}/keycloak/bimdata-realm.json"
+    dest: "{{ bimdata_docker_volume_path }}/keycloak/realms/bimdata-realm.json"
     mode: 0640
   notify: "Restart iam."
 
@@ -96,3 +97,6 @@
 
 - name: "Include tasks for initialization."
   include_tasks: apps-init.yml
+
+- name: "Include tasks for cleanup."
+  include_tasks: cleanup.yml
