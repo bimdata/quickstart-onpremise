@@ -8,12 +8,8 @@
 
 # Variables needed to established connection are all set, we can gather the facts
 # Some are needed to set other varibles
-- name: "Gather needed ansible facts."
+- name: "Gather ansible facts."
   setup:
-    gather_subset:
-      - '!all'
-      - hardware
-      - network
 
 - name: "Include tasks to compute proxy variables."
   include_tasks: proxy.yml
