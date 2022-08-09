@@ -1,0 +1,48 @@
+#! /bin/bash
+
+set -euo pipefail
+
+archive_path="./files/offline/docker"
+
+src_private_repos=docker-registry.bimdata.io/on-premises
+src_private_tag=20220702
+
+app_images=(
+  rabbitmq:3.8-management-alpine
+  nginxproxy/nginx-proxy:alpine
+  nginxproxy/acme-companion:2.2
+  ${src_private_repos}/api:${src_private_tag}
+  ${src_private_repos}/connect:${src_private_tag}
+  ${src_private_repos}/platform:${src_private_tag}
+  ${src_private_repos}/platform_back:${src_private_tag}
+  ${src_private_repos}/documentation:${src_private_tag}
+  ${src_private_repos}/archive:${src_private_tag}
+  ${src_private_repos}/marketplace_back:${src_private_tag}
+  ${src_private_repos}/marketplace:${src_private_tag}
+)
+
+db_images=(postgres:13-alpine)
+
+worker_images=(
+  ${src_private_repos}/workers:${src_private_tag}
+  ${src_private_repos}/viewer_360:${src_private_tag}
+  ${src_private_repos}/xkt_worker:${src_private_tag}
+)
+
+app_archive_path="${archive_path}/docker-app-images-${src_private_tag}.tar.bz2"
+db_archive_path="${archive_path}/docker-bdd-images-${src_private_tag}.tar.bz2"
+worker_archive_path="${archive_path}/docker-worker-images-${src_private_tag}.tar.bz2"
+
+echo "Pulling the images..."
+for img in ${app_images[@]} ${db_images[@]} ${worker_images[@]} ; do
+    sudo docker pull ${img}
+done
+
+echo "Creating app archive in ${app_archive_path}..."
+sudo docker save ${app_images[@]} > ${app_archive_path}
+
+echo "Creating db archive in ${db_archive_path}..."
+sudo docker save ${db_images[@]} > ${db_archive_path}
+
+echo "Creating worker archive in ${worker_archive_path}..."
+sudo docker save ${worker_images[@]} > ${worker_archive_path}
