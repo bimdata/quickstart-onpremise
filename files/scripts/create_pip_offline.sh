@@ -12,7 +12,12 @@ EOF
 )
 
 echo -n "Creating needed virtualenv…"
+# Delete existing venv, existing cache can cause issues
+if [[ -d "${WORKING_DIR}/venv" ]] ; then
+  rm -r "${WORKING_DIR}/venv"
+fi
 mkdir -p "${WORKING_DIR}/pip-archives"
+
 echo "${REQUIREMENTS}" > "${WORKING_DIR}/requirements.txt"
 virtualenv -p python3 "${WORKING_DIR}/venv"
 echo "Ok."
