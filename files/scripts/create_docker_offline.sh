@@ -12,6 +12,7 @@ app_images=(
   nginxproxy/nginx-proxy:alpine
   nginxproxy/acme-companion:2.2
   ${src_private_repos}/api:${src_private_tag}
+  ${src_private_repos}/iam:${src_private_tag}
   ${src_private_repos}/connect:${src_private_tag}
   ${src_private_repos}/platform:${src_private_tag}
   ${src_private_repos}/platform_back:${src_private_tag}
@@ -39,10 +40,10 @@ for img in ${app_images[@]} ${db_images[@]} ${worker_images[@]} ; do
 done
 
 echo "Creating app archive in ${app_archive_path}..."
-sudo docker save ${app_images[@]} > ${app_archive_path}
+sudo docker save ${app_images[@]} | bzip2 > ${app_archive_path}
 
-echo "Creating db archive in ${db_archive_path}..."
-sudo docker save ${db_images[@]} > ${db_archive_path}
+# echo "Creating db archive in ${db_archive_path}..."
+sudo docker save ${db_images[@]} | bzip2 > ${db_archive_path}
 
-echo "Creating worker archive in ${worker_archive_path}..."
-sudo docker save ${worker_images[@]} > ${worker_archive_path}
+# echo "Creating worker archive in ${worker_archive_path}..."
+sudo docker save ${worker_images[@]} | bzip2 > ${worker_archive_path}

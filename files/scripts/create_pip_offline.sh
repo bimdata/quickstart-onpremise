@@ -6,6 +6,7 @@ WORKING_DIR="/tmp/bimdata"
 
 REQUIREMENTS=$(cat <<EOF
 pip
+selinux
 docker-compose==1.29.2
 EOF
 )
