@@ -7,7 +7,6 @@
   loop:
     - "{{ bimdata_path }}/scripts"
     - "{{ bimdata_docker_volume_path }}/keycloak/realms"
-    - "{{ bimdata_docker_volume_path }}/keycloak/scripts"
     - "{{ bimdata_docker_volume_path }}/web/conf.d"
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
