@@ -30,15 +30,6 @@
     loop: "{{ needed_cert_tls }}"
     notify: "Restart nginx."
 
-  - name: "Copy keycloak custom entrypoint to manage CA import."
-    copy:
-      src: files/scripts/keycloak-entrypoint.sh
-      dest: "{{ bimdata_docker_volume_path }}/keycloak/scripts/entrypoint.sh"
-      owner: 1000
-      group: root
-      mode: 0740
-    notify: "Restart iam."
-
 # ACME
 - name: "ACME related tasks if needed."
   when: tls_acme | bool
