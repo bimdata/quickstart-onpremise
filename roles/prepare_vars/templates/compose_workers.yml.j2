@@ -219,3 +219,57 @@ workers-preview:
 {% if docker_use_extra_hosts | bool %}
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
+
+workers-dwg-properties:
+  image: {{ docker_workers_dwg_image }}:{{ docker_workers_dwg_tag }}
+  deploy:
+    replicas: {{ workers_dwg_properties_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_dwg_properties_cpu }}"
+        memory: "{{ workers_dwg_properties_ram }}"
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL={{ api_url }}
+    - ENV={{ app_env }}
+    - MASTER_TOKEN={{ master_token }}
+    - WORKER_NAME=properties
+{% if tls_enabled  | bool %}
+    - CA_CERT=/opt/onprem-ca.crt
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+  restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+
+workers-dwg-geometries:
+  image: {{ docker_workers_dwg_image }}:{{ docker_workers_dwg_tag }}
+  deploy:
+    replicas: {{ workers_dwg_geometries_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_dwg_geometries_cpu }}"
+        memory: "{{ workers_dwg_geometries_ram }}"
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL={{ api_url }}
+    - ENV={{ app_env }}
+    - MASTER_TOKEN={{ master_token }}
+    - WORKER_NAME=geometries
+{% if tls_enabled  | bool %}
+    - CA_CERT=/opt/onprem-ca.crt
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+  restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}

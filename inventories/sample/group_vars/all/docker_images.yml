@@ -74,3 +74,6 @@ docker_workers_xkt_tag: "{{ docker_bimdata_tag }}"
 
 docker_workers_preview_image: "{{ docker_private_registry }}/on-premises/viewer_360"
 docker_workers_preview_tag: "{{ docker_bimdata_tag }}"
+
+docker_workers_dwg_image: "{{ docker_private_registry }}/on-premises/dwg_worker"
+docker_workers_dwg_tag: "{{ docker_bimdata_tag }}"

@@ -122,6 +122,15 @@ workers_preview_instance: 1
 workers_preview_cpu: 1
 workers_preview_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
+## dwg
+workers_dwg_properties_instance: 1
+workers_dwg_properties_cpu: 1
+workers_dwg_properties_ram: "{{ ansible_memtotal_mb / 2 }}m"
+
+workers_dwg_geometries_instance: 1
+workers_dwg_geometries_cpu: 1
+workers_dwg_geometries_ram: "{{ ansible_memtotal_mb / 2 }}m"
+
 # Misc
 uuid_namespace: "{{ app_dns_domain | to_uuid }}"
 master_token: "{{ vault_master_token }}"
