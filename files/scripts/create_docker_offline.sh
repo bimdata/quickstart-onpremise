@@ -28,6 +28,7 @@ worker_images=(
   ${src_private_repos}/workers:${src_private_tag}
   ${src_private_repos}/viewer_360:${src_private_tag}
   ${src_private_repos}/xkt_worker:${src_private_tag}
+  ${src_private_repos}/dwg_worker:${src_private_tag}
 )
 
 app_archive_path="${archive_path}/docker-app-images-${src_private_tag}.tar.bz2"
