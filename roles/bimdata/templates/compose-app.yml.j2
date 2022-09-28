@@ -359,7 +359,7 @@ services:
       - VUE_APP_API_BASE_URL={{ api_url }}
       - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
       - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
-      - VUE_APP_MAPTILER_TOKEN= {{ maptiler_token | default('Woyh7tiaYohpinpQkArU') }}
+      - VUE_APP_MAPTILER_TOKEN={{ maptiler_token | default('Woyh7tiaYohpinpQkArU') }}
       - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
       - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
       - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
