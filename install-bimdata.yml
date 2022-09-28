@@ -19,6 +19,7 @@
   roles:
     - role: pg_upgrade
       tags: ['database', 'db']
+      when: not use_external_db | bool
     - role: bimdata_db
       tags: ['database', 'db']
       when: inventory_hostname not in groups['app']

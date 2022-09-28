@@ -252,6 +252,7 @@ services:
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
       - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
 {% if swift_enabled | bool and swift_connect_container_name | length %}

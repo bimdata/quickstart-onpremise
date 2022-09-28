@@ -5,11 +5,19 @@ docker_compose_apt_dependencies:
   - python3-setuptools
   - python3-wheel
 
+# Centos 7 and derivatives
 docker_compose_yum_dependencies:
   - python3-pip
   - python3-setuptools
   - python3-wheel
   - python-virtualenv
+
+# Centos 8 and derivatives
+docker_compose_dnf_dependencies:
+  - python3-pip
+  - python3-setuptools
+  - python3-wheel
+  - python3-virtualenv
 
 docker_compose_pkg_name: docker-compose
 docker_compose_pkg_version: "==1.29.2"
