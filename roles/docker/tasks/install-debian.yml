@@ -8,7 +8,7 @@
 
 - name: "Add Docker key."
   apt_key:
-    url: "{{ docker_repo_key_url }}"
+    url: "{{ docker_apt_repo_key_url }}"
     state: present
   environment: "{{ proxy_env }}"
 
