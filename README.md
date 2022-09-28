@@ -176,7 +176,7 @@ Object storage (Swift):
 | uuid_namespace                             | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                               | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
 | app_env                                    | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
-| mapbox_token                               | "{{ vault_mapbox_token }}"                                               | Token for authentication on the Mapbox API.                      |
+| maptiler_token                             | Undefined                                                                | Token for authentication on the Maptiler API.                    |
 
 ### connectivity.yml
 #### Ansible connectivity

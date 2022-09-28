@@ -2,8 +2,6 @@
 vault_docker_private_registry_password: CHANGEME-BY-YOUR-PASSWORD-ON-THE-REGISTRY
 
 vault_master_token: CHANGEME-BY-SOMETHING-SECURE
-# Create a mapbox token: https://docs.mapbox.com/help/tutorials/get-started-tokens-api/#creating-temporary-tokens
-vault_mapbox_token: CHANGEME-BY-YOUR-MAPBOX-TOKEN
 
 vault_db_api_password: CHANGEME-BY-SOMETHING-SECURE
 vault_db_connect_password: CHANGEME-BY-SOMETHING-SECURE
