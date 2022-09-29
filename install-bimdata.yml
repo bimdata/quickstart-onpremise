@@ -22,7 +22,9 @@
       when: not use_external_db | bool
     - role: bimdata_db
       tags: ['database', 'db']
-      when: inventory_hostname not in groups['app']
+      when: 
+        - not use_external_db | bool
+        - inventory_hostname not in groups['app']
 
 - hosts: app
   gather_facts: false
