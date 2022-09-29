@@ -46,19 +46,19 @@ swift_api_container_name: ""
 swift_connect_container_name: ""
 
 # api
-api_secret_key: "{{ vault_api_secret_key }}"  # Change me in the vault
+api_secret_key: "{{ vault_api_secret_key }}" # Change me in the vault
 
 # connect
-connect_secret_key: "{{ vault_connect_secret_key }}"  # Change me in the vault
+connect_secret_key: "{{ vault_connect_secret_key }}" # Change me in the vault
 connect_client_id: "{{ 'connect_client_id' | to_uuid(namespace=uuid_namespace) }}"
 connect_client_secret: "{{ 'connect_client_secret' | to_uuid(namespace=uuid_namespace) }}"
-connect_invitation_secret: "{{ vault_connect_invitation_secret }}"  # Change me in the vault
+connect_invitation_secret: "{{ vault_connect_invitation_secret }}" # Change me in the vault
 connect_invitation_client: "{{ 'connect_invitation_client' | to_uuid(namespace=uuid_namespace) }}"
-connect_invitation_client_secret: "{{ vault_connect_invitation_client_secret }}"  # Change me in the vault
+connect_invitation_client_secret: "{{ vault_connect_invitation_client_secret }}" # Change me in the vault
 
 # platform back
-platform_back_secret_key: "{{ vault_platform_back_secret_key }}"  # Change me in the vault
-platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}"  # Change me in the vault
+platform_back_secret_key: "{{ vault_platform_back_secret_key }}" # Change me in the vault
+platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}" # Change me in the vault
 
 # platform
 platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"
@@ -67,7 +67,7 @@ platform_front_project_status_limit_active: "15"
 
 # iam
 iam_user: "admin"
-iam_password: "{{ vault_iam_password }}"  # Change me in the vault
+iam_password: "{{ vault_iam_password }}" # Change me in the vault
 
 # Archive
 archive_workers_nb: 2
@@ -75,7 +75,7 @@ archive_workers_nb: 2
 # Marketplace
 marketplace_enabled: false
 # Marketplace_back
-marketplace_back_secret_key: "{{ vault_marketplace_back_secret_key }}"  # Change me in the vault
+marketplace_back_secret_key: "{{ vault_marketplace_back_secret_key }}" # Change me in the vault
 
 # Marketplace_front
 marketplace_front_workers: 2
@@ -131,8 +131,12 @@ workers_dwg_geometries_instance: 1
 workers_dwg_geometries_cpu: 1
 workers_dwg_geometries_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
+# Map
+# By default it uses our default token, uncomment and specify your token if needed
+# https://docs.maptiler.com/cloud/api/authentication-key/
+# maptiler_token: ""
+
 # Misc
 uuid_namespace: "{{ app_dns_domain | to_uuid }}"
 master_token: "{{ vault_master_token }}"
 app_env: on-premises
-mapbox_token: "{{ vault_mapbox_token }}"

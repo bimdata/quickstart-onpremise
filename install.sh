@@ -362,7 +362,6 @@ if [[ "$conf_smtp" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
   config_var_value "Debug to email" "debug_mail_to"
 fi
 
-config_var_value "Mapbox token (https://docs.mapbox.com/help/tutorials/get-started-tokens-api/#creating-temporary-tokens)" "vault_mapbox_token"
 config_var_value "Maximum upload size" "max_upload_size"
 
 # Database configuration
