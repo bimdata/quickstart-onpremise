@@ -170,6 +170,7 @@ Object storage (Swift):
 | workers_merge_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_xkt_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
 | workers_xkt_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_task_timeout                   | 180                                                                      | Number of second before timeout in the xkt process.              |
 | workers_preview_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
 | workers_preview_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 ||||

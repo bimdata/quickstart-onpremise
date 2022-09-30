@@ -116,6 +116,7 @@ workers_merge_ram: "{{ ansible_memtotal_mb / 2 }}m"
 workers_xkt_instance: 1
 workers_xkt_cpu: 1
 workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_xkt_task_timeout: 180
 
 ## preview
 workers_preview_instance: 1
