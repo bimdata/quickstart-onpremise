@@ -182,7 +182,7 @@ workers-xkt:
     - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - QUEUE=xkt
-{% if workers_xkt_task_timeout is defined and workers_xkt_task_timeout | length  %}
+{% if workers_xkt_task_timeout is defined %}
     - TASK_TIMEOUT={{ workers_xkt_task_timeout }}
 {% endif %}
     - MASTER_TOKEN={{ master_token }}
