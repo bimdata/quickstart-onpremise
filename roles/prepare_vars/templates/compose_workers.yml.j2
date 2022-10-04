@@ -183,7 +183,7 @@ workers-xkt:
     - ENV={{ app_env }}
     - QUEUE=xkt
 {% if workers_xkt_task_timeout is defined and workers_xkt_task_timeout | length  %}
-    - TASK_TIMEOUT="{{ workers_xkt_task_timeout }}"
+    - TASK_TIMEOUT={{ workers_xkt_task_timeout }}
 {% endif %}
     - MASTER_TOKEN={{ master_token }}
 {% if tls_enabled  | bool %}
