@@ -108,6 +108,7 @@ data = {
         "issuer": f"{connect_url}",
         "defaultScope": "openid profile email",
         "jwksUrl": f"{connect_url}/jwks",
+        "syncMode": "FORCE",
     },
     "alias": "bimdataconnect",
     "providerId": "oidc",
