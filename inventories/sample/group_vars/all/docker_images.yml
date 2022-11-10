@@ -60,9 +60,6 @@ docker_workers_gltf_tag: "{{ docker_bimdata_tag }}"
 docker_workers_extract_image: "{{ docker_private_registry }}/on-premises/workers"
 docker_workers_extract_tag: "{{ docker_bimdata_tag }}"
 
-docker_workers_extract_quantities_image: "{{ docker_private_registry }}/on-premises/workers"
-docker_workers_extract_quantities_tag: "{{ docker_bimdata_tag }}"
-
 docker_workers_svg_image: "{{ docker_private_registry }}/on-premises/workers"
 docker_workers_svg_tag: "{{ docker_bimdata_tag }}"
 
