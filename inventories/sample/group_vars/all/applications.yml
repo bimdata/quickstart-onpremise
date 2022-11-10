@@ -97,11 +97,6 @@ workers_extract_instance: 1
 workers_extract_cpu: 1
 workers_extract_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
-## extract with quantities
-workers_extract_quantities_instance: 1
-workers_extract_quantities_cpu: 1
-workers_extract_quantities_ram: "{{ ansible_memtotal_mb / 2 }}m"
-
 ## svg
 workers_svg_instance: 1
 workers_svg_cpu: 1

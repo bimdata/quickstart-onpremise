@@ -82,34 +82,6 @@ workers-extract:
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
-workers-extract-with-quantities:
-  image: {{ docker_workers_extract_quantities_image }}:{{ docker_workers_extract_quantities_tag }}
-  deploy:
-    replicas: {{ workers_extract_quantities_instance }}
-    resources:
-      limits:
-        cpus: "{{ workers_extract_quantities_cpu }}"
-        memory: "{{ workers_extract_quantities_ram }}"
-  environment:
-    - WORKER_SCRIPT=workers.extract_with_quantities
-    - RABBITMQ_HOST={{ rabbitmq_host }}
-    - RABBITMQ_PORT={{ rabbitmq_port }}
-    - RABBITMQ_USER={{ rabbitmq_user }}
-    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
-    - ENV={{ app_env }}
-    - MASTER_TOKEN={{ master_token }}
-    - CPU_ALLOCATED={{ workers_extract_quantities_cpu }}
-{% if tls_enabled  | bool %}
-    - CA_CERT=/opt/onprem-ca.crt
-  volumes:
-    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
-{% endif %}
-  restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-  extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-
 workers-svg:
   image: {{ docker_workers_svg_image }}:{{ docker_workers_svg_tag }}
   deploy:

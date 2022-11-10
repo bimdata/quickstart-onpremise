@@ -162,8 +162,6 @@ Object storage (Swift):
 | workers_gltf_cpu                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_extract_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
 | workers_extract_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_extract_quantities_instance        | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_extract_quantities_cpu             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_svg_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
 | workers_svg_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_merge_instance                     | 1                                                                        | Number of replicas deployed on *each* server.                    |
@@ -291,8 +289,6 @@ with the [db] server on these ports.
 | docker_workers_gltf_tag                 | latest                                                      | Worker GLTF docker tag.                                                   |
 | docker_workers_extract_image            | "{{ docker_private_registry }}/on-prem/workers"             | Worker extract docker image.                                              |
 | docker_workers_extract_tag              | latest                                                      | Worker extract docker tag.                                                |
-| docker_workers_extract_quantities_image | "{{ docker_private_registry }}/on-prem/workers"             | Worker extract quantities docker image.                                   |
-| docker_workers_extract_quantities_tag   | latest                                                      | Worker extract quantities docker tag.                                     |
 | docker_workers_svg_image                | "{{ docker_private_registry }}/on-prem/workers"             | Worker SVG docker image.                                                  |
 | docker_workers_svg_tag                  | latest                                                      | Worker SVG docker tag.                                                    |
 | docker_workers_merge_image              | "{{ docker_private_registry }}/on-prem/workers"             | Worker merge docker image.                                                |
