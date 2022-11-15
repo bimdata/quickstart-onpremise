@@ -367,6 +367,7 @@ services:
       - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
       - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
+      - VUE_APP_USER_IFRAME_PROFILE=true
 {% if tls_acme | bool %}
       - LETSENCRYPT_HOST={{ platform_front_dns_name }}
 {% endif %}
