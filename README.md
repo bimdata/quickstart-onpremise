@@ -156,21 +156,37 @@ Object storage (Swift):
 | marketplace_front_client_id                | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
 | marketplace_front_workers                  | 2                                                                        | Number of node workers.                                          |
 ||||
-| workers_export_instance                    | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_export_cpu                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_gltf_instance                      | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_gltf_cpu                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_extract_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_extract_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_svg_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_svg_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_merge_instance                     | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_merge_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_xkt_instance                       | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_xkt_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_xkt_task_timeout                   | 180                                                                      | Number of second before timeout in the xkt process.              |
-| workers_preview_instance                   | 1                                                                        | Number of replicas deployed on *each* server.                    |
-| workers_preview_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_export_instance:                   | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_export_cpu:                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_export_ram:                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_gltf_instance:                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_gltf_cpu:                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_gltf_ram:                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_extract_instance:                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_extract_cpu:                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_extract_ram:                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_svg_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_svg_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_svg_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_merge_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_merge_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_merge_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_xkt_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_task_timeout:                  | 180                                                                      | Number of second before timeout in the xkt process.              |
+| workers_preview_instance:                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_cpu:                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_ram:                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_2d_instance:               | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_2d_cpu:                    | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_2d_ram:                    | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_properties_instance:           | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_properties_cpu:                | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_properties_ram:                | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_geometries_instance:           | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_geometries_cpu:                | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_geometries_ram:                | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 ||||
 | uuid_namespace                             | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                               | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
@@ -253,50 +269,54 @@ with the [db] server on these ports.
 | db_server_addr               | "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}" | Use to determine the IP that will be use for Postgres connection between [app] and [db]. |
 
 ### docker_images.yml
-| Variables                               | Default value                                               | Description                                                               |
-|-----------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------------------|
-| docker_private_registry                 | "docker-registry.bimdata.io"                                | Define the registry address from which most of the images will come from. |
-| docker_registries                       |                                                             | List of registries informations use to configure docker authentication.   |
-| docker_nginx_image                      | nginxproxy/nginx-proxy                                      | Nginx docker image (use Dockerhub by default).                            |
-| docker_nginx_tag                        | alpine                                                      | Nginx docker tag.                                                         |
-| docker_acme_companion_image             | nginxproxy/acme-companion                                   | ACME companion (Needed only for Letsencrypt, use Dockerhub by default).   |
-| docker_acme_companion_tag               | 2.2                                                         | ACME companion tag.                                                       |
-| docker_rabbitmq_image                   | "rabbitmq"                                                  | RabbitMQ docker image (use Dockerhub by default).                         |
-| docker_rabbitmq_tag                     | "3.8-management-alpine"                                     | RabbitMQ docker tag.                                                      |
-| docker_postgres_image                   | "postgres"                                                  | Postgres docker image (use Dockerhub by default).                         |
-| docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                | Postgres docker tag.                                                      |
-| docker_api_image                        | "{{ docker_private_registry }}/on-prem/api"                 | API docker image.                                                         |
-| docker_api_tag                          | latest                                                      | API docker tag.                                                           |
-| docker_connect_image                    | "{{ docker_private_registry }}/on-prem/connect"             | Connect docker image.                                                     |
-| docker_connect_tag                      | latest                                                      | Connect docker tag.                                                       |
-| docker_platform_back_image              | "{{ docker_private_registry }}/on-prem/platform_back"       | Platform back docker image.                                               |
-| docker_platform_back_tag                | latest                                                      | Platform back docker tag.                                                 |
-| docker_platform_front_image             | "{{ docker_private_registry }}/on-prem/platform"            | Platform front docker image.                                              |
-| docker_platform_front_tag               | latest                                                      | Platform front docker tag.                                                |
-| docker_iam_image                        | "{{ docker_private_registry }}/on-prem/iam"                 | Keycloak docker image.                                                    |
-| docker_iam_tag                          | latest                                                      | Keycloak docker tag.                                                      |
-| docker_documentation_image              | "{{ docker_private_registry }}/on-prem/documentation"       | Documentation docker image.                                               |
-| docker_documentation_tag                | latest                                                      | Documentation docker tag.                                                 |
-| docker_archive_image                    | "{{ docker_private_registry }}/on-prem/archive"             | Archive docker image.                                                     |
-| docker_archive_tag                      | latest                                                      | Archive docker tag.                                                       |
-| docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back" | Marketplace back images.                                                  |
-| docker_marketplace_back_tag             | latest                                                      | Marketplace back docker tag.                                              |
-| docker_marketplace_front_image          | "{{ docker_private_registry }}/on-premise/marketplace"      | Marketplace front docker image.                                           |
-| docker_marketplace_front_tag            | latest                                                      | Marketplace front docker tag.                                             |
-| docker_workers_export_image             | "{{ docker_private_registry }}/on-prem/workers"             | Worker export docker image.                                               |
-| docker_workers_export_tag               | latest                                                      | Worker export docker tag.                                                 |
-| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-prem/workers"             | Worker GLTF docker image.                                                 |
-| docker_workers_gltf_tag                 | latest                                                      | Worker GLTF docker tag.                                                   |
-| docker_workers_extract_image            | "{{ docker_private_registry }}/on-prem/workers"             | Worker extract docker image.                                              |
-| docker_workers_extract_tag              | latest                                                      | Worker extract docker tag.                                                |
-| docker_workers_svg_image                | "{{ docker_private_registry }}/on-prem/workers"             | Worker SVG docker image.                                                  |
-| docker_workers_svg_tag                  | latest                                                      | Worker SVG docker tag.                                                    |
-| docker_workers_merge_image              | "{{ docker_private_registry }}/on-prem/workers"             | Worker merge docker image.                                                |
-| docker_workers_merge_tag                | latest                                                      | Worker merge docker tag.                                                  |
-| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-prem/xkt_worker"          | Worker XKT docker image.                                                  |
-| docker_workers_xkt_tag                  | latest                                                      | Worker XKT docker tag.                                                    |
-| docker_workers_preview_image            | "{{ docker_private_registry }}/on-prem/viewer_360"          | Worker preview docker image.                                              |
-| docker_workers_preview_tag              | latest                                                      | Worker preview docker tag.                                                |
+| Variables                               | Default value                                                    | Description                                                               |
+|-----------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------|
+| docker_private_registry                 | "docker-registry.bimdata.io"                                     | Define the registry address from which most of the images will come from. |
+| docker_registries                       |                                                                  | List of registries informations use to configure docker authentication.   |
+| docker_nginx_image                      | nginxproxy/nginx-proxy                                           | Nginx docker image (use Dockerhub by default).                            |
+| docker_nginx_tag                        | alpine                                                           | Nginx docker tag.                                                         |
+| docker_acme_companion_image             | nginxproxy/acme-companion                                        | ACME companion (Needed only for Letsencrypt, use Dockerhub by default).   |
+| docker_acme_companion_tag               | 2.2                                                              | ACME companion tag.                                                       |
+| docker_rabbitmq_image                   | "rabbitmq"                                                       | RabbitMQ docker image (use Dockerhub by default).                         |
+| docker_rabbitmq_tag                     | "3.8-management-alpine"                                          | RabbitMQ docker tag.                                                      |
+| docker_postgres_image                   | "postgres"                                                       | Postgres docker image (use Dockerhub by default).                         |
+| docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                     | Postgres docker tag.                                                      |
+| docker_api_image                        | "{{ docker_private_registry }}/on-premises/api"                  | API docker image.                                                         |
+| docker_api_tag                          | "{{ docker_bimdata_tag }}"                                       | API docker tag.                                                           |
+| docker_connect_image                    | "{{ docker_private_registry }}/on-premises/connect"              | Connect docker image.                                                     |
+| docker_connect_tag                      | "{{ docker_bimdata_tag }}"                                       | Connect docker tag.                                                       |
+| docker_platform_back_image              | "{{ docker_private_registry }}/on-premises/platform_back"        | Platform back docker image.                                               |
+| docker_platform_back_tag                | "{{ docker_bimdata_tag }}"                                       | Platform back docker tag.                                                 |
+| docker_platform_front_image             | "{{ docker_private_registry }}/on-premises/platform"             | Platform front docker image.                                              |
+| docker_platform_front_tag               | "{{ docker_bimdata_tag }}"                                       | Platform front docker tag.                                                |
+| docker_iam_image                        | "{{ docker_private_registry }}/on-premises/iam"                  | Keycloak docker image.                                                    |
+| docker_iam_tag                          | "{{ docker_bimdata_tag }}"                                       | Keycloak docker tag.                                                      |
+| docker_documentation_image              | "{{ docker_private_registry }}/on-premises/documentation"        | Documentation docker image.                                               |
+| docker_documentation_tag                | "{{ docker_bimdata_tag }}"                                       | Documentation docker tag.                                                 |
+| docker_archive_image                    | "{{ docker_private_registry }}/on-premises/archive"              | Archive docker image.                                                     |
+| docker_archive_tag                      | "{{ docker_bimdata_tag }}"                                       | Archive docker tag.                                                       |
+| docker_marketplace_back_image           | "{{ docker_private_registry }}/on-premise/marketplace_back"      | Marketplace back images.                                                  |
+| docker_marketplace_back_tag             | "{{ docker_bimdata_tag }}"                                       | Marketplace back docker tag.                                              |
+| docker_marketplace_front_image          | "{{ docker_private_registry }}/on-premise/marketplace"           | Marketplace front docker image.                                           |
+| docker_marketplace_front_tag            | "{{ docker_bimdata_tag }}"                                       | Marketplace front docker tag.                                             |
+| docker_workers_export_image             | "{{ docker_private_registry }}/on-premises/workers"              | Worker export docker image.                                               |
+| docker_workers_export_tag               | "{{ docker_bimdata_tag }}"                                       | Worker export docker tag.                                                 |
+| docker_workers_gltf_image               | "{{ docker_private_registry }}/on-premises/workers"              | Worker GLTF docker image.                                                 |
+| docker_workers_gltf_tag                 | "{{ docker_bimdata_tag }}"                                       | Worker GLTF docker tag.                                                   |
+| docker_workers_extract_image            | "{{ docker_private_registry }}/on-premises/workers"              | Worker extract docker image.                                              |
+| docker_workers_extract_tag              | "{{ docker_bimdata_tag }}"                                       | Worker extract docker tag.                                                |
+| docker_workers_svg_image                | "{{ docker_private_registry }}/on-premises/workers"              | Worker SVG docker image.                                                  |
+| docker_workers_svg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker SVG docker tag.                                                    |
+| docker_workers_merge_image              | "{{ docker_private_registry }}/on-premises/workers"              | Worker merge docker image.                                                |
+| docker_workers_merge_tag                | "{{ docker_bimdata_tag }}"                                       | Worker merge docker tag.                                                  |
+| docker_workers_xkt_image                | "{{ docker_private_registry }}/on-premises/xkt_worker"           | Worker XKT docker image.                                                  |
+| docker_workers_xkt_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker XKT docker tag.                                                    |
+| docker_workers_preview_image            | "{{ docker_private_registry }}/on-premises/viewer_360"           | Worker preview docker image.                                              |
+| docker_workers_preview_tag              | "{{ docker_bimdata_tag }}"                                       | Worker preview docker tag.                                                |
+| docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  | 
+| docker_workers_preview_2d_tag           | "{{ docker_bimdata_tag }}"                                       | Worker preview 2D tag.                                                    |
+| docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         | 
+| docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
 
 ### docker.yml
 | Variables                       | Default value                                                         | Description                                                                                                  |
