@@ -186,6 +186,24 @@ services:
 {% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
+{% if payment_enabled is defined and payment_enabled | bool %}
+      - PAYMENT_ENABLED=True
+      - PLATFORM_PLAN_ID={{ platform_plan_id }}
+      - PLATFORM_DATA_PACK_PLAN_ID={{ platform_data_pack_plan_id }}
+      - API_PLAN_ID={{ api_plan_id }}
+      - API_DATA_PACK_PLAN_ID={{ api_data_pack_plan_id }}
+      - PADDLE_VENDOR_ID={{ paddle_vendor_id }}
+      - PADDLE_API_AUTH_KEY={{ paddle_api_auth_key }}
+      - PADDLE_API_URL={{ paddle_api_url }}
+      - PADDLE_PUBLIC_KEY={{ paddle_public_key }}
+      - PLATFORM_FREE_USAGE={{ platform_free_usage }}
+      - PLATFORM_BASE_DATA={{ platform_base_data }}
+      - PLATFORM_DATA_PACK={{ platform_data_pack }}
+      - API_FREE_USAGE={{ api_free_usage }}
+      - API_BASE_DATA={{ api_base_data }}
+      - API_DATA_PACK={{ api_data_pack }}
+      - GED_DATA_RATIO={{ ged_data_ratio }}
+{% endif %}
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
@@ -368,6 +386,14 @@ services:
       - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
       - VUE_APP_USER_IFRAME_PROFILE=true
+{% if payment_enabled is defined and payment_enabled | bool %}
+      - VUE_APP_SUBSCRIPTION_ENABLED=True
+      - VUE_APP_PRO_PLAN_ID={{ platform_plan_id }}
+      - VUE_APP_DATAPACK_PLAN_ID={{ platform_data_pack_plan_id }}
+      - VUE_APP_PADDLE_VENDOR_ID={{ paddle_vendor_id }}
+      - VUE_APP_FREE_PLAN_STORAGE={{ platform_free_usage }}
+      - VUE_APP_PRO_PLAN_STORAGE={{ platform_base_data }}
+{% endif %}
 {% if tls_acme | bool %}
       - LETSENCRYPT_HOST={{ platform_front_dns_name }}
 {% endif %}

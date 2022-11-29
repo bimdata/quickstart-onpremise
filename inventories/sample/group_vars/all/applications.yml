@@ -32,7 +32,7 @@ bimdata_path: /opt/bimdata
 bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_venv_path: "{{ bimdata_path }}/venv"
 
-# Obect storage
+# Object storage
 swift_enabled: false
 swift_auth_url: ""
 swift_tenant_id: ""
@@ -41,6 +41,25 @@ swift_region_name: ""
 swift_username: ""
 swift_password: "{{ vault_swift_password }}"
 swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
+
+#Payment
+payment_enabled: false
+platform_plan_id: ""
+platform_data_pack_plan_id: ""
+api_plan_id: ""
+api_data_pack_plan_id: ""
+paddle_vendor_id: ""
+paddle_api_auth_key: "{{ vault_paddle_api_auth_key }}"
+paddle_api_url: ""
+paddle_public_key: ""
+platform_free_usage: 524288000  # 500MB
+platform_base_data: 10737418240 # 10GB
+platform_data_pack: 1073741824  # 1GB
+api_free_usage: 524288000       # 500MB
+api_base_data: 26843545600      # 25GB
+api_data_pack: 1073741824       # 1GB
+ged_data_ratio: 10
+
 # Api and Connect need a different container
 swift_api_container_name: ""
 swift_connect_container_name: ""
