@@ -123,6 +123,11 @@ workers_preview_2d_instance: 1
 workers_preview_2d_cpu: 1
 workers_preview_2d_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
+## preview PDF
+workers_preview_pdf_instance: 1
+workers_preview_pdf_cpu: 1
+workers_preview_pdf_ram: "{{ ansible_memtotal_mb / 2 }}m"
+
 ## dwg
 workers_dwg_properties_instance: 1
 workers_dwg_properties_cpu: 1
