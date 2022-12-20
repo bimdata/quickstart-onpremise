@@ -221,6 +221,32 @@ workers-preview-2d:
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
+workers-preview-pdf:
+  image: {{ docker_workers_preview_pdf_image }}:{{ docker_workers_preview_pdf_tag }}
+  deploy:
+    replicas: {{ workers_preview_pdf_instance }}
+    resources:
+      limits:
+        cpus: "{{ workers_preview_pdf_cpu }}"
+        memory: "{{ workers_preview_pdf_ram }}"
+  environment:
+    - RABBITMQ_HOST={{ rabbitmq_host }}
+    - RABBITMQ_PORT={{ rabbitmq_port }}
+    - RABBITMQ_USER={{ rabbitmq_user }}
+    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
+    - API_URL={{ api_url }}
+    - ENV={{ app_env }}
+    - MASTER_TOKEN={{ master_token }}
+{% if tls_enabled  | bool %}
+    - CA_CERT=/opt/onprem-ca.crt
+  volumes:
+    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+  restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+  extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+
 workers-dwg-properties:
   image: {{ docker_workers_dwg_image }}:{{ docker_workers_dwg_tag }}
   deploy:

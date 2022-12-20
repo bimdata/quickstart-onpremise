@@ -181,6 +181,9 @@ Object storage (Swift):
 | workers_preview_2d_instance:               | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_preview_2d_cpu:                    | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_preview_2d_ram:                    | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_pdf_instance:              | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_pdf_cpu:                   | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_pdf_ram:                   | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 | workers_dwg_properties_instance:           | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_dwg_properties_cpu:                | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_dwg_properties_ram:                | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
@@ -315,6 +318,8 @@ with the [db] server on these ports.
 | docker_workers_preview_tag              | "{{ docker_bimdata_tag }}"                                       | Worker preview docker tag.                                                |
 | docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  | 
 | docker_workers_preview_2d_tag           | "{{ docker_bimdata_tag }}"                                       | Worker preview 2D tag.                                                    |
+| docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                  | 
+| docker_workers_preview_pdf_tag          | "{{ docker_bimdata_tag }}"                                       | Worker preview PDF tag.                                                    |
 | docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         | 
 | docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
 
