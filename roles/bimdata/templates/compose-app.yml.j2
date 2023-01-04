@@ -195,7 +195,8 @@ services:
       - PADDLE_VENDOR_ID={{ paddle_vendor_id }}
       - PADDLE_API_AUTH_KEY={{ paddle_api_auth_key }}
       - PADDLE_API_URL={{ paddle_api_url }}
-      - PADDLE_PUBLIC_KEY={{ paddle_public_key }}
+      - |
+          PADDLE_PUBLIC_KEY={{ paddle_public_key | indent(10) }}
       - PLATFORM_FREE_USAGE={{ platform_free_usage }}
       - PLATFORM_BASE_DATA={{ platform_base_data }}
       - PLATFORM_DATA_PACK={{ platform_data_pack }}
@@ -387,7 +388,7 @@ services:
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
       - VUE_APP_USER_IFRAME_PROFILE=true
 {% if payment_enabled is defined and payment_enabled | bool %}
-      - VUE_APP_SUBSCRIPTION_ENABLED=True
+      - VUE_APP_SUBSCRIPTION_ENABLED=true
       - VUE_APP_PRO_PLAN_ID={{ platform_plan_id }}
       - VUE_APP_DATAPACK_PLAN_ID={{ platform_data_pack_plan_id }}
       - VUE_APP_PADDLE_VENDOR_ID={{ paddle_vendor_id }}
