@@ -96,26 +96,6 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 | smtp_default_email | ""                      | Email address use as default sender.                     |
 | debug_mail_to      | ""                      | Email address use to send application exceptions.        |
 
-#### Paddle Payment Configuration
-| Variables                   | Default value                     | Description                                              |
-|-----------------------------|-----------------------------------|----------------------------------------------------------|
-| payment_enabled            | false                             | Enable the paddle payment or not.                        |
-| platform_plan_id            | ""                                | Paddle id for the platform plan                          |
-| platform_data_pack_plan_id  | ""                                | Paddle id for the platform data pack                     |
-| api_plan_id                 | ""                                | Paddle id for the api plan                               |
-| api_data_pack_plan_id       | ""                                | Paddle id for the api data pack                          |
-| paddle_vendor_id            | ""                                | Vendor id to use to use when authenticating              |
-| paddle_api_auth_key         | "{{ vault_paddle_api_auth_key }}" | Key used for the authentication                          |
-| paddle_api_url              | ""                                | The URL of the api server.                               |
-| paddle_public_key           | None                              | The public key found on the authentication paddle page   |
-| platform_free_usage         | 524288000   # 500MB               | Available space for platform free account                |
-| platform_base_data          | 10737418240 # 10GB                | Available space for platform premium account             |
-| platform_data_pack          | 1073741824  # 1GB                 | Size of additionnal platform data pack                   |
-| api_free_usage              | 524288000   # 500MB               | Available space for api free account                     |
-| api_base_data               | 26843545600 # 25GB                | Available space for api premium account                  |
-| api_data_pack               | 1073741824  # 1GB                 | Size of additionnal api data pack                        |
-| ged_data_ratio              | 10                                | Size ratio between smart data (models) and ged data      |
-
 #### Web configuration
 | Variables           | Default value | Description                                       |
 |---------------------|---------------|---------------------------------------------------|
