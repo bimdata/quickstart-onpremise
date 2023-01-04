@@ -32,7 +32,7 @@ bimdata_path: /opt/bimdata
 bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_venv_path: "{{ bimdata_path }}/venv"
 
-# Obect storage
+# Object storage
 swift_enabled: false
 swift_auth_url: ""
 swift_tenant_id: ""
@@ -41,6 +41,7 @@ swift_region_name: ""
 swift_username: ""
 swift_password: "{{ vault_swift_password }}"
 swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
+
 # Api and Connect need a different container
 swift_api_container_name: ""
 swift_connect_container_name: ""
