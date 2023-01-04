@@ -25,8 +25,6 @@ vault_smtp_pass: CHANGEME-BY-YOUR-PASSWORD-ON-THE-SMTP-SERVER
 vault_swift_password: CHANGEME-BY-YOUR-PASSWORD-ON-SWIFT
 vault_swift_temp_url_key: CHANGEME-BY-SOMETHING-SECURE
 
-vault_paddle_api_auth_key: CHANGEME-BY-THE-PADDLE-API-KEY
-
 vault_tls_api_key: ""
 
 vault_tls_connect_key: ""
