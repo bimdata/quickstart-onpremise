@@ -138,6 +138,11 @@ workers_dwg_geometries_instance: 1
 workers_dwg_geometries_cpu: 1
 workers_dwg_geometries_ram: "{{ ansible_memtotal_mb / 2 }}m"
 
+## Pointcloud
+workers_pointcloud_instance: 1
+workers_pointcloud_cpu: 1
+workers_pointcloud_ram: "{{ ansible_memtotal_mb / 2 }}m"
+
 # Map
 # By default it uses our default token, uncomment and specify your token if needed
 # https://docs.maptiler.com/cloud/api/authentication-key/

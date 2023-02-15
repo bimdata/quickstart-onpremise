@@ -30,6 +30,8 @@ worker_images=(
   ${src_private_repos}/xkt_worker:${src_private_tag}
   ${src_private_repos}/dwg_worker:${src_private_tag}
   ${src_private_repos}/image_preview_worker:${src_private_tag}
+  ${src_private_repos}/pdf_preview_worker:${src_private_tag}
+  ${src_private_repos}/pointcloud_worker:${src_private_tag}
 )
 
 app_archive_path="${archive_path}/docker-app-images-${src_private_tag}.tar.bz2"

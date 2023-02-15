@@ -80,3 +80,6 @@ docker_workers_preview_pdf_tag: "{{ docker_bimdata_tag }}"
 
 docker_workers_dwg_image: "{{ docker_private_registry }}/on-premises/dwg_worker"
 docker_workers_dwg_tag: "{{ docker_bimdata_tag }}"
+
+docker_workers_pointcloud_image: "{{ docker_private_registry }}/on-premises/pointcloud_worker"
+docker_workers_pointcloud_tag: "{{ docker_bimdata_tag }}"
