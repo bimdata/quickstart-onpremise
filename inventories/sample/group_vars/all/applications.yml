@@ -33,7 +33,7 @@ bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_venv_path: "{{ bimdata_path }}/venv"
 
 # Object storage
-s3_enabled: true
+s3_enabled: false
 s3_endpoint_url: ""
 s3_region_name: ""
 s3_access_key_id: ""
