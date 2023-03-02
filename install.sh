@@ -6,7 +6,7 @@ trap clean_exit SIGINT SIGTERM ERR EXIT
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 VENV_PATH="${SCRIPT_DIR}/venv"
-STORAGE_TYPES=("local" "swift")
+STORAGE_TYPES=("local" "s3")
 DATABASES=("api" "connect" "platform" "iam" "marketplace")
 TLS_APPS=(
   "api"
@@ -331,18 +331,16 @@ if [[ "$conf_storage" =~ ^([yY][eE][sS]|[Yy])$ ]] ; then
 
   if [[ "$storage_type" == "local" ]] ; then
     config_var_value "Local storage path" "bimdata_docker_volume_path"
-  elif [[ "$storage_type" == "swift" ]] ; then
-    sed -i "s/^\(swift_enabled: \).*/\1true/" "${inventory_path}/group_vars/all/applications.yml"
-    config_var_value "Swift auth URL" "swift_auth_url"
-    config_var_value "Swift tenant ID" "swift_tenant_id"
-    config_var_value "Swift tenant name" "swift_tenant_name"
-    config_var_value "Swift username" "swift_username"
-    config_var_value "Swift password" "vault_swift_password"
-    config_var_value "Swift temporary URL key" "vault_swift_temp_url_key"
+  elif [[ "$storage_type" == "s3" ]] ; then
+    sed -i "s/^\(s3_enabled: \).*/\1true/" "${inventory_path}/group_vars/all/applications.yml"
+    config_var_value "S3 endpoint URL" "s3_endpoint_url"
+    config_var_value "S3 region name" "s3_region_name"
+    config_var_value "S3 access ID" "s3_access_key_id"
+    config_var_value "S3 access key secret" "vault_s3_secret_access_key"
 
-    echo "We need two different Swift container: one for the API and one for Connect."
-    config_var_value "Swift API container name" "swift_api_container_name"
-    config_var_value "Swift Connect container name" "swift_connect_container_name"
+    echo "We need two different S3 bucket: one for the API and one for Connect."
+    config_var_value "S3 API bucket name" "s3_storage_api_bucket_name"
+    config_var_value "S3 Connect bucket name" "s3_storage_connect_bucket_name"
   else
     print_err "Unknown storage type ${storage_type}, must be: ${STORAGE_TYPES[@]}."
     exit 1

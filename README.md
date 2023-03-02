@@ -104,28 +104,24 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 | max_upload_size     | "1g"          | Maximum upload file size (ifc… etc).              |
 
 #### Data storage
-Right now, you can't use Swift storage for the uploaded files, but this will be fix.
-
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
 | bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
 
-Object storage (Swift):
+Object storage (S3):
 
-| Variables                    | Default value                    | Description                                         |
-|------------------------------|----------------------------------|-----------------------------------------------------|
-| swift_enabled                | false                            | Enable the swift storage or not.                    |
-| swift_auth_url               | ""                               | The URL of the auth server.                         |
-| swift_tenant_id              | ""                               | The tenant/project id to use when authenticating.   |
-| swift_tenant_name            | ""                               | The tenant/project name to use when authenticating. |
-| swift_username               | ""                               | The username to use to authenticate.                |
-| swift_password               | "{{ vault_swift_password }}"     | The password/key to use to authenticate.            |
-| swift_region_name            | ""                               | OpenStack region if needed.                         |
-| swift_temp_url_key           | "{{ vault_swift_temp_url_key }}" | The temporary URL key ([see openstack documentation](https://docs.openstack.org/kilo/config-reference/content/object-storage-tempurl.html))      |
-| swift_api_container_name     | ""                               | The container in which to store the API files.      |
-| swift_connect_container_name | ""                               | The container in which to store the Connect files.  |
+| Variables                      | Default value                          | Description                                         |
+|--------------------------------|----------------------------------------|-----------------------------------------------------|
+| s3_enabled                     | false                                  | Enable the S3 storage or not.                       |
+| s3_endpoint_url                | ""                                     | The s3 endpoint URL.                                |
+| s3_region_name                 | ""                                     | The s3 region name.                                 |
+| s3_access_key_id               | ""                                     | The s3 access key ID.                               |
+| s3_secret_access_key           | "{{ vault_s3_secret_access_key }}"     | The s3 secret access key.                           |
+| s3_multipart_threshold         | "{{ '5 GB' | human_to_bytes }}"        | The s3 threshold before using multipart upload.     |
+| s3_storage_api_bucket_name     | ""                                     | The s3 bucket in which to store the API files.      |
+| s3_storage_connect_bucket_name | ""                                     | The s3 bucket in which to store the Connect files.  |
 
 #### Applications configuration
 

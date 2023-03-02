@@ -130,9 +130,9 @@ services:
     image: {{ docker_api_image }}:{{ docker_api_tag }}
     expose:
       - 8000
-{% if not swift_enabled | bool or tls_enabled  | bool %}
+{% if not s3_enabled | bool or tls_enabled  | bool %}
     volumes:
-{% if not swift_enabled | bool %}
+{% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/api_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled  | bool %}
@@ -171,18 +171,14 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
-{% if swift_enabled | bool %}
-      - SWIFT_ENABLED=true
-      - SWIFT_AUTH_URL={{ swift_auth_url }}
-      - SWIFT_TENANT_ID={{ swift_tenant_id }}
-      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
-{% if swift_region_name | length > 0 %}
-      - SWIFT_REGION_NAME={{ swift_region_name }}
-{% endif %}
-      - SWIFT_USERNAME={{ swift_username }}
-      - SWIFT_PASSWORD={{ swift_password }}
-      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
-      - SWIFT_CONTAINER_NAME={{ swift_api_container_name }}
+{% if s3_enabled | bool %}
+      - S3_ENABLED=true
+      - S3_ENDPOINT_URL={{ s3_endpoint_url }}
+      - S3_REGION_NAME={{ s3_region_name }}
+      - S3_ACCESS_KEY_ID={{ s3_access_key_id }}
+      - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
+      - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
+      - S3_STORAGE_BUCKET_NAME={{ s3_storage_api_bucket_name }}
 {% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
@@ -234,9 +230,9 @@ services:
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
     expose:
       - 8000
-{% if not swift_enabled | bool or tls_enabled  | bool %}
+{% if not s3_enabled | bool or tls_enabled  | bool %}
     volumes:
-{% if not swift_enabled | bool %}
+{% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled | bool %}
@@ -274,18 +270,14 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
-{% if swift_enabled | bool and swift_connect_container_name | length %}
-      - SWIFT_ENABLED=true
-      - SWIFT_AUTH_URL={{ swift_auth_url }}
-      - SWIFT_TENANT_ID={{ swift_tenant_id }}
-      - SWIFT_TENANT_NAME={{ swift_tenant_name }}
-{% if swift_region_name | length > 0 %}
-      - SWIFT_REGION_NAME={{ swift_region_name }}
-{% endif %}
-      - SWIFT_USERNAME={{ swift_username }}
-      - SWIFT_PASSWORD={{ swift_password }}
-      - SWIFT_TEMP_URL_KEY={{ swift_temp_url_key }}
-      - SWIFT_CONTAINER_NAME={{ swift_connect_container_name }}
+{% if s3_enabled | bool %}
+      - S3_ENABLED=true
+      - S3_ENDPOINT_URL={{ s3_endpoint_url }}
+      - S3_REGION_NAME={{ s3_region_name }}
+      - S3_ACCESS_KEY_ID={{ s3_access_key_id }}
+      - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
+      - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
+      - S3_STORAGE_BUCKET_NAME={{ s3_storage_connect_bucket_name }}
 {% endif %}
       - INVITATION_SECRET={{ connect_invitation_secret }}
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
