@@ -33,18 +33,16 @@ bimdata_docker_volume_path: "{{ bimdata_path }}/data"
 bimdata_venv_path: "{{ bimdata_path }}/venv"
 
 # Object storage
-swift_enabled: false
-swift_auth_url: ""
-swift_tenant_id: ""
-swift_tenant_name: ""
-swift_region_name: ""
-swift_username: ""
-swift_password: "{{ vault_swift_password }}"
-swift_temp_url_key: "{{ vault_swift_temp_url_key }}"
+s3_enabled: false
+s3_endpoint_url: ""
+s3_region_name: ""
+s3_access_key_id: ""
+s3_secret_access_key: "{{ vault_s3_secret_access_key }}"
+s3_multipart_threshold: "{{ '5 GB' | human_to_bytes }}"
 
-# Api and Connect need a different container
-swift_api_container_name: ""
-swift_connect_container_name: ""
+# Api and Connect need a different bucket
+s3_storage_api_bucket_name: ""
+s3_storage_connect_bucket_name: ""
 
 # api
 api_secret_key: "{{ vault_api_secret_key }}" # Change me in the vault

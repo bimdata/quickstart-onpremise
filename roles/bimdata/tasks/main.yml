@@ -19,7 +19,7 @@
   loop:
     - "{{ bimdata_docker_volume_path }}/web/api_storage"
     - "{{ bimdata_docker_volume_path }}/web/connect_storage"
-  when: not swift_enabled | bool
+  when: not s3_enabled | bool
 
 - name: "Create needed directories for db if needed."
   file:

@@ -22,8 +22,7 @@ vault_iam_password: CHANGEME-BY-SOMETHING-SECURE
 
 vault_smtp_pass: CHANGEME-BY-YOUR-PASSWORD-ON-THE-SMTP-SERVER
 
-vault_swift_password: CHANGEME-BY-YOUR-PASSWORD-ON-SWIFT
-vault_swift_temp_url_key: CHANGEME-BY-SOMETHING-SECURE
+vault_s3_secret_access_key: CHANGEME-BY-YOUR-S3_API_KEY
 
 vault_tls_api_key: ""
 

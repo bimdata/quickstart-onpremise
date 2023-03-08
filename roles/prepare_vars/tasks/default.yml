@@ -8,3 +8,8 @@
   set_fact:
     install_offline: false
   when: install_offline is not defined
+
+- name: "Define default s3_enabled if unset."
+  set_fact:
+    s3_enabled: false
+  when: s3_enabled is not defined

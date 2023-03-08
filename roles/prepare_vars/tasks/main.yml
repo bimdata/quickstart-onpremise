@@ -23,9 +23,20 @@
 - name: "Include tasks to compute URL variables."
   include_tasks: url.yml
 
-- name: "Include tasks to check swift variables."
-  include_tasks: swift.yml
-  when: swift_enabled | bool
+- name: "Include tasks to check S3 variables."
+  include_tasks: s3.yml
+  when: s3_enabled | bool
 
 - name: "Include tasks to compute workers variables."
   include_tasks: workers.yml
+
+# Legacy check
+- name: "Fail if swift_enabled is still true."
+  fail:
+    msg: >
+      Your inventory contains `swift_enabled: true` but this version
+      of our playbook doesn't support Swift anymore.
+      You should check with BIMdata.io to plan a migration to S3 storage.
+  when:
+    - swift_enabled is defined
+    - swift_enabled | bool
