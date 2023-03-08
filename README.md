@@ -122,6 +122,7 @@ Object storage (S3):
 | s3_multipart_threshold         | "{{ '5 GB' | human_to_bytes }}"        | The s3 threshold before using multipart upload.     |
 | s3_storage_api_bucket_name     | ""                                     | The s3 bucket in which to store the API files.      |
 | s3_storage_connect_bucket_name | ""                                     | The s3 bucket in which to store the Connect files.  |
+| s3_other_options               | []                                     | List of other S3 options, need to be a list a dicts [{'name': option_name, 'value': option_value}] |
 
 #### Applications configuration
 
