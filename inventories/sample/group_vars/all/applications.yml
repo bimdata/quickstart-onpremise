@@ -39,6 +39,8 @@ s3_region_name: ""
 s3_access_key_id: ""
 s3_secret_access_key: "{{ vault_s3_secret_access_key }}"
 s3_multipart_threshold: "{{ '5 GB' | human_to_bytes }}"
+# List of dicts [{'name': option_name, 'value': option_value}]
+s3_other_options: []
 
 # Api and Connect need a different bucket
 s3_storage_api_bucket_name: ""

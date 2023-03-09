@@ -179,6 +179,11 @@ services:
       - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
       - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
       - S3_STORAGE_BUCKET_NAME={{ s3_storage_api_bucket_name }}
+{% if s3_other_options is defined and s3_other_options | length %}
+{% for option in s3_other_options %}
+      - {{ option.name | upper }}={{ option.value }}
+{% endfor %}
+{% endif %}
 {% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
@@ -278,6 +283,11 @@ services:
       - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
       - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
       - S3_STORAGE_BUCKET_NAME={{ s3_storage_connect_bucket_name }}
+{% if s3_other_options is defined and s3_other_options | length %}
+{% for option in s3_other_options %}
+      - {{ option.name | upper }}={{ option.value }}
+{% endfor %}
+{% endif %}
 {% endif %}
       - INVITATION_SECRET={{ connect_invitation_secret }}
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
