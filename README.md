@@ -349,7 +349,6 @@ You should not have to modified these variables in most cases.
 | Variables            | Default value | Description                 |
 |----------------------|---------------|-----------------------------|
 | nginx_custom_conf    |               | Nginx custom configuration. |
-| nginx_vhost_override |               | Nginx vhost configuration.  |
 
 ### rabbitmq.yml
 | Variables               | Default value                   | Description                                                |

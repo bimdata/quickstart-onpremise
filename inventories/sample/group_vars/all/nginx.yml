@@ -22,34 +22,3 @@ nginx_custom_conf: |
   proxy_buffers              4 256k;
   proxy_busy_buffers_size    256k;
 
-nginx_vhost_override:
-  - vhost: "{{ api_dns_name }}"
-    config: |
-      {% if not s3_enabled | bool %}
-      location /storage/ {
-        alias /var/www/static/api_storage/;
-        add_header 'Access-Control-Allow-Origin' '*';
-        # Preflighted requests
-        if ($request_method = OPTIONS ) {
-          add_header 'Access-Control-Allow-Origin'  '*';
-          add_header 'Access-Control-Allow-Methods' 'OPTIONS, HEAD, GET';
-          add_header 'Access-Control-Allow-Headers' 'Authorization, Origin, X-Requested-With, Content-Type, Accept';
-          return 204;
-        }
-      }
-      {% endif %}
-  - vhost: "{{ connect_dns_name }}"
-    config: |
-      {% if not s3_connect_enabled | bool %}
-      location /storage/ {
-        alias /var/www/static/connect_storage/;
-        add_header 'Access-Control-Allow-Origin' '*';
-        # Preflighted requests
-        if ($request_method = OPTIONS ) {
-          add_header 'Access-Control-Allow-Origin'  '*';
-          add_header 'Access-Control-Allow-Methods' 'OPTIONS, HEAD, GET';
-          add_header 'Access-Control-Allow-Headers' 'Authorization, Origin, X-Requested-With, Content-Type, Accept';
-          return 204;
-        }
-      }
-      {% endif %}
