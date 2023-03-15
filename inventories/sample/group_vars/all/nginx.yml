@@ -40,7 +40,7 @@ nginx_vhost_override:
       {% endif %}
   - vhost: "{{ connect_dns_name }}"
     config: |
-      {% if not s3_enabled | bool %}
+      {% if not s3_connect_enabled | bool %}
       location /storage/ {
         alias /var/www/static/connect_storage/;
         add_header 'Access-Control-Allow-Origin' '*';

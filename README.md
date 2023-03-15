@@ -114,7 +114,8 @@ Object storage (S3):
 
 | Variables                      | Default value                          | Description                                         |
 |--------------------------------|----------------------------------------|-----------------------------------------------------|
-| s3_enabled                     | false                                  | Enable the S3 storage or not.                       |
+| s3_enabled                     | false                                  | Enable the S3 storage for the API.                  |
+| s3_connect_enabled             | "{{ s3_enabled }}                      | Enable the S3 storage for connect.                  |
 | s3_endpoint_url                | ""                                     | The s3 endpoint URL.                                |
 | s3_region_name                 | ""                                     | The s3 region name.                                 |
 | s3_access_key_id               | ""                                     | The s3 access key ID.                               |
