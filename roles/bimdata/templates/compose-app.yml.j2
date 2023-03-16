@@ -235,9 +235,9 @@ services:
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
     expose:
       - 8000
-{% if not s3_enabled | bool or tls_enabled  | bool %}
+{% if not s3_connect_enabled | bool or tls_enabled  | bool %}
     volumes:
-{% if not s3_enabled | bool %}
+{% if not s3_connect_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled | bool %}
@@ -275,7 +275,7 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
-{% if s3_enabled | bool %}
+{% if s3_connect_enabled | bool %}
       - S3_ENABLED=true
       - S3_ENDPOINT_URL={{ s3_endpoint_url }}
       - S3_REGION_NAME={{ s3_region_name }}

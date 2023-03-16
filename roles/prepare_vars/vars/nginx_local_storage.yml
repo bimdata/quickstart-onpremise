@@ -1,0 +1,30 @@
+---
+api:
+  vhost: "{{ api_dns_name }}"
+  config: |
+    location /storage/ {
+      alias /var/www/static/api_storage/;
+      add_header 'Access-Control-Allow-Origin' '*';
+      # Preflighted requests
+      if ($request_method = OPTIONS ) {
+        add_header 'Access-Control-Allow-Origin'  '*';
+        add_header 'Access-Control-Allow-Methods' 'OPTIONS, HEAD, GET';
+        add_header 'Access-Control-Allow-Headers' 'Authorization, Origin, X-Requested-With, Content-Type, Accept';
+        return 204;
+      }
+    }
+
+connect:
+  vhost: "{{ connect_dns_name }}"
+  config: |
+    location /storage/ {
+      alias /var/www/static/connect_storage/;
+      add_header 'Access-Control-Allow-Origin' '*';
+      # Preflighted requests
+      if ($request_method = OPTIONS ) {
+        add_header 'Access-Control-Allow-Origin'  '*';
+        add_header 'Access-Control-Allow-Methods' 'OPTIONS, HEAD, GET';
+        add_header 'Access-Control-Allow-Headers' 'Authorization, Origin, X-Requested-With, Content-Type, Accept';
+        return 204;
+      }
+    }

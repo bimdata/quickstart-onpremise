@@ -13,3 +13,8 @@
   set_fact:
     s3_enabled: false
   when: s3_enabled is not defined
+
+- name: "Define default s3_connect_enabled if unset."
+  set_fact:
+    s3_connect_enabled: "{{ s3_enabled }}"
+  when: s3_connect_enabled is not defined

@@ -11,15 +11,19 @@
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
 
-- name: "Create needed directories for local storage."
+- name: "Create needed directories for API local storage."
   file:
-    path: "{{ item }}"
+    path: "{{ bimdata_docker_volume_path }}/web/api_storage"
     state: directory
     mode: 0755
-  loop:
-    - "{{ bimdata_docker_volume_path }}/web/api_storage"
-    - "{{ bimdata_docker_volume_path }}/web/connect_storage"
   when: not s3_enabled | bool
+
+- name: "Create needed directories for Connect local storage."
+  file:
+    path: "{{ bimdata_docker_volume_path }}/web/connect_storage"
+    state: directory
+    mode: 0755
+  when: not s3_connect_enabled | bool
 
 - name: "Create needed directories for db if needed."
   file:

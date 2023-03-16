@@ -23,9 +23,8 @@
 - name: "Include tasks to compute URL variables."
   include_tasks: url.yml
 
-- name: "Include tasks to check S3 variables."
-  include_tasks: s3.yml
-  when: s3_enabled | bool
+- name: "Include tasks to compute storage variables."
+  include_tasks: storage.yml
 
 - name: "Include tasks to compute workers variables."
   include_tasks: workers.yml

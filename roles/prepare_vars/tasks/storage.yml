@@ -1,0 +1,51 @@
+---
+- name: "Check if common needed variables for s3 are defined."
+  assert:
+    that:
+      - s3_endpoint_url is defined
+      - s3_endpoint_url | length
+      - s3_region_name is defined
+      - s3_region_name | length
+      - s3_access_key_id is defined
+      - s3_access_key_id | length
+      - s3_secret_access_key is defined
+      - s3_secret_access_key | length
+    fail_msg: >
+      You choose to use an object storage (s3_enabled: true or s3_connect_enabled: true),
+      s3_endpoint_url, s3_region_name, s3_access_key_id, s3_secret_access_key must be defined and not empty.
+  when: s3_enabled | bool or s3_connect_enabled | bool
+
+- name: "Check if API needed variables for s3 are defined."
+  assert:
+    that:
+      - s3_storage_api_bucket_name is defined
+      - s3_storage_api_bucket_name | length
+    fail_msg: >
+      You choose to use an object storage for the API (s3_enabled: true),
+      s3_storage_api_bucket_name must be defined and not empty.
+  when: s3_enabled | bool
+
+- name: "Check if Connect needed variables for s3 are defined."
+  assert:
+    that:
+      - s3_storage_connect_bucket_name is defined
+      - s3_storage_connect_bucket_name | length
+    fail_msg: >
+      You choose to use an object storage for the API (s3_connect_enabled: true),
+      s3_storage_connect_bucket_name must be defined and not empty.
+  when: s3_connect_enabled | bool
+
+- name: "Import nginx variables."
+  include_vars:
+    file: nginx_local_storage.yml
+    name: _nginx_local_storage
+
+- name: "Add nginx configuration for API S3 if needed."
+  set_fact:
+    nginx_vhost_override: "{{
+        nginx_vhost_override
+        + (not s3_enabled) | ternary([_nginx_local_storage['api']], [])
+        + (not s3_connect_enabled) | ternary([_nginx_local_storage['connect']], [])
+      }}"
+  vars:
+    nginx_vhost_override: []
