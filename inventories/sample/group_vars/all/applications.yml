@@ -65,6 +65,7 @@ platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}" # Chang
 platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"
 platform_front_project_status_limit_new: "5"
 platform_front_project_status_limit_active: "15"
+platform_front_authorized_identity_providers: "bimdataconnect"
 
 # iam
 iam_user: "admin"
