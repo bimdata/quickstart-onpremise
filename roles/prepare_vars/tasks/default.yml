@@ -18,3 +18,8 @@
   set_fact:
     s3_connect_enabled: "{{ s3_enabled }}"
   when: s3_connect_enabled is not defined
+
+- name: "Define default platform authorized identity providers."
+  set_fact:
+    platform_front_authorized_identity_providers: "bimdataconnect"
+  when: platform_front_authorized_identity_providers is not defined

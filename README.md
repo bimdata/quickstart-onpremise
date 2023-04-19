@@ -127,72 +127,73 @@ Object storage (S3):
 
 #### Applications configuration
 
-| Variables                                  | Default value                                                            | Description                                                      |
-|--------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
-| api_secret_key                             | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
+| Variables                                    | Default value                                                            | Description                                                      |
+|----------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
+| api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
 ||||
-| connect_secret_key                         | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
-| connect_client_id                          | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |
-| connect_client_secret                      | "{{ 'connect_client_secret' \| to_uuid(namespace=uuid_namespace) }}"     | You should not change this.                                      |
-| connect_invitation_secret                  | "{{ vault_connect_invitation_secret }}"                                  | You should not change this.                                      |
-| connect_invitation_client                  | "{{ 'connect_invitation_client' \| to_uuid(namespace=uuid_namespace) }}" | You should not change this.                                      |
-| connect_invitation_client_secret           | "{{ vault_connect_invitation_client_secret }}"                           | You should not change this.                                      |
+| connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
+| connect_client_id                            | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |
+| connect_client_secret                        | "{{ 'connect_client_secret' \| to_uuid(namespace=uuid_namespace) }}"     | You should not change this.                                      |
+| connect_invitation_secret                    | "{{ vault_connect_invitation_secret }}"                                  | You should not change this.                                      |
+| connect_invitation_client                    | "{{ 'connect_invitation_client' \| to_uuid(namespace=uuid_namespace) }}" | You should not change this.                                      |
+| connect_invitation_client_secret             | "{{ vault_connect_invitation_client_secret }}"                           | You should not change this.                                      |
 ||||
-| platform_back_secret_key                   | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                      |
-| platform_back_webhook_secret               | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                      |
+| platform_back_secret_key                     | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                      |
+| platform_back_webhook_secret                 | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                      |
 ||||
-| platform_front_client_id                   | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
-| platform_front_project_status_limit_new    | "5"                                                                      | Number of days during which the project is considered new.       |
-| platform_front_project_status_limit_active | "15"                                                                     | Number of days during before the project is considered inactive. |
+| platform_front_client_id                     | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
+| platform_front_project_status_limit_new      | "5"                                                                      | Number of days during which the project is considered new.       |
+| platform_front_project_status_limit_active   | "15"                                                                     | Number of days during before the project is considered inactive. |
+| platform_front_authorized_identity_providers | "bimdataconnect"                                                         | Names of the authorized identity providers (comma separated).    |
 ||||
-| iam_user                                   | "admin"                                                                  | Keycloak administrator user.                                     |
-| iam_password                               | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                                 |
+| iam_user                                     | "admin"                                                                  | Keycloak administrator user.                                     |
+| iam_password                                 | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                                 |
 ||||
-| marketplace_enabled                        | false                                                                    | Enable / disable marketplace.                                    |
-| marketplace_back_secret_key                | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                      |
+| marketplace_enabled                          | false                                                                    | Enable / disable marketplace.                                    |
+| marketplace_back_secret_key                  | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                      |
 ||||
-| marketplace_front_client_id                | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
-| marketplace_front_workers                  | 2                                                                        | Number of node workers.                                          |
+| marketplace_front_client_id                  | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
+| marketplace_front_workers                    | 2                                                                        | Number of node workers.                                          |
 ||||
-| workers_export_instance:                   | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_export_cpu:                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_export_ram:                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_gltf_instance:                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_gltf_cpu:                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_gltf_ram:                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_extract_instance:                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_extract_cpu:                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_extract_ram:                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_svg_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_svg_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_svg_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_merge_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_merge_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_merge_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_xkt_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_xkt_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_xkt_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_xkt_task_timeout:                  | 180                                                                      | Number of second before timeout in the xkt process.              |
-| workers_preview_instance:                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_cpu:                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_ram:                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_preview_2d_instance:               | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_2d_cpu:                    | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_2d_ram:                    | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_preview_pdf_instance:              | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_pdf_cpu:                   | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_pdf_ram:                   | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_dwg_properties_instance:           | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_dwg_properties_cpu:                | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_dwg_properties_ram:                | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_dwg_geometries_instance:           | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_dwg_geometries_cpu:                | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_dwg_geometries_ram:                | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_export_instance:                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_export_cpu:                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_export_ram:                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_gltf_instance:                       | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_gltf_cpu:                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_gltf_ram:                            | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_extract_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_extract_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_extract_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_svg_instance:                        | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_svg_cpu:                             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_svg_ram:                             | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_merge_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_merge_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_merge_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_instance:                        | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_xkt_cpu:                             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_ram:                             | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_task_timeout:                    | 180                                                                      | Number of second before timeout in the xkt process.              |
+| workers_preview_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_2d_instance:                 | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_2d_cpu:                      | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_2d_ram:                      | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_pdf_instance:                | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_pdf_cpu:                     | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_pdf_ram:                     | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_properties_instance:             | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_properties_cpu:                  | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_properties_ram:                  | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_geometries_instance:             | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_geometries_cpu:                  | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_geometries_ram:                  | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 ||||
-| uuid_namespace                             | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
-| master_token                               | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
-| app_env                                    | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
-| maptiler_token                             | Undefined                                                                | Token for authentication on the Maptiler API.                    |
+| uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
+| master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
+| app_env                                      | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
+| maptiler_token                               | Undefined                                                                | Token for authentication on the Maptiler API.                    |
 
 ### connectivity.yml
 #### Ansible connectivity
@@ -316,8 +317,8 @@ with the [db] server on these ports.
 | docker_workers_preview_tag              | "{{ docker_bimdata_tag }}"                                       | Worker preview docker tag.                                                |
 | docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  | 
 | docker_workers_preview_2d_tag           | "{{ docker_bimdata_tag }}"                                       | Worker preview 2D tag.                                                    |
-| docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                  | 
-| docker_workers_preview_pdf_tag          | "{{ docker_bimdata_tag }}"                                       | Worker preview PDF tag.                                                    |
+| docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                 | 
+| docker_workers_preview_pdf_tag          | "{{ docker_bimdata_tag }}"                                       | Worker preview PDF tag.                                                   |
 | docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         | 
 | docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
 

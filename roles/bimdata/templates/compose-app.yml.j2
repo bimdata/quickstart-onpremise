@@ -388,6 +388,7 @@ services:
       - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
       - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
+      - VUE_APP_AUTHORIZED_IDENTITY_PROVIDERS={{ platform_front_authorized_identity_providers }}
       - VUE_APP_USER_IFRAME_PROFILE=true
 {% if payment_enabled is defined and payment_enabled | bool %}
       - VUE_APP_SUBSCRIPTION_ENABLED=true
