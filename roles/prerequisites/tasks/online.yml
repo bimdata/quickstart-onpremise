@@ -36,6 +36,12 @@
     virtualenv: "{{ bimdata_venv_path }}"
   environment: "{{ proxy_env }}"
 
+- name: "Force Urlib3 & requests version to avoid https://github.com/docker/docker-py/issues/3113."
+  pip:
+    name: "{{ pip_prerequisites }}"
+    virtualenv: "{{ bimdata_venv_path }}"
+  environment: "{{ proxy_env }}"
+
 - name: "Install Docker compose in the Bimdata virtualenv."
   pip:
     name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
