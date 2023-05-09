@@ -19,5 +19,9 @@ docker_compose_dnf_dependencies:
   - python3-wheel
   - python3-virtualenv
 
+# This is a workaround to avoid https://github.com/docker/docker-py/issues/3113
+pip_prerequisites:
+  - requests<=2.29.0
+
 docker_compose_pkg_name: docker-compose
 docker_compose_pkg_version: "==1.29.2"

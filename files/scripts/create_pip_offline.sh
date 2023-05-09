@@ -4,10 +4,12 @@ set -euo pipefail
 
 WORKING_DIR="/tmp/bimdata"
 
+# Request is pined to this version as a workaround to https://github.com/docker/docker-py/issues/3113
 REQUIREMENTS=$(cat <<EOF
 pip
 selinux
 docker-compose==1.29.2
+requests<=2.29.0
 EOF
 )
 
