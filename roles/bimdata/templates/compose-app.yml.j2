@@ -108,10 +108,10 @@ services:
       - LETSENCRYPT_HOST={{ iam_dns_name }}
 {% endif %}
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/auth/realms/bimdata"]
-      interval: 30s
+      test: ["CMD-SHELL", "(echo >/dev/tcp/localhost/8080) &>/dev/null"]
+      interval: 10s
       timeout: 10s
-      retries: 10
+      retries: 30
       start_period: 30s
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
