@@ -46,6 +46,10 @@ s3_other_options: []
 s3_storage_api_bucket_name: ""
 s3_storage_connect_bucket_name: ""
 
+# When Object Storage is enable, connect needs to know the URL
+# for the Content Security Policy to be able to load profile pictures
+csp_storage_url: "https://{{ s3_storage_connect_bucket_name }}.{{ (s3_endpoint_url | urlsplit).hostname }}"
+
 # api
 api_secret_key: "{{ vault_api_secret_key }}" # Change me in the vault
 

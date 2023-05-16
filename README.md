@@ -124,7 +124,7 @@ Object storage (S3):
 | s3_storage_api_bucket_name     | ""                                     | The s3 bucket in which to store the API files.      |
 | s3_storage_connect_bucket_name | ""                                     | The s3 bucket in which to store the Connect files.  |
 | s3_other_options               | []                                     | List of other S3 options, need to be a list a dicts [{'name': option_name, 'value': option_value}] |
-
+| csp_storage_url                | "https://{{ s3_storage_connect_bucket_name }}.{{ (s3_endpoint_url | urlsplit).hostname }}" | Connect needs to know the storage URL to add to its CSP. |
 #### Applications configuration
 
 | Variables                                    | Default value                                                            | Description                                                      |

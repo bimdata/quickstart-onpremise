@@ -283,6 +283,7 @@ services:
       - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
       - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
       - S3_STORAGE_BUCKET_NAME={{ s3_storage_connect_bucket_name }}
+      - CSP_STORAGE_URL={{ csp_storage_url }}
 {% if s3_other_options is defined and s3_other_options | length %}
 {% for option in s3_other_options %}
       - {{ option.name | upper }}={{ option.value }}
