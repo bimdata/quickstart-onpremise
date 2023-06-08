@@ -92,61 +92,72 @@ marketplace_front_client_id: "{{ 'marketplace_front_client_id' | to_uuid(namespa
 workers_export_instance: 1
 workers_export_cpu: 1
 workers_export_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_export_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 
 ## gltf
 workers_gltf_instance: 1
 workers_gltf_cpu: 1
 workers_gltf_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_gltf_task_timeout: "{{ '10h' | community.general.to_seconds | int }}"
 
 ## extract
 workers_extract_instance: 1
 workers_extract_cpu: 1
 workers_extract_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_extract_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 
 ## svg
 workers_svg_instance: 1
 workers_svg_cpu: 1
 workers_svg_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_svg_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 
 ## merge
 workers_merge_instance: 1
 workers_merge_cpu: 1
 workers_merge_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_merge_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 
 ## xkt
 workers_xkt_instance: 1
 workers_xkt_cpu: 1
 workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_xkt_task_timeout: 180
+workers_xkt_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
 
 ## preview 3D
 workers_preview_instance: 1
 workers_preview_cpu: 1
 workers_preview_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_preview_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
 
 ## preview 2D
 workers_preview_2d_instance: 1
 workers_preview_2d_cpu: 1
 workers_preview_2d_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_preview_2d_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
 ## preview PDF
 workers_preview_pdf_instance: 1
 workers_preview_pdf_cpu: 1
 workers_preview_pdf_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_preview_pdf_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
 ## dwg
 workers_dwg_properties_instance: 1
 workers_dwg_properties_cpu: 1
 workers_dwg_properties_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_dwg_properties_pdf_task_timeout: "{{ '1h' | community.general.to_seconds | int }}"
 
 workers_dwg_geometries_instance: 1
 workers_dwg_geometries_cpu: 1
 workers_dwg_geometries_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_dwg_geometries_pdf_task_timeout: "{{ '4h' | community.general.to_seconds | int }}"
 
 ## Pointcloud
 workers_pointcloud_instance: 1
 workers_pointcloud_cpu: 1
 workers_pointcloud_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_pointcloud_pdf_task_timeout: "{{ '10h' | community.general.to_seconds | int }}"
 
 # Map
 # By default it uses our default token, uncomment and specify your token if needed

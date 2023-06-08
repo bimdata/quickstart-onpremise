@@ -89,6 +89,7 @@ services:
       - VIRTUAL_PORT=8080
       - ENV={{ app_env }}
       - KC_HOSTNAME={{ iam_dns_name }}
+      - KC_HOSTNAME_ADMIN={{ iam_dns_name }}
       - KC_PROXY=edge
       - KC_DB_SCHEMA=public
       - KC_DB_URL_DATABASE={{ db_iam_name }}
@@ -328,7 +329,7 @@ services:
       - ENV={{ app_env }}
       - API_URL={{ api_url }}
       - PLATFORM_BACK_URL={{ platform_back_url }}
-      - APP_URL={{ platform_front_url }}
+      - PLATFORM_URL={{ platform_front_url }}
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
       - IAM_URL={{ iam_url }}

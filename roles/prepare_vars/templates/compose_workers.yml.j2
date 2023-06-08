@@ -16,6 +16,9 @@ workers-export:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
+{% if workers_export_task_timeout is defined %}
+    - TIMEOUT={{ workers_export_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -44,6 +47,9 @@ workers-gltf:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
+{% if workers_gltf_task_timeout is defined %}
+    - TIMEOUT={{ workers_gltf_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -72,6 +78,9 @@ workers-extract:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
+{% if workers_extract_task_timeout is defined %}
+    - TIMEOUT={{ workers_extract_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -100,6 +109,9 @@ workers-svg:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
+{% if workers_svg_task_timeout is defined %}
+    - TIMEOUT={{ workers_svg_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -128,6 +140,9 @@ workers-merge:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
+{% if workers_merge_task_timeout is defined %}
+    - TIMEOUT={{ workers_merge_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -155,7 +170,7 @@ workers-xkt:
     - ENV={{ app_env }}
     - QUEUE=xkt
 {% if workers_xkt_task_timeout is defined %}
-    - TASK_TIMEOUT={{ workers_xkt_task_timeout }}
+    - TIMEOUT={{ workers_xkt_task_timeout }}
 {% endif %}
     - MASTER_TOKEN={{ master_token }}
 {% if tls_enabled  | bool %}
@@ -185,6 +200,9 @@ workers-preview-3d:
     - QUEUE=viewer_360
     - API_URL={{ api_url }}
     - MASTER_TOKEN={{ master_token }}
+{% if workers_preview_task_timeout is defined %}
+    - TIMEOUT={{ workers_preview_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -211,6 +229,9 @@ workers-preview-2d:
     - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
+{% if workers_preview_2d_task_timeout is defined %}
+    - TIMEOUT={{ workers_preview_2d_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -237,6 +258,9 @@ workers-preview-pdf:
     - API_URL={{ api_url }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
+{% if workers_preview_pdf_task_timeout is defined %}
+    - TIMEOUT={{ workers_preview_pdf_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -264,6 +288,9 @@ workers-dwg-properties:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - WORKER_NAME=properties
+{% if workers_dwg_properties_task_timeout is defined %}
+    - TIMEOUT={{ workers_dwg_properties_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -291,6 +318,9 @@ workers-dwg-geometries:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - WORKER_NAME=geometries
+{% if workers_dwg_geometries_task_timeout is defined %}
+    - TIMEOUT={{ workers_dwg_geometries_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
@@ -318,6 +348,9 @@ workers-pointcloud:
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_pointcloud_cpu }}
+{% if workers_pointcloud_task_timeout is defined %}
+    - TIMEOUT={{ workers_pointcloud_task_timeout }}
+{% endif %}
 {% if tls_enabled  | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:

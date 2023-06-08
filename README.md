@@ -155,40 +155,54 @@ Object storage (S3):
 | marketplace_front_client_id                  | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
 | marketplace_front_workers                    | 2                                                                        | Number of node workers.                                          |
 ||||
-| workers_export_instance:                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_export_cpu:                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_export_ram:                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_gltf_instance:                       | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_gltf_cpu:                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_gltf_ram:                            | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_extract_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_extract_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_extract_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_svg_instance:                        | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_svg_cpu:                             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_svg_ram:                             | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_merge_instance:                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_merge_cpu:                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_merge_ram:                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_xkt_instance:                        | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_xkt_cpu:                             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_xkt_ram:                             | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_xkt_task_timeout:                    | 180                                                                      | Number of second before timeout in the xkt process.              |
-| workers_preview_instance:                    | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_cpu:                         | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_ram:                         | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_preview_2d_instance:                 | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_2d_cpu:                      | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_2d_ram:                      | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_preview_pdf_instance:                | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_preview_pdf_cpu:                     | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_preview_pdf_ram:                     | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_dwg_properties_instance:             | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_dwg_properties_cpu:                  | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_dwg_properties_ram:                  | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_dwg_geometries_instance:             | 1                                                                        | Number of replicas deployed on *each* worker server.             |
-| workers_dwg_geometries_cpu:                  | 1                                                                        | Number of CPUs allocated for each replicas.                      |
-| workers_dwg_geometries_ram:                  | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_export_instance                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_export_cpu                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_export_ram                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_export_task_timeout                  | "{{ '2h' | community.general.to_seconds | int }}"                        | Timeout for an export process.                                   |
+| workers_gltf_instance                        | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_gltf_cpu                             | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_gltf_ram                             | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_gltf_task_timeout                    | "{{ '10h' | community.general.to_seconds | int }}"                       | Timeout for a GLTF process.                                      |
+| workers_extract_instance                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_extract_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_extract_ram                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_extract_task_timeout                 | "{{ '2h' | community.general.to_seconds | int }}"                        | Timeout for an extract process.                                  |
+| workers_svg_instance                         | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_svg_cpu                              | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_svg_ram                              | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_svg_task_timeout                     | "{{ '2h' | community.general.to_seconds | int }}"                        | Timeout for a SVG process.                                       |
+| workers_merge_instance                       | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_merge_cpu                            | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_merge_ram                            | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_merge_task_timeout                   | "{{ '2h' | community.general.to_seconds | int }}"                        | Timeout for a merge process.                                     |
+| workers_xkt_instance                         | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_xkt_cpu                              | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_ram                              | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_task_timeout                     |           "{{ '3min' | community.general.to_seconds | int }}"            | Timeout for an XKT process.                                      |
+| workers_preview_instance                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_ram                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_task_timeout                 | "{{ '3min' | community.general.to_seconds | int }}"                      | Timeout for a 3D preview process.                                |
+| workers_preview_2d_instance                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_2d_cpu                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_2d_ram                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_2d_task_timeout              | "{{ '10min' | community.general.to_seconds | int }}"                     | Timeout for a 2D preview process.                                |
+| workers_preview_pdf_instance                 | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_preview_pdf_cpu                      | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_preview_pdf_ram                      | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_preview_pdf_task_timeout             | "{{ '10min' | community.general.to_seconds | int }}"                     | Timeout for a PDF preview process.                               |
+| workers_dwg_properties_instance              | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_properties_cpu                   | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_properties_ram                   | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_properties_task_timeout          | "{{ '1h' | community.general.to_seconds | int }}"                        | Timeout for a DWG properties process.                            |
+| workers_dwg_geometries_instance              | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_dwg_geometries_cpu                   | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_dwg_geometries_ram                   | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_dwg_geometries_task_timeout          | "{{ '4h' | community.general.to_seconds | int }}"                        | Timeout for a DWG geometries process.                            |
+| workers_pointcloud_instance                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_pointcloud_cpu                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_pointcloud_ram                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_pointcloud_task_timeout              | "{{ '10h' | community.general.to_seconds | int }}"                       | Timeout for a pointcloud process.                                |
 ||||
 | uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
