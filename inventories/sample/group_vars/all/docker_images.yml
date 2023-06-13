@@ -21,7 +21,7 @@ docker_nginx_tag: alpine
 docker_acme_companion_image: nginxproxy/acme-companion
 docker_acme_companion_tag: 2.2
 
-docker_bimdata_tag: 20230608
+docker_bimdata_tag: 20230613
 
 # Use private registry
 docker_api_image: "{{ docker_private_registry }}/on-premises/api"
