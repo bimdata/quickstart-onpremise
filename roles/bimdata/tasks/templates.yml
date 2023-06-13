@@ -1,0 +1,44 @@
+- name: "Manage connect templates."
+  when: connect_use_custom_mail_templates | bool
+  block:
+  - name: "Create needed directories for Connect templates."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/connect/mails"
+      state: directory
+      mode: 0755
+  - name: "Copy connect templates."
+    copy:
+      src: files/connect/templates/
+      dest: "{{ bimdata_docker_volume_path }}/connect/mails"
+      mode: 0644
+# End of block
+
+- name: "Manage platform-back templates."
+  when: platform_back_use_custom_mail_templates | bool
+  block:
+  - name: "Create needed directories for platform-back templates."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/platform_back/mails"
+      state: directory
+      mode: 0755
+  - name: "Copy platform-back templates."
+    copy:
+      src: files/platform-back/templates/
+      dest: "{{ bimdata_docker_volume_path }}/platform_back/mails"
+      mode: 0644
+# End of block
+
+- name: "Manage marketplace-back templates."
+  when: marketplace_back_use_custom_mail_templates | bool
+  block:
+  - name: "Create needed directories for marketplace-back templates."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
+      state: directory
+      mode: 0755
+  - name: "Copy marketplace-back templates."
+    copy:
+      src: files/marketplace-back/templates/
+      dest: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
+      mode: 0644
+# End of block

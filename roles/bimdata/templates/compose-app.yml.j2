@@ -236,13 +236,16 @@ services:
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
     expose:
       - 8000
-{% if not s3_connect_enabled | bool or tls_enabled  | bool %}
+{% if not s3_connect_enabled | bool or tls_enabled | bool or connect_use_custom_mail_templates | bool %}
     volumes:
 {% if not s3_connect_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
 {% endif %}
 {% if tls_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% if connect_use_custom_mail_templates | bool %}
+      - {{ bimdata_docker_volume_path }}/connect/mails:/opt/templates/mails:ro
 {% endif %}
 {% endif %}
     environment:
@@ -320,9 +323,14 @@ services:
     image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool %}
+{% if tls_enabled  | bool or platform_back_use_custom_mail_templates | bool %}
     volumes:
+{% if tls_enabled  | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% if platform_back_use_custom_mail_templates  | bool %}
+      - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
+{% endif %}
 {% endif %}
     environment:
       - VIRTUAL_HOST={{ platform_back_dns_name }}
@@ -465,9 +473,14 @@ services:
     image: {{ docker_marketplace_back_image }}:{{ docker_marketplace_back_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool %}
+{% if tls_enabled  | bool or marketplace_back_use_custom_mail_templates | bool %}
     volumes:
+{% if tls_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% if platform_back_use_custom_mail_templates  | bool %}
+      - {{ bimdata_docker_volume_path }}/marketplace_back/mails:/opt/templates/invitations/:ro
+{% endif %}
 {% endif %}
     environment:
       - ENV={{ app_env }}
