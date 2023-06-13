@@ -23,3 +23,18 @@
   set_fact:
     platform_front_authorized_identity_providers: "bimdataconnect"
   when: platform_front_authorized_identity_providers is not defined
+
+- name: "Define default use connect custom template if unset."
+  set_fact:
+    connect_use_custom_mail_templates: false
+  when: connect_use_custom_mail_templates is not defined
+
+- name: "Define default use platform-back custom template if unset."
+  set_fact:
+    platform_back_use_custom_mail_templates: false
+  when: platform_back_use_custom_mail_templates is not defined
+
+- name: "Define default use marketplace-back custom template if unset."
+  set_fact:
+    marketplace_back_use_custom_mail_templates: false
+  when: marketplace_back_use_custom_mail_templates is not defined

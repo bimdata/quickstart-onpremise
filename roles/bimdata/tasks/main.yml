@@ -25,6 +25,9 @@
     mode: 0755
   when: not s3_connect_enabled | bool
 
+- name: "Include tasks for TLS."
+  include_tasks: templates.yml
+
 - name: "Create needed directories for db if needed."
   file:
     path: "{{ bimdata_docker_volume_path }}/db/{{ item }}"

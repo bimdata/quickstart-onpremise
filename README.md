@@ -137,9 +137,11 @@ Object storage (S3):
 | connect_invitation_secret                    | "{{ vault_connect_invitation_secret }}"                                  | You should not change this.                                      |
 | connect_invitation_client                    | "{{ 'connect_invitation_client' \| to_uuid(namespace=uuid_namespace) }}" | You should not change this.                                      |
 | connect_invitation_client_secret             | "{{ vault_connect_invitation_client_secret }}"                           | You should not change this.                                      |
+| connect_use_custom_mail_templates            | false                                                                    | Configure usage of custom connect mail templates.                |
 ||||
 | platform_back_secret_key                     | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                      |
 | platform_back_webhook_secret                 | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                      |
+| platform_back_use_custom_mail_templates      | false                                                                    | Configure usage of custom platform mail templates.               |
 ||||
 | platform_front_client_id                     | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
 | platform_front_project_status_limit_new      | "5"                                                                      | Number of days during which the project is considered new.       |
@@ -151,6 +153,7 @@ Object storage (S3):
 ||||
 | marketplace_enabled                          | false                                                                    | Enable / disable marketplace.                                    |
 | marketplace_back_secret_key                  | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                      |
+| marketplace_back_use_custom_mail_templates   | false                                                                    | Configure usage of custom marketplace mail templates.            |
 ||||
 | marketplace_front_client_id                  | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
 | marketplace_front_workers                    | 2                                                                        | Number of node workers.                                          |
@@ -455,3 +458,18 @@ You also need to enable offline installation in the ansible inventory in
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|
 | install_offline            | false                            | Enable the offline installation.                            |
+
+## Email templates
+You can use custom emails templates for different part of our application. To do so, you need to set the variables:
+  - `connect_use_custom_mail_templates`: to use custom templates for connect,
+  - `platform_back_use_custom_mail_templates`: to use custom templates for the platform,
+  - `marketplace_back_use_custom_mail_templates`: to use custom templates for the marketplace.
+
+### Connect
+If you set `connect_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/connect/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+
+### Platform
+If you set `platform_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/platform-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+
+### Marketplace
+If you set `marketplace_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/marketplace-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
