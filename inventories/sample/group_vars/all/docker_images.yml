@@ -69,6 +69,9 @@ docker_workers_merge_tag: "{{ docker_bimdata_tag }}"
 docker_workers_xkt_image: "{{ docker_private_registry }}/on-premises/xkt_worker"
 docker_workers_xkt_tag: "{{ docker_bimdata_tag }}"
 
+docker_workers_xkt_v10_image: "{{ docker_private_registry }}/on-premises/xkt_v10_worker"
+docker_workers_xkt_v10_tag: "{{ docker_bimdata_tag }}"
+
 docker_workers_preview_image: "{{ docker_private_registry }}/on-premises/viewer_360"
 docker_workers_preview_tag: "{{ docker_bimdata_tag }}"
 

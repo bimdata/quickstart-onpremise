@@ -181,7 +181,11 @@ Object storage (S3):
 | workers_xkt_instance                         | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_xkt_cpu                              | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_xkt_ram                              | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_xkt_task_timeout                     |           "{{ '3min' | community.general.to_seconds | int }}"            | Timeout for an XKT process.                                      |
+| workers_xkt_task_timeout                     | "{{ '3min' | community.general.to_seconds | int }}"                      | Timeout for an XKT process.                                      |
+| workers_xkt_v10_instance                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_xkt_v10_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_xkt_v10_ram                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_xkt_v10_task_timeout                 | "{{ '3min' | community.general.to_seconds | int }}"                      | Timeout for an XKT v10 process.                                  |
 | workers_preview_instance                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_preview_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_preview_ram                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
@@ -330,6 +334,8 @@ with the [db] server on these ports.
 | docker_workers_merge_tag                | "{{ docker_bimdata_tag }}"                                       | Worker merge docker tag.                                                  |
 | docker_workers_xkt_image                | "{{ docker_private_registry }}/on-premises/xkt_worker"           | Worker XKT docker image.                                                  |
 | docker_workers_xkt_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker XKT docker tag.                                                    |
+| docker_workers_xkt_v10_image            | "{{ docker_private_registry }}/on-premises/xkt_v10_worker"       | Worker XKT v10 er image.                                                  |
+| docker_workers_xkt_v10_tag              | "{{ docker_bimdata_tag }}"                                       | Worker XKT v10 er tag.                                                    |
 | docker_workers_preview_image            | "{{ docker_private_registry }}/on-premises/viewer_360"           | Worker preview docker image.                                              |
 | docker_workers_preview_tag              | "{{ docker_bimdata_tag }}"                                       | Worker preview docker tag.                                                |
 | docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  | 
