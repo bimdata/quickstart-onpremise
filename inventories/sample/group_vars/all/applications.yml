@@ -127,10 +127,10 @@ workers_xkt_cpu: 1
 workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
 workers_xkt_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
 
-workers_xkt_10_instance: 1
-workers_xkt_10_cpu: 1
-workers_xkt_10_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_xkt_10_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
+workers_xkt_v10_instance: 1
+workers_xkt_v10_cpu: 1
+workers_xkt_v10_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_xkt_v10_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
 
 ## preview 3D
 workers_preview_instance: 1
