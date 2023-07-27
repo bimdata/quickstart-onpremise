@@ -141,6 +141,8 @@ Object storage (S3):
 ||||
 | platform_back_secret_key                     | "{{ vault_platform_back_secret_key }}"                                   | You should not change this.                                      |
 | platform_back_webhook_secret                 | "{{ vault_platform_back_webhook_secret }}"                               | You should not change this.                                      |
+| platform_back_client_id                      | "{{ 'platform_back_client_id' \| to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
+| platform_back_client_secret                  | "{{ vault_platform_back_client_secret }}"                                | You should not change this.                                      |
 | platform_back_use_custom_mail_templates      | false                                                                    | Configure usage of custom platform mail templates.               |
 ||||
 | platform_front_client_id                     | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |

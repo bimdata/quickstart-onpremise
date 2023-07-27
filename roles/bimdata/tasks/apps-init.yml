@@ -13,16 +13,8 @@
     mode: 0640
   loop:
     - create_connect_provider.py
-    - create_invitation_app.py
-
-- name: "Copy the scripts into the needed containers."
-  command: "docker cp {{ bimdata_path }}/scripts/{{ item.script }} {{ item.container }}:/opt/{{ item.script }}"
-  loop:
-    - container: connect
-      script: create_connect_provider.py
-    - container: api
-      script: create_invitation_app.py
-  changed_when: false
+    - create_apps.py
+    - create_webhook_notifs.py
 
 - name: "Wait for IAM to respond."
   uri:
@@ -56,14 +48,6 @@
     REQUESTS_CA_BUNDLE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
     SSL_CERT_FILE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
 
-- name: "Wait for connect migrations."
-  command: "docker exec connect bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
-  register: connect_migration
-  until: connect_migration.stdout == "0"
-  failed_when: connect_migration.rc != 1
-  changed_when: false
-  retries: 36
-  delay: 10
 
 - name: "Connect: initialization."
   vars:
@@ -72,7 +56,14 @@
     - name: "Connect: copy the needed scripts."
       command: "docker cp {{ bimdata_path }}/scripts/create_connect_provider.py {{ container_name }}:/opt/"
       changed_when: false
-
+    - name: "Wait for connect migrations."
+      command: "docker exec {{ container_name }} bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+      register: connect_migration
+      until: connect_migration.stdout == "0"
+      failed_when: connect_migration.rc != 1
+      changed_when: false
+      retries: 36
+      delay: 10
     - name: "Connect: check if we need to initialize the RSA key."
       command: docker exec {{ container_name }} python manage.py shell -c 'from oidc_provider.models import RSAKey; print(RSAKey.objects.count())'
       changed_when: false
@@ -95,33 +86,31 @@
       no_log: true
 # End of block
 
-- name: "Wait for API to respond."
-  uri:
-    url: "{{ api_url }}"
-    method: GET
-    status_code: 200
-    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
-  register: connect_get
-  until: connect_get.status == 200
-  retries: 36
-  delay: 5
-
-- name: "Wait for API migrations."
-  command: "docker exec api bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
-  register: api_migration
-  until: api_migration.stdout == "0"
-  failed_when: api_migration.rc != 1
-  changed_when: false
-  retries: 36
-  delay: 10
-
 - name: "API: initialization"
   vars:
     container_name: "{{ (_compose_up.services['api'].keys() | from_yaml)[0] }}"
   block:
+    - name: "Wait for API to respond."
+      uri:
+        url: "{{ api_url }}"
+        method: GET
+        status_code: 200
+        ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+      register: connect_get
+      until: connect_get.status == 200
+      retries: 36
+      delay: 5
     - name: "API: copy the needed scripts."
-      command: "docker cp {{ bimdata_path }}/scripts/create_invitation_app.py {{ container_name }}:/opt/"
+      command: "docker cp {{ bimdata_path }}/scripts/create_apps.py {{ container_name }}:/opt/"
       changed_when: false
+    - name: "Wait for API migrations."
+      command: "docker exec {{ container_name }} bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+      register: api_migration
+      until: api_migration.stdout == "0"
+      failed_when: api_migration.rc != 1
+      changed_when: false
+      retries: 36
+      delay: 10
     - name: "API: init apps."
       command: |
         docker exec
@@ -129,11 +118,52 @@
         -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
         -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
         {% endif %}
-        {{ container_name }} python create_invitation_app.py {{ connect_invitation_secret }}
+        {{ container_name }} python create_apps.py {{ connect_invitation_secret }}
         {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
-        {{ platform_front_client_id }} {{ connect_client_id }} {{ connect_client_secret }}
-        {{ platform_front_url }} {{ marketplace_front_url }} {{ marketplace_front_client_id }}
+        {{ platform_front_client_id }} {{ platform_back_client_id }} {{ platform_back_client_secret }}
+        {{ connect_client_id }} {{ connect_client_secret }} {{ marketplace_front_client_id }}
+        {{ platform_front_url }} {{ platform_back_url }} {{ marketplace_front_url }} 
         {{ connect_url }}
+      no_log: false
+      register: exec_return
+      changed_when:
+        - exec_return.rc == 0 
+        - (exec_return.stdout | lower | replace("'",'"') | from_json).changed | bool
+# End of block
+
+- name: "Platform back: initialization"
+  vars:
+    container_name: "{{ (_compose_up.services['platform-back'].keys() | from_yaml)[0] }}"
+  block:
+    - name: "Platform back: copy the needed scripts."
+      command: "docker cp {{ bimdata_path }}/scripts/create_webhook_notifs.py {{ container_name }}:/opt/"
+      changed_when: false
+    - name: "Wait for platform back to respond."
+      uri:
+        url: "{{ platform_back_url }}"
+        method: GET
+        status_code: 200
+        ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+      register: connect_get
+      until: connect_get.status == 200
+      retries: 36
+      delay: 5
+    - name: "Wait for platform back migrations."
+      command: "docker exec {{ container_name }} bash -c '/opt/manage.py showmigrations | grep -F -c \"[ ]\"'"
+      register: platform_back_migration
+      until: platform_back_migration.stdout == "0"
+      failed_when: platform_back_migration.rc != 1
+      changed_when: false
+      retries: 36
+      delay: 10
+    - name: "Platform back: init apps."
+      command: |
+        docker exec 
+        {% if tls_enabled | bool %}
+        -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+        -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+        {% endif %}
+        {{ container_name }} python create_webhook_notifs.py
       no_log: false
       register: exec_return
       changed_when:
