@@ -15,6 +15,7 @@ vault_connect_secret_key: CHANGEME-BY-SOMETHING-SECURE
 vault_connect_invitation_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_connect_invitation_client_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
+vault_platform_back_client_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_platform_back_webhook_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_marketplace_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
 vault_marketplace_header_secure_string: CHANGEME-BY-SOMETHING-SECURE

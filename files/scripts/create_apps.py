@@ -5,7 +5,6 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bimdata.settings.api")
 django.setup()
 
-from django.conf import settings
 from user.models import IdentityProvider
 from app.models import App, Scope
 from externals.keycloak import request
@@ -14,12 +13,15 @@ secret = sys.argv[1]
 invitation_client_id = sys.argv[2]
 invitation_client_secret = sys.argv[3]
 platform_client_id = sys.argv[4]
-client_id = sys.argv[5]
-client_secret = sys.argv[6]
-platform_url = sys.argv[7]
-marketplace_url = sys.argv[8]
+platform_back_client_id = sys.argv[5]
+platform_back_client_secret = sys.argv[6]
+client_id = sys.argv[7]
+client_secret = sys.argv[8]
 marketplace_client_id = sys.argv[9]
-connect_url = sys.argv[10]
+platform_url = sys.argv[10]
+platform_back_url = sys.argv[11]
+marketplace_url = sys.argv[12]
+connect_url = sys.argv[13]
 
 changed = False
 
@@ -68,6 +70,40 @@ except App.DoesNotExist:
     platform_app.scopes.set(Scope.objects.all())
     changed = True
 
+# create platform-back app
+try:
+    platform_back_app = App.objects.get(client_id=platform_back_client_id)
+except App.DoesNotExist:
+    platform_back_app = App.objects.create(
+        name="BIMData Platform Back",
+        redirect_uris=[platform_url + "/*"],
+        creator=None,
+        access_type=App.TYPE_CONFIDENTIAL,
+        implicit_flow_enabled=False,
+        client_id=platform_back_client_id,
+        client_secret=platform_back_client_secret,
+        base_url=platform_url,
+    )
+    platform_back_app.scopes.set(Scope.objects.all())
+    changed = True
+
+try:
+    # create platform link
+    from app.models import PlatformLink
+
+    try:
+        platform_link = PlatformLink.objects.get(
+            platform_front=platform_app, platform_back=platform_back_app
+        )
+    except PlatformLink.DoesNotExist:
+        platform_link = PlatformLink.objects.create(
+            platform_front=platform_app, platform_back=platform_back_app
+        )
+        changed = True
+except ModuleNotFoundError:
+    # Model PlatformLink does not exist
+    pass
+
 # create marketplace app
 try:
     marketplace_app = App.objects.get(client_id=marketplace_client_id)
@@ -84,7 +120,7 @@ except App.DoesNotExist:
     marketplace_app.scopes.set(Scope.objects.all())
     changed = True
 
-for app in [invitation_app, platform_app, marketplace_app]:
+for app in [invitation_app, platform_app, platform_back_app, marketplace_app]:
     request(verb="put", endpoint=f"/clients/{app.keycloak_id}", json={"consentRequired": False})
 
 # Keycloak config
