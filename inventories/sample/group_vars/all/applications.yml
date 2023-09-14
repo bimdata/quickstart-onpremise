@@ -74,6 +74,7 @@ platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid(namespace=uui
 platform_front_project_status_limit_new: "5"
 platform_front_project_status_limit_active: "15"
 platform_front_authorized_identity_providers: "bimdataconnect"
+platform_front_translate_ifc_type: false
 
 # iam
 iam_user: "admin"
