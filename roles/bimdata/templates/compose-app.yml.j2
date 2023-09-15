@@ -402,6 +402,7 @@ services:
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
       - VUE_APP_AUTHORIZED_IDENTITY_PROVIDERS={{ platform_front_authorized_identity_providers }}
       - VUE_APP_USER_IFRAME_PROFILE=true
+      - VUE_APP_TRANSLATE_IFC_TYPE={{ platform_front_translate_ifc_type }}
 {% if payment_enabled is defined and payment_enabled | bool %}
       - VUE_APP_SUBSCRIPTION_ENABLED=true
       - VUE_APP_PRO_PLAN_ID={{ platform_plan_id }}
