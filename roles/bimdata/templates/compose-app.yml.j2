@@ -582,7 +582,7 @@ sso_invitation:
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
     environment:
-      - VIRTUAL_HOST={{ api_dns_name }}
+      - VIRTUAL_HOST={{ sso_invitation_dns_name }}
       - ENV={{ app_env }}
       - WORKERS=8
       - API_URL={{ api_url }}
@@ -597,7 +597,7 @@ sso_invitation:
       - SMTP_USE_TLS={{ smtp_use_tls }}
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
 {% if tls_acme | bool %}
-      - LETSENCRYPT_HOST={{ api_dns_name }}
+      - LETSENCRYPT_HOST={{ sso_invitation_dns_name }}
 {% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}

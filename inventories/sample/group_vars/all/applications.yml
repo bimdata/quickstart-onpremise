@@ -12,6 +12,7 @@ documentation_dns_name: "doc.{{ app_dns_domain }}"
 archive_dns_name: "archive.{{ app_dns_domain }}"
 marketplace_back_dns_name: "marketplace-back.{{ app_dns_domain }}"
 marketplace_front_dns_name: "marketplace.{{ app_dns_domain }}"
+sso_invitation_dns_name: "invitation.{{ app_dns_domain }}"
 
 # smtp service
 smtp_host: ""
