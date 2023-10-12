@@ -567,3 +567,43 @@ services:
   # Workers
   {{ compose_workers | to_nice_yaml(indent=2) | indent(2) }}
 {%- endif %}
+
+{% if sso_invitation_enabled | bool %}
+sso_invitation:
+    container_name: sso_invitation
+    image: {{ docker_sso_invitation_image }}:{{ docker_sso_invitation_tag }}
+    expose:
+      - 8000
+    volumes:
+      - {{ bimdata_docker_volume_path }}/sso_invitation/mails/content.html:/opt/src/templates/content.html:ro
+      - {{ bimdata_docker_volume_path }}/sso_invitation/mails/content.txt:/opt/src/templates/content.txt:ro
+      - {{ bimdata_docker_volume_path }}/sso_invitation/mails/title.txt:/opt/src/templates/title.txt:ro
+{% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+    environment:
+      - VIRTUAL_HOST={{ api_dns_name }}
+      - ENV={{ app_env }}
+      - WORKERS=8
+      - API_URL={{ api_url }}
+      - IAM_URL={{ iam_url }}
+      - INVITATION_SECRET={{ sso_invitation_secret }}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+{% if smtp_user is defined and smtp_user | length %}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+{% endif %}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+{% if tls_acme | bool %}
+      - LETSENCRYPT_HOST={{ api_dns_name }}
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+      nginx-proxy:
+        condition: service_started
+{% endif %}

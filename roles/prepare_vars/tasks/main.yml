@@ -29,6 +29,9 @@
 - name: "Include tasks to compute workers variables."
   include_tasks: workers.yml
 
+- name: "Include tasks to compute sso variables."
+  include_tasks: sso.yml
+
 # Legacy check
 - name: "Fail if swift_enabled is still true."
   fail:

@@ -218,6 +218,16 @@ Object storage (S3):
 | app_env                                      | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
 | maptiler_token                               | Undefined                                                                | Token for authentication on the Maptiler API.                    |
 
+### SSO
+If you want to use your own userbase and connect them to BIMData services, contact us.
+We support OIDC and SAMLv2 (Microsoft AD) protocols.
+We also provide a service to send emails to users when they are invited to spaces or projects.
+You can find email templates examples in `files/sso_invitation/mails`. You can replace those files to customize emails with your logo, colors and wording.
+
+| Variables                  | Default value                    | Description                                                 |
+|----------------------------|----------------------------------|-------------------------------------------------------------|
+| sso_invitation_enabled     | false                            | Send email to users on invitation                           |
+
 ### connectivity.yml
 #### Ansible connectivity
 | Variables                  | Default value      | Description                   |

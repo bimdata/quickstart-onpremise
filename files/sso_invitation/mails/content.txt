@@ -1,0 +1,18 @@
+Platform Invitation
+-------------------
+
+{% if not sender_name %}
+  {% if project_name %}
+You have been invited to work on project {{ project_name }}
+  {% else %}
+You have been invited to work on space {{ cloud_name }}
+  {% endif %}
+{% else %}
+  {% if project_name %}
+{{ sender_name }} invited you to work on project {{ project_name }}
+  {% else %}
+{{ sender_name }} invited you to work on space {{ cloud_name }}
+  {% endif %}
+{% endif %}
+
+{{ redirect_uri }}

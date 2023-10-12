@@ -20,6 +20,7 @@ vault_platform_back_webhook_secret: CHANGEME-BY-SOMETHING-SECURE
 vault_marketplace_back_secret_key: CHANGEME-BY-SOMETHING-SECURE
 vault_marketplace_header_secure_string: CHANGEME-BY-SOMETHING-SECURE
 vault_iam_password: CHANGEME-BY-SOMETHING-SECURE
+vault_sso_invitation_secret: CHANGEME-BY-SOMETHING-SECURE
 
 vault_smtp_pass: CHANGEME-BY-YOUR-PASSWORD-ON-THE-SMTP-SERVER
 

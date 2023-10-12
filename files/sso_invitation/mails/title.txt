@@ -1,0 +1,5 @@
+{% if project_name %}
+You have been invited in a project
+{% else %}
+You have been invited in a space
+{% endif %}

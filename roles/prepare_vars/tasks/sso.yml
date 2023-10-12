@@ -1,0 +1,8 @@
+- when: sso_invitation_enabled
+  block:
+  - name: "Check if all needed variables for SSO are defined if sso_invitation_enabled: true."
+    assert:
+      that:
+        - smtp_host is defined
+        - smtp_host | length
+      fail_msg: "You choose to use the SSO email module (sso_invitation_enabled: true), smtp_host must be defined and not empty."
