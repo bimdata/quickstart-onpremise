@@ -93,6 +93,11 @@ marketplace_back_use_custom_mail_templates: false
 marketplace_front_workers: 2
 marketplace_front_client_id: "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"
 
+# SSO invitations
+sso_invitation_enabled: false
+sso_invitation_secret: "{{ vault_sso_invitation_secret }}" # Change me in the vault
+
+
 # workers
 ## export
 workers_export_instance: 1

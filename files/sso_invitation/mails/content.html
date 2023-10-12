@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- fix WINDOWS PHONE 8 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- google WEBFONT : Roboto -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+
+    <title>Platform Invitation</title>
+
+    <style type="text/css">
+      @media only screen and (max-width: 360px) {
+        table[class="container_table"] {
+          width: 320px;
+        }
+        table[class="container_table-inner"] {
+          width: 300px;
+        }
+
+        /*  */
+        td[class="td_hidden"] {
+          display: none;
+        }
+        td[class="td_block-center"] {
+          margin: auto;
+          display: block;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    bgcolor="#ffffff"
+    leftmargin="0"
+    rightmargin="0"
+    topmargin="0"
+    bottommargin="0"
+    alink="#2F374A"
+    vlink="#2F374A"
+    link="#2F374A"
+  >
+    <!-- LINE ==================================== -->
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      bgcolor="#8FD2F1"
+      align="center"
+      width="640"
+      height="8"
+      style="border-collapse: collapse; display: block;"
+      class="container_table"
+    >
+    <tr height="8">
+      <td height="8">&nbsp;</td>
+    </tr>
+    </table>
+
+    <!-- HEADER ==================================== -->
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      bgcolor="#ffffff"
+      align="center"
+      width="640"
+      style="border-collapse: collapse"
+      class="container_table"
+    >
+      <tr>
+        <td height="38">&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="center">
+          <img
+            src="https://statics.bimdata.io/mails/img/bimdata-logo.jpg"
+            width="194px"
+            height="58px"
+            style="display: block"
+            border="0"
+            alt="logo"
+            title="logo"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td height="38">&nbsp;</td>
+      </tr>
+    </table>
+
+    <!-- CONTENT ============================== -->
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      bgcolor="#F7F7F7"
+      align="center"
+      width="640"
+      style="border-collapse: collapse"
+      class="container_table"
+    >
+      <tr>
+        <td height="50">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="60" class="td_hidden">&nbsp;</td>
+        <td align="center" class="td_block-center" width="300">
+          <strong
+            style="
+              font-family: Arial, sans-serif;
+              color: #01247C;
+              font-size: 24px;
+              line-height: 21px;
+            "
+          >
+            Platform Invitation
+          </strong>
+        </td>
+        <td width="60" class="td_hidden">&nbsp;</td>
+      </tr>
+      <tr>
+        <td height="20" colspan="3">&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="60" class="td_hidden">&nbsp;</td>
+        <td align="center" class="td_block-center" width="300">
+            <span
+            style="
+              font-family: Arial, sans-serif;
+              color: #2E4EAA;
+              font-size: 14px;
+              line-height: 22px;
+            "
+            >
+            {% if not sender_name %}
+                {% if project_name %}
+                    You have been invited to work on project {{ project_name }}
+                {% else %}
+                    You have been invited to work on space {{ cloud_name }}
+                {% endif %}
+            {% else %}
+                {% if project_name %}
+                    {{ sender_name }} invited you to work on project {{ project_name }}
+                {% else %}
+                    {{ sender_name }} invited you to work on space {{ cloud_name }}
+                {% endif %}
+            {% endif %}
+            </span>
+        </td>
+        <td width="60" class="td_hidden">&nbsp;</td>
+      </tr>
+      <tr>
+        <td height="35" class="">&nbsp;</td>
+      </tr>
+      <!-- BLOC BTN ============================== -->
+      <tr>
+        <td colspan="3">
+          <table
+            align="center"
+            width="230"
+            bgcolor="#2E4EAA"
+            border="0"
+            style="border-collapse: collapse"
+          >
+            <tr>
+              <td align="center" height="60" width="230">
+                <strong>
+                  <a
+                    href="{{ redirect_uri }}"
+                    style="
+                      font-family: Arial, sans-serif;
+                      color: #fff;
+                      font-size: 16px;
+                      line-height: 21px;
+                      text-decoration: none;
+                    "
+                  >
+                  {% if project_name %}
+                    Open project
+                  {% else %}
+                    Open space
+                  {% endif %}
+                  </a>
+                </strong>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td height="50">&nbsp;</td>
+      </tr>
+    </table>
+  </body>
+</html>

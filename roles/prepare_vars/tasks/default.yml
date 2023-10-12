@@ -38,3 +38,8 @@
   set_fact:
     marketplace_back_use_custom_mail_templates: false
   when: marketplace_back_use_custom_mail_templates is not defined
+
+- name: "Define default sso_invitation_enabled if unset."
+  set_fact:
+    sso_invitation_enabled: false
+  when: sso_invitation_enabled is not defined
