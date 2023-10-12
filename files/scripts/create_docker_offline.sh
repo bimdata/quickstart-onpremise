@@ -5,7 +5,7 @@ set -euo pipefail
 archive_path="./files/offline/docker"
 
 src_private_repos=docker-registry.bimdata.io/on-premises
-src_private_tag=20221118
+src_private_tag=20230918
 
 app_images=(
   rabbitmq:3.8-management-alpine
@@ -20,6 +20,7 @@ app_images=(
   ${src_private_repos}/archive:${src_private_tag}
   ${src_private_repos}/marketplace_back:${src_private_tag}
   ${src_private_repos}/marketplace:${src_private_tag}
+  ${src_private_repos}/sso_invitation_email_sender:${src_private_tag}
 )
 
 db_images=(postgres:13-alpine)

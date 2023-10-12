@@ -43,17 +43,17 @@
       mode: 0644
 # End of block
 
-- name: "Manage sso_invitations templates."
+- name: "Manage sso-invitations templates."
   when: sso_invitation_enabled
   block:
-  - name: "Create needed directories for sso_invitations templates."
+  - name: "Create needed directories for sso-invitations templates."
     file:
       path: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
       state: directory
       mode: 0755
-  - name: "Copy sso_invitations templates."
+  - name: "Copy sso-invitations templates."
     copy:
-      src: files/sso_invitations/templates/
+      src: files/sso_invitation/mails/
       dest: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
       mode: 0644
 # End of block

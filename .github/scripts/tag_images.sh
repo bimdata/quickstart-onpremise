@@ -19,6 +19,7 @@ img_list=(
   iam
   documentation
   archive
+  sso_invitation_email_sender
   workers
   viewer_360
   xkt_worker

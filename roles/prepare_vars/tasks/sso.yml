@@ -1,3 +1,4 @@
+---
 - when: sso_invitation_enabled
   block:
   - name: "Check if all needed variables for SSO are defined if sso_invitation_enabled: true."

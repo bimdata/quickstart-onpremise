@@ -70,11 +70,10 @@ Then, you need to modify the variables to match your needs.
 | platform_back_dns_name      | "platform-back.{{ app_dns_domain }}"   | DNS name use for the Platform back URL.                |
 | platform_front_dns_name     | "platform.{{ app_dns_domain }}"        | DNS name use for the Platform URL.                     |
 | iam_dns_name                | "iam.{{ app_dns_domain }}"             | DNS name use for the Keycloak (identity provider) URL. |
-| documentation_dns_name      |"doc.{{ app_dns_domain }}"              | DNS name use for the documentation URL.                |
-| archive_dns_name            |"archive.{{ app_dns_domain }}"          | DNS name use for the archive URL.                      |
-| marketplace_back_dns_name   |"marketplace-back.{{ app_dns_domain }}" | DNS name use for the marketplace back URL.             |
-| marketplace_front_dns_name  |"marketplace.{{ app_dns_domain }}"      | DNS name use for fhe marketplace URL.                  |
-
+| documentation_dns_name      | "doc.{{ app_dns_domain }}"             | DNS name use for the documentation URL.                |
+| archive_dns_name            | "archive.{{ app_dns_domain }}"         | DNS name use for the archive URL.                      |
+| marketplace_back_dns_name   | "marketplace-back.{{ app_dns_domain }}"| DNS name use for the marketplace back URL.             |
+| marketplace_front_dns_name  | "marketplace.{{ app_dns_domain }}"     | DNS name use for fhe marketplace URL.                  |
 
 For example if:
 ```
@@ -224,9 +223,10 @@ We support OIDC and SAMLv2 (Microsoft AD) protocols.
 We also provide a service to send emails to users when they are invited to spaces or projects.
 You can find email templates examples in `files/sso_invitation/mails`. You can replace those files to customize emails with your logo, colors and wording.
 
-| Variables                  | Default value                    | Description                                                 |
-|----------------------------|----------------------------------|-------------------------------------------------------------|
-| sso_invitation_enabled     | false                            | Send email to users on invitation                           |
+| Variables                  | Default value                       | Description                                                 |
+|----------------------------|-------------------------------------|-------------------------------------------------------------|
+| sso_invitation_enabled     | false                               | Send email to users on invitation                           |
+| sso_invitation_secret      | "{{ vault_sso_invitation_secret }}" | You should not change this.                                 |
 
 ### connectivity.yml
 #### Ansible connectivity
