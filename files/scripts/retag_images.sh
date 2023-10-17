@@ -3,7 +3,7 @@
 set -euo pipefail
 
 src_repos=docker-registry.bimdata.io/on-premises
-src_tag=20231013
+src_tag=20231017
 
 dest_repos=
 dest_tag=
