@@ -33,9 +33,9 @@
 - name: "Flush handlers to avoid any conflict with the desired state."
   meta: flush_handlers
 
-- name: "Ensure Docker is started and enabled at boot."
+- name: "Configure Docker service startup."
   service:
     name: "{{ docker_svc_name }}"
-    state: started
-    enabled: true
+    state: "{{ docker_svc_state }}"
+    enabled: "{{ docker_svc_enabled }}"
   ignore_errors: "{{ ansible_check_mode }}"
