@@ -40,6 +40,10 @@ services:
     ports:
       - {{ external_port_http }}:80
       - {{ external_port_https }}:443
+{% if nginx_custom_log_format is defined and nginx_custom_log_format | length %}
+    environment:
+      - LOG_FORMAT={{ nginx_custom_log_format }}
+{% endif %}
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - {{ bimdata_docker_volume_path }}/web/conf.d:/etc/nginx/conf.d:rw
