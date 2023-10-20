@@ -2,11 +2,11 @@
 
 set -euo pipefail
 
-src_repos=docker-registry.bimdata.io/on-premises
-src_tag=20231017
+src_repos=docker-registry.bimdata.io/bimdata
+src_tag=prod
 
-dest_repos=
-dest_tag=
+dest_repos=docker-registry.bimdata.io/on-premises
+dest_tag=20231017
 
 img_list=(
   api
@@ -34,5 +34,3 @@ for img in ${img_list[@]} ; do
   sudo docker tag ${src_repos}/${img}:${src_tag} ${dest_repos}/${img}:${dest_tag}
   sudo docker push ${dest_repos}/${img}:${dest_tag}
 done
-
-${src_private_repos}/sso_invitation_email_sender:${src_private_tag}
