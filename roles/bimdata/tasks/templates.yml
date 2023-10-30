@@ -11,6 +11,7 @@
       src: files/connect/templates/
       dest: "{{ bimdata_docker_volume_path }}/connect/mails"
       mode: 0644
+    notify: "Restart connect."
 # End of block
 
 - name: "Manage platform-back templates."
@@ -26,6 +27,7 @@
       src: files/platform-back/templates/
       dest: "{{ bimdata_docker_volume_path }}/platform_back/mails"
       mode: 0644
+    notify: "Restart platform-back."
 # End of block
 
 - name: "Manage marketplace-back templates."
@@ -41,6 +43,7 @@
       src: files/marketplace-back/templates/
       dest: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
       mode: 0644
+    notify: "Restart marketplace-back."
 # End of block
 
 - name: "Manage sso-invitations templates."
@@ -56,4 +59,5 @@
       src: files/sso_invitation/mails/
       dest: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
       mode: 0644
+    notify: "Restart sso-invitation."
 # End of block
