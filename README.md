@@ -107,7 +107,7 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 |----------------------------|----------------------------------|-------------------------------------------------------------|
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
 | bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
-| bimdata_docker_volume_path | "{{ bimdata_path }}/datas"       | Where will your datas will be store on the servers.         |
+| bimdata_docker_volume_path | "{{ bimdata_path }}/data"        | Where will your data will be store on the servers.          |
 
 Object storage (S3):
 
