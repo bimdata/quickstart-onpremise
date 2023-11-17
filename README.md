@@ -70,6 +70,7 @@ Then, you need to modify the variables to match your needs.
 | platform_back_dns_name      | "platform-back.{{ app_dns_domain }}"   | DNS name use for the Platform back URL.                |
 | platform_front_dns_name     | "platform.{{ app_dns_domain }}"        | DNS name use for the Platform URL.                     |
 | iam_dns_name                | "iam.{{ app_dns_domain }}"             | DNS name use for the Keycloak (identity provider) URL. |
+| rabbitmq_admin_dns_name     | "rabbitmq.{{ app_dns_domain }}"        | RabbitMQ dns name.                                     |
 | documentation_dns_name      | "doc.{{ app_dns_domain }}"             | DNS name use for the documentation URL.                |
 | archive_dns_name            | "archive.{{ app_dns_domain }}"         | DNS name use for the archive URL.                      |
 | marketplace_back_dns_name   | "marketplace-back.{{ app_dns_domain }}"| DNS name use for the marketplace back URL.             |
@@ -394,7 +395,6 @@ You should not have to modified these variables in most cases.
 | external_rabbitmq_port  | 5672                            | RabbitMQ cluster TCP port if use_external_rabbitmq: true.  |
 | rabbitmq_user           | "bimdata"                       | RabbitMQ user use for authentication.                      |
 | rabbitmq_password       | "{{ vault_rabbitmq_password }}" | RabbitMQ password use for authentication.                  |
-| rabbitmq_admin_dns_name | "rabbitmq.{{ app_dns_domain }}" | RabbitMQ dns name.                                         |
 | rabbitmq_external_port  | 5672                            | RabbitMQ external port.                                    |
 | rabbitmq_server_addr    | "{{ rabbitmq_admin_dns_name }}" | RabbitMQ server address.                                   |
 
