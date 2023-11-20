@@ -6,35 +6,245 @@ from pathlib import Path
 from datetime import datetime
 from collections import Counter
 from argparse import ArgumentParser
+from jinja2 import Template
 
 DEFAULT_INVENTORIES_PATH = Path(sys.path[0]) / "inventories"
 INVENTORY_VARS_RELATIVE_PATH = "group_vars/all"
-INVENTORY_BACKUP_SUFFIX = ".backup"
-INVENTORY_MANAGED_FILES = [
-    "group_vars/all/applications.yml",
-    "group_vars/all/connectivity.yml",
-    "group_vars/all/databases.yml",
-    "group_vars/all/docker_images.yml",
-    "group_vars/all/docker.yml",
-    "group_vars/all/nginx.yml",
-    "group_vars/all/offline.yml",
-    "group_vars/all/rabbitmq.yml",
-    "group_vars/all/tls.yml",
+INVENTORY_OLD_MANAGED_FILES = [
+    "applications.yml",
+    "connectivity.yml",
+    "databases.yml",
+    "docker_images.yml",
+    "docker.yml",
+    "nginx.yml",
+    "offline.yml",
+    "rabbitmq.yml",
+    "tls.yml",
 ]
-INVENTORY_IGNOIRED_FILENAME = [
-    "inventory.ini",
-    "vault.yml",
-]
-INVENTORY_NEW_VARIABLES = "group_vars/all/vars.yml"
+REFERENCE_VALUES_PATH = Path(sys.path[0]) / "roles/prepare_vars/defaults/main"
 
-DEFAULT_VALUES_PATH = Path(sys.path[0]) / "roles/prepare_vars/defaults/main"
-
-VARS_OPTIONALS = [
-    "nginx_vhost_override",
+REQUIRED_VARS = [
+    "app_dns_domain",
+    "docker_private_registry_login",
+    "smtp_host",
+    "smtp_port",
+    "smtp_user",
+    "smtp_pass",
+    "smtp_use_tls",
+    "smtp_default_email",
+    "debug_mail_to",
 ]
+
+VARS_TEMPLATE_DEFINITION = """---
+# DNS Domain
+app_dns_domain: {{ app_dns_domain }}
+
+# smtp service
+smtp_host: "{{ smtp_host }}"
+smtp_port: {{ smtp_port }}
+smtp_user: "{{ smtp_user }}"
+smtp_pass: "{{ smtp_pass }}"
+smtp_use_tls: "{{ smtp_use_tls }}"
+smtp_default_email: "{{ smtp_default_email }}"
+debug_mail_to: "{{ debug_mail_to }}"
+
+{%- if docker_private_registry_login is defined and docker_private_registry_login | length %}
+# Docker registry
+docker_private_registry_login: {{ docker_private_registry_login }}
+{% endif %}
+
+# Add your other configurations after this comment
+
+"""
 
 # TODO: need to check all the deprecated variables with the git history
 DEPRECATED_VARS = {20231116: ["swift_.*", "mapbox_token", ".*extract_quantities.*"]}
+
+
+class Inventory:
+    def __init__(self, path):
+        self.path = Path(path)
+        self.inventory_file_path = self.path / "inventory.ini"
+        self.vars_path = self.path / INVENTORY_VARS_RELATIVE_PATH / "vars.yml"
+        self.vault_path = self.path / INVENTORY_VARS_RELATIVE_PATH / "vault.yml"
+
+        # Check that the inventory folder exists
+        if not self.path.exists():
+            raise FileNotFoundError(
+                f"{self.path} is not a directory. Please specify the correct inventory name when you call this script."
+            )
+        elif not self.path.is_dir():
+            raise NotADirectoryError(
+                f"{self.path} is not a directory. Please specify the correct inventory name when you call this script."
+            )
+
+        # Set legacy vars if vars.yml doesn't exist yet
+        if self.vars_path.exists():
+            self.is_legacy = False
+        else:
+            self.is_legacy = True
+
+        self.legacy_vars_paths = [
+            self.path / INVENTORY_VARS_RELATIVE_PATH / file
+            for file in INVENTORY_OLD_MANAGED_FILES
+        ]
+
+        # Retrieve content
+        self.content = self.read_inventory()
+
+    def get_unknown_files(self):
+        """Returns a list of files that are not managed by this class"""
+        unknown_files = []
+        existing_files = self.path.rglob("*")
+        for file in existing_files:
+            if (
+                file.is_file()
+                and file != self.inventory_file_path
+                and file != self.vars_path
+                and file != self.vault_path
+                and file not in self.legacy_vars_paths
+            ):
+                unknown_files.append(file)
+        return unknown_files
+
+    def read_inventory(self):
+        """Reads the inventory files and returns a dictionary containing the content of the inventory"""
+        files = self.legacy_vars_paths if self.is_legacy else [self.vars_path]
+        return yaml_load_files(files)
+
+    def migrate_legacy(self, ref_values={}):
+        """
+        Migrates the data by removing variables that have values matching those specified in ref_values.
+
+        Parameters:
+        - ref_values (dict): A dictionary containing reference values. Variables with values matching
+        those in this dictionary will be removed during the migration process.
+        """
+
+        # Remove variables that have a value matching those in ref_values
+        for key, value in ref_values.items():
+            if key in self.content and self.content[key] == value:
+                del self.content[key]
+
+        # If docker_bimdata_tag is defined, but no custom images
+        # Remove it, next time the upgrade will be automatic
+        if not self.use_custom_images():
+            if "docker_bimdata_tag" in self.content:
+                del self.content["docker_bimdata_tag"]
+
+        self.is_legacy = False
+
+    def upgrade(self, ref_values={}, version=None):
+        if self.is_legacy:
+            self.migrate_legacy(ref_values)
+
+        if version:
+            self.content["docker_bimdata_tag"] = version
+        elif "docker_bimdata_tag" in self.content:
+            version = self.content["docker_bimdata_tag"]
+        else:
+            version = ref_values.get("docker_bimdata_tag")
+            # Skip if no specified version and custom images
+            # We can't be sure the last version is used
+            if self.use_custom_images():
+                print(
+                    f"Warning: this inventory use custom Docker images or tags."
+                    f"You should launch this script with --version XXXXXXXX."
+                    f"The inventory upgrade is skipped."
+                )
+                return 1
+
+        # Remove variables that are deprecated
+        for version_depreciation in DEPRECATED_VARS:
+            if version >= version_depreciation:
+                for pattern in DEPRECATED_VARS[version]:
+                    for key in list(self.content.keys()):
+                        if re.match(pattern, key):
+                            del self.content[key]
+                            print(f"Warning: deprecated variable '{key}', removed.")
+
+        # Upgrade docker_registries syntax to simplify mandatory vars.yml content when possible
+        if (
+            "docker_registries" in self.content
+            and "docker_private_registry_login" not in self.content
+            and len(self.content["docker_registries"]) == 1
+        ):
+            current_registry = self.content["docker_registries"][0]
+            ref_registry = ref_values["docker_registries"][0]
+            if (
+                current_registry["url"] == ref_registry["url"]
+                and current_registry["password"] == ref_registry["password"]
+            ):
+                self.content["docker_private_registry_login"] = current_registry[
+                    "username"
+                ]
+                del self.content["docker_registries"]
+
+    def use_custom_images(self):
+        """Returns True if the inventory contains custom images / tags"""
+        # TODO: this is not working when there are deprecated images in the inventory
+        # Not sure how to managed this case yet
+        ignored_images = [
+            "docker_rabbitmq.*",
+            "docker_postgres.*",
+            "docker_nginx.*",
+            "docker_acme_companion.*",
+            "docker_bimdata_tag",
+        ]
+        # for key in self.content:
+        #     if re.match("docker_.*_images", key) or re.match("docker_.*_tag", key):
+        #         if not any(re.match(pattern, key) for pattern in ignored_images):
+        #             print(key)
+        #             return True
+        return False
+
+    def backup(self, backup_suffix):
+        """Backup the inventory"""
+        backup_path = self.path.with_suffix(backup_suffix)
+        if backup_path.exists():
+            suffix = backup_suffix + "-" + str(int(round(datetime.now().timestamp())))
+            backup_path = self.path.with_suffix(suffix)
+            print(
+                f"Warning: {self.path.with_suffix(backup_suffix)} already exists.\n"
+                f"The inventory will be backup up into: {backup_path}\n"
+            )
+        shutil.copytree(self.path, backup_path)
+
+    def write_inventory(self, backup=True, backup_suffix=".backup", delete_legacy=True):
+        if self.is_legacy:
+            raise ValueError(
+                "This script can't write legacy inventory. Please upgrade it first."
+            )
+        if backup:
+            self.backup(backup_suffix)
+
+        # Segregate the mandatory variables from the custom ones, there are is the template.
+        # The custom variables are written at the end of the file
+        required_variables, custom_variables = {}, {}
+        for key, value in self.content.items():
+            if key in REQUIRED_VARS:
+                required_variables[key] = value
+            else:
+                custom_variables[key] = value
+
+        del required_variables["docker_private_registry_login"]
+
+        template = Template(VARS_TEMPLATE_DEFINITION)
+        with self.vars_path.open(mode="w+") as file:
+            file.write(template.render(required_variables))
+            yaml.dump(
+                custom_variables,
+                file,
+                indent=2,
+                allow_unicode=True,
+                default_flow_style=False,
+                sort_keys=True,
+                Dumper=MyDumper,
+                width=200,
+            )
+        if delete_legacy:
+            for path in self.legacy_vars_paths:
+                path.unlink()
 
 
 class MyDumper(yaml.Dumper):
@@ -60,89 +270,13 @@ def print_err(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def check_old_inventory(inventory_path):
-    """Check the validity of the Ansible inventory inventory_path"""
-    if not inventory_path.exists():
-        raise FileNotFoundError(
-            f"{inventory_path} is not a directory. Please specify the correct inventory name when you call this script."
-        )
-
-    elif not inventory_path.is_dir():
-        raise NotADirectoryError(
-            f"{inventory_path} is not a directory. Please specify the correct inventory name when you call this script."
-        )
-
-    inventory_files = inventory_path.rglob("*")
-    unknown_files = []
-    for file in inventory_files:
-        if (
-            file.is_file()
-            and str(file.relative_to(inventory_path)) not in INVENTORY_MANAGED_FILES
-            and file.name not in INVENTORY_IGNOIRED_FILENAME
-        ):
-            unknown_files.append(str(file))
-
-    if unknown_files:
-        raise ValueError(
-            "There are unknown files in the inventory, this script can't be safely use to migrate it to the new format.\nUnknown files:\n"
-            + "\n".join(["  - " + file for file in unknown_files]),
-        )
-
-
-def backup_old_inventory(inventory_path):
-    """Backup inventory_path"""
-    if inventory_path.with_suffix(INVENTORY_BACKUP_SUFFIX).exists():
-        suffix = (
-            INVENTORY_BACKUP_SUFFIX + "-" + str(int(round(datetime.now().timestamp())))
-        )
-        print(
-            f"Warning: {inventory_path.with_suffix(INVENTORY_BACKUP_SUFFIX)} already exists.\n"
-            f"The inventory will be backup up into: {inventory_path.with_suffix(suffix)}\n"
-        )
-    else:
-        suffix = INVENTORY_BACKUP_SUFFIX
-
-    shutil.copytree(inventory_path, inventory_path.with_suffix(suffix))
-
-
-def get_modified_variables(old_vars, new_vars):
-    modified_variables = {}
-
-    added_variables = set(new_vars.keys()) - set(old_vars.keys())
-    # removed_variables = set(old_vars.keys()) - set(new_vars.keys())
-
-    common_variables = set(old_vars.keys()) & set(new_vars.keys())
-    common_changed_variables = {
-        key: (old_vars[key], new_vars[key])
-        for key in common_variables
-        if old_vars[key] != new_vars[key]
-    }
-
-    deprecated_vars = list(chain.from_iterable(DEPRECATED_VARS.values()))
-    for var_name in sorted(added_variables):
-        deprecated = False
-        for pattern in deprecated_vars:
-            if re.match(pattern, var_name):
-                deprecated = True
-                print(f"Warning: deprecated variable '{var_name}', ignored.")
-        if not deprecated:
-            modified_variables[var_name] = new_vars[var_name]
-
-    for var_name in common_changed_variables:
-        modified_variables[var_name] = new_vars[var_name]
-
-    return modified_variables
-
-
 def yaml_load_files(yaml_files):
     """Load YAML file defining the default value of the quickstart variables"""
     yaml_vars = []
 
     for file in yaml_files:
-        # Ignore the vault
-        if file.name not in INVENTORY_IGNOIRED_FILENAME:
-            with file.open() as f:
-                yaml_vars.append(yaml.safe_load(f))
+        with file.open() as f:
+            yaml_vars.append(yaml.safe_load(f))
 
     # Check for duplicate keys accross files
     all_var_names = [key for dictionary in yaml_vars for key in dictionary]
@@ -159,65 +293,32 @@ def main() -> int:
     args_parser = ArgumentParser()
     args_parser.add_argument("inventory_name")
     args_parser.add_argument("--no-backup", action="store_true", default=False)
+    args_parser.add_argument("--no-delete", action="store_true", default=False)
     args_parser.add_argument("--inventories-path", default=DEFAULT_INVENTORIES_PATH)
+    args_parser.add_argument("--version", default=None)
     args = args_parser.parse_args()
 
     # Configure the style of multiline str dump
     yaml.add_representer(str, str_presenter)
 
-    inventory_path = Path(args.inventories_path) / args.inventory_name
-
-    # Check in we can migrate the inventory
-    try:
-        check_old_inventory(inventory_path)
-    except Exception as e:
-        print_err(e)
-        return 1
-
-    # Do a backup of the inventory
-    if not args.no_backup:
-        try:
-            backup_old_inventory(inventory_path)
-        except Exception as e:
-            print_err(
-                "Error: something went wrong with the inventory backup. Stopping.\n"
-                "Technical details:\n"
-            )
-            traceback.print_exc()
-            return 1
-
-    # Load default variables
-    try:
-        default_variables = yaml_load_files(DEFAULT_VALUES_PATH.rglob("*"))
-    except Exception as e:
-        print_err(f"Error: {DEFAULT_VALUES_PATH}: {e}\n" "Technical details:\n")
-        traceback.print_exc()
-        return 1
-
-    # Load inventory variables
-    try:
-        vars_path = inventory_path / INVENTORY_VARS_RELATIVE_PATH
-        inventory_variables = yaml_load_files(vars_path.rglob("*"))
-    except Exception as e:
-        print_err(f"Error: {vars_path}: {e}\n" "Technical details:\n")
-        traceback.print_exc()
-        return 1
-
-    # TODO: More readable file, sort and commented
-    # In function of what will be put in  the example file vars.yml in the sample inventory
-    new_vars_path = inventory_path / INVENTORY_NEW_VARIABLES
-    modified_variables = get_modified_variables(default_variables, inventory_variables)
-    with new_vars_path.open(mode="w+") as file:
-        yaml.dump(
-            modified_variables,
-            file,
-            indent=2,
-            allow_unicode=True,
-            default_flow_style=False,
-            explicit_start=True,
-            sort_keys=True,
-            Dumper=MyDumper,
+    # Define the inventory
+    inventory = Inventory(path=f"{args.inventories_path}/{args.inventory_name}")
+    inventory_unknown_files = inventory.get_unknown_files()
+    if inventory_unknown_files:
+        raise ValueError(
+            "There are unknown files in the inventory, this script can't be safely use.\nUnknown files:\n"
+            + "\n".join(["  - " + file for file in inventory_unknown_files]),
         )
+
+    # Read the reference values
+    ref_values = yaml_load_files(REFERENCE_VALUES_PATH.rglob("*"))
+
+    # Upgrade the inventory
+    inventory.upgrade(ref_values, args.version)
+    inventory.write_inventory(
+        backup=not args.no_backup, delete_legacy=not args.no_delete
+    )
+    return 0
 
 
 if __name__ == "__main__":
