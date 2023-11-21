@@ -43,14 +43,16 @@ smtp_host: "{{ smtp_host }}"
 smtp_port: {{ smtp_port }}
 smtp_user: "{{ smtp_user }}"
 smtp_pass: "{{ smtp_pass }}"
-smtp_use_tls: "{{ smtp_use_tls }}"
+smtp_use_tls: {{ smtp_use_tls }}
 smtp_default_email: "{{ smtp_default_email }}"
 debug_mail_to: "{{ debug_mail_to }}"
 
 {%- if docker_private_registry_login is defined and docker_private_registry_login | length %}
+
 # Docker registry
 docker_private_registry_login: {{ docker_private_registry_login }}
-{% endif %}
+
+{% endif -%}
 
 # Add your other configurations after this comment
 
@@ -82,20 +84,19 @@ class Inventory:
             )
 
         # Set legacy vars if vars.yml doesn't exist yet
+        self.legacy_vars_paths = []
         if self.vars_path.exists():
             self.is_legacy = False
         else:
-            self.is_legacy = True
-
-        self.legacy_vars_paths = []
-        for file in INVENTORY_OLD_MANAGED_FILES:
-            file_path = self.path / INVENTORY_VARS_RELATIVE_PATH / file
-            if file_path.exists():
-                self.legacy_vars_paths.append(file_path)
-            else:
-                print(
-                    f"Warning: Legacy inventory, but missing file {file_path}."
-                )
+            self.is_legacy = True    
+            for file in INVENTORY_OLD_MANAGED_FILES:
+                file_path = self.path / INVENTORY_VARS_RELATIVE_PATH / file
+                if file_path.exists():
+                    self.legacy_vars_paths.append(file_path)
+                else:
+                    print(
+                        f"Warning: Legacy inventory, but missing file {file_path}."
+                    )
 
         # Retrieve content
         self.content = self.read_inventory()
@@ -234,21 +235,20 @@ class Inventory:
             else:
                 custom_variables[key] = value
 
-        del required_variables["docker_private_registry_login"]
-
         template = Template(VARS_TEMPLATE_DEFINITION)
         with self.vars_path.open(mode="w+") as file:
             file.write(template.render(required_variables))
-            yaml.dump(
-                custom_variables,
-                file,
-                indent=2,
-                allow_unicode=True,
-                default_flow_style=False,
-                sort_keys=False,
-                Dumper=MyDumper,
-                width=200,
-            )
+            if custom_variables:
+                yaml.dump(
+                    custom_variables,
+                    file,
+                    indent=2,
+                    allow_unicode=True,
+                    default_flow_style=False,
+                    sort_keys=False,
+                    Dumper=MyDumper,
+                    width=200,
+                )
         if delete_legacy:
             for path in self.legacy_vars_paths:
                 path.unlink()
