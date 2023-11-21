@@ -57,7 +57,11 @@ docker_private_registry_login: {{ docker_private_registry_login }}
 """
 
 # TODO: need to check all the deprecated variables with the git history
-DEPRECATED_VARS = {20231116: ["swift_.*", "mapbox_token", ".*extract_quantities.*"]}
+DEPRECATED_VARS = {
+        20221118: [".*extract_quantities.*"],
+        20220928: ["mapbox_token"],
+        20230309: ["swift_.*"],
+    }
 
 
 class Inventory:
@@ -159,9 +163,9 @@ class Inventory:
                 return 1
 
         # Remove variables that are deprecated
-        for version_depreciation in DEPRECATED_VARS:
+        for version_depreciation in DEPRECATED_VARS.keys():
             if version >= version_depreciation:
-                for pattern in DEPRECATED_VARS[version]:
+                for pattern in DEPRECATED_VARS[version_depreciation]:
                     for key in list(self.content.keys()):
                         if re.match(pattern, key):
                             del self.content[key]
@@ -241,7 +245,7 @@ class Inventory:
                 indent=2,
                 allow_unicode=True,
                 default_flow_style=False,
-                sort_keys=True,
+                sort_keys=False,
                 Dumper=MyDumper,
                 width=200,
             )
