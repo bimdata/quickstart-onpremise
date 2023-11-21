@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import sys, shutil, traceback, yaml, re
-from itertools import chain
+import sys, shutil, yaml, re
 from pathlib import Path
 from datetime import datetime
 from collections import Counter
@@ -84,10 +83,15 @@ class Inventory:
         else:
             self.is_legacy = True
 
-        self.legacy_vars_paths = [
-            self.path / INVENTORY_VARS_RELATIVE_PATH / file
-            for file in INVENTORY_OLD_MANAGED_FILES
-        ]
+        self.legacy_vars_paths = []
+        for file in INVENTORY_OLD_MANAGED_FILES:
+            file_path = self.path / INVENTORY_VARS_RELATIVE_PATH / file
+            if file_path.exists():
+                self.legacy_vars_paths.append(file_path)
+            else:
+                print(
+                    f"Warning: Legacy inventory, but missing file {file_path}."
+                )
 
         # Retrieve content
         self.content = self.read_inventory()
@@ -128,7 +132,7 @@ class Inventory:
 
         # If docker_bimdata_tag is defined, but no custom images
         # Remove it, next time the upgrade will be automatic
-        if not self.use_custom_images():
+        if not self.use_custom_tag():
             if "docker_bimdata_tag" in self.content:
                 del self.content["docker_bimdata_tag"]
 
@@ -146,7 +150,7 @@ class Inventory:
             version = ref_values.get("docker_bimdata_tag")
             # Skip if no specified version and custom images
             # We can't be sure the last version is used
-            if self.use_custom_images():
+            if self.use_custom_tag():
                 print(
                     f"Warning: this inventory use custom Docker images or tags."
                     f"You should launch this script with --version XXXXXXXX."
@@ -180,7 +184,7 @@ class Inventory:
                 ]
                 del self.content["docker_registries"]
 
-    def use_custom_images(self):
+    def use_custom_tag(self):
         """Returns True if the inventory contains custom images / tags"""
         # TODO: this is not working when there are deprecated images in the inventory
         # Not sure how to managed this case yet
@@ -191,11 +195,10 @@ class Inventory:
             "docker_acme_companion.*",
             "docker_bimdata_tag",
         ]
-        # for key in self.content:
-        #     if re.match("docker_.*_images", key) or re.match("docker_.*_tag", key):
-        #         if not any(re.match(pattern, key) for pattern in ignored_images):
-        #             print(key)
-        #             return True
+        for key in self.content:
+            if re.match("docker_.*_tag", key):
+                if self.content[key] == "{{ docker_bimdata_tag }}":
+                    return True
         return False
 
     def backup(self, backup_suffix):
@@ -263,11 +266,6 @@ def str_presenter(dumper, data):
     if data.count("\n") > 0:  # check for multiline string
         return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
     return dumper.represent_scalar("tag:yaml.org,2002:str", data)
-
-
-def print_err(*args, **kwargs):
-    """Print on stderr"""
-    print(*args, file=sys.stderr, **kwargs)
 
 
 def yaml_load_files(yaml_files):
