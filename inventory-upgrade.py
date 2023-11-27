@@ -39,13 +39,13 @@ VARS_TEMPLATE_DEFINITION = """---
 app_dns_domain: {{ app_dns_domain }}
 
 # smtp service
-smtp_host: "{{ smtp_host }}"
+smtp_host: "{{ smtp_host if smtp_host }}"
 smtp_port: {{ smtp_port }}
-smtp_user: "{{ smtp_user }}"
-smtp_pass: "{{ smtp_pass }}"
-smtp_use_tls: {{ smtp_use_tls }}
-smtp_default_email: "{{ smtp_default_email }}"
-debug_mail_to: "{{ debug_mail_to }}"
+smtp_user: "{{ smtp_user if smtp_user }}"
+smtp_pass: "{{ smtp_pass if smtp_pass }}"
+smtp_use_tls: {{ smtp_use_tls | lower }}
+smtp_default_email: "{{ smtp_default_email if smtp_default_email }}"
+debug_mail_to: "{{ debug_mail_to if debug_mail_to }}"
 
 {%- if docker_private_registry_login is defined and docker_private_registry_login | length %}
 
@@ -60,10 +60,10 @@ docker_private_registry_login: {{ docker_private_registry_login }}
 
 # TODO: need to check all the deprecated variables with the git history
 DEPRECATED_VARS = {
-        20221118: [".*extract_quantities.*"],
-        20220928: ["mapbox_token"],
-        20230309: ["swift_.*"],
-    }
+    20221118: [".*extract_quantities.*"],
+    20220928: ["mapbox_token"],
+    20230309: ["swift_.*"],
+}
 
 
 class Inventory:
@@ -88,15 +88,13 @@ class Inventory:
         if self.vars_path.exists():
             self.is_legacy = False
         else:
-            self.is_legacy = True    
+            self.is_legacy = True
             for file in INVENTORY_OLD_MANAGED_FILES:
                 file_path = self.path / INVENTORY_VARS_RELATIVE_PATH / file
                 if file_path.exists():
                     self.legacy_vars_paths.append(file_path)
                 else:
-                    print(
-                        f"Warning: Legacy inventory, but missing file {file_path}."
-                    )
+                    print(f"Warning: Legacy inventory, but missing file {file_path}.")
 
         # Retrieve content
         self.content = self.read_inventory()
@@ -119,6 +117,8 @@ class Inventory:
     def read_inventory(self):
         """Reads the inventory files and returns a dictionary containing the content of the inventory"""
         files = self.legacy_vars_paths if self.is_legacy else [self.vars_path]
+        # In some previous versions, not all files exists.
+        files = [file for file in files if file.exists()]
         return yaml_load_files(files)
 
     def migrate_legacy(self, ref_values={}):
@@ -251,7 +251,8 @@ class Inventory:
                 )
         if delete_legacy:
             for path in self.legacy_vars_paths:
-                path.unlink()
+                if path.exists():
+                    path.unlink()
 
 
 class MyDumper(yaml.Dumper):
