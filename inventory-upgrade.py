@@ -55,7 +55,6 @@ docker_private_registry_login: {{ docker_private_registry_login }}
 {% endif -%}
 
 # Add your other configurations after this comment
-
 """
 
 # TODO: need to check all the deprecated variables with the git history
@@ -232,27 +231,42 @@ class Inventory:
 
         # Segregate the mandatory variables from the custom ones, there are is the template.
         # The custom variables are written at the end of the file
-        required_variables, custom_variables = {}, {}
+        required_variables = {}
+        grouped_variables = []
+        previous_prefix = None
         for key, value in self.content.items():
             if key in REQUIRED_VARS:
                 required_variables[key] = value
             else:
-                custom_variables[key] = value
+                prefix = key.split("_")[0]
+                # Same prefix, add to same dict
+                if previous_prefix == prefix:
+                    grouped_variables[-1]["content"][key] = value
+                else:
+                    grouped_variables.append(
+                        {"prefix": prefix, "content": {key: value}}
+                    )
+                previous_prefix = prefix
 
         template = Template(VARS_TEMPLATE_DEFINITION)
         with self.vars_path.open(mode="w+") as file:
             file.write(template.render(required_variables))
-            if custom_variables:
+            for group in grouped_variables:
+                if len(group["content"]) > 1:
+                    file.write(f"\n## {group['prefix']}\n")
+                else:
+                    file.write(f"\n")
                 yaml.dump(
-                    custom_variables,
+                    group["content"],
                     file,
                     indent=2,
                     allow_unicode=True,
                     default_flow_style=False,
                     sort_keys=False,
                     Dumper=MyDumper,
-                    width=200,
+                    width=160,
                 )
+
         if delete_legacy:
             for path in self.legacy_vars_paths:
                 if path.exists():
