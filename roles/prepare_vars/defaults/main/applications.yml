@@ -1,6 +1,6 @@
 ---
-# DNS Domain
-app_dns_domain: test.domain.tld
+# Version
+bimdata_version: 20231116
 
 # DNS subdomains
 api_dns_name: "api.{{ app_dns_domain }}"
@@ -8,6 +8,7 @@ connect_dns_name: "connect.{{ app_dns_domain }}"
 platform_back_dns_name: "platform-back.{{ app_dns_domain }}"
 platform_front_dns_name: "platform.{{ app_dns_domain }}"
 iam_dns_name: "iam.{{ app_dns_domain }}"
+rabbitmq_admin_dns_name: "rabbitmq.{{ app_dns_domain }}"
 documentation_dns_name: "doc.{{ app_dns_domain }}"
 archive_dns_name: "archive.{{ app_dns_domain }}"
 marketplace_back_dns_name: "marketplace-back.{{ app_dns_domain }}"

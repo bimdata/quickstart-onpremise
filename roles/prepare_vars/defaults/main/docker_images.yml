@@ -1,10 +1,11 @@
 ---
 docker_private_registry: docker-registry.bimdata.io
+docker_private_registry_login: ""
 
 # Used to login on the registry, this is a list, you can add registry if needed
 docker_registries:
   - url: "https://{{ docker_private_registry }}"
-    username: "my_example_user"  # Change me
+    username: "{{ docker_private_registry_login }}"  # Change me
     password: "{{ vault_docker_private_registry_password }}"  # Change me in VAULT
 
 # Use public default registry
@@ -21,7 +22,7 @@ docker_nginx_tag: alpine
 docker_acme_companion_image: nginxproxy/acme-companion
 docker_acme_companion_tag: 2.2
 
-docker_bimdata_tag: 20231116
+docker_bimdata_tag: "{{ bimdata_version }}"
 
 # Use private registry
 docker_api_image: "{{ docker_private_registry }}/on-premises/api"

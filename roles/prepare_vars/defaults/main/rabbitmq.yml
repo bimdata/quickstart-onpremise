@@ -10,9 +10,6 @@ external_rabbitmq_port: 5672
 rabbitmq_user: bimdata
 rabbitmq_password: "{{ vault_rabbitmq_password }}"  # Change me in the vault
 
-# Address for admin interface
-rabbitmq_admin_dns_name: "rabbitmq.{{ app_dns_domain }}"
-
 # Need to be able to contact this port from [workers] to [app]
 # Only use if use_external_rabbitmq: false
 rabbitmq_external_port: 5672

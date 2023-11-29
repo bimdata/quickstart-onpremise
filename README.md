@@ -57,9 +57,45 @@ Curently, `app` and `db` do not support multiples hosts. This project can't be
 use for a fully redundant infrastructure. This means you can't put multiple servers
 in the groups `app` or in the group `db`.
 
-Then, you need to modify the variables to match your needs.
+Then, you need to modify the variables to match your needs:
+    - you need to edit `inventories/main/group_vars/all/vars.yml`, add the DNS domain that will be use.
+      Multiples sub-domains are needed. You can find the list in `roles/prepare_vars/defaults/main/applications.yml`.
+    - you can run the command `sed -i "${line}s/CHANGEME-BY-SOMETHING-SECURE/$(cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1)/" "./inventories/main/group_vars/all/vars.yml"`
+      This will initiate most of the needed secure strings. You can then edit the file and add your password, for example if one is needed for the SMTP server.
+
+They are a lot of variables that can be added to your `inventories/main/group_vars/all/vars.yml` to customize how BIMData will be installed.
+You can find theme in the multiple files in `roles/prepare_vars/defaults/main/` or at the end of this file.
+
+When everything is configured, you can deploy:
+```
+ansible-playbook -i inventories/main/inventory.ini install-bimdata.yml
+```
+
+You may need to add options:
+
+| Options          | Effect                    |
+|------------------|---------------------------|
+| -k               | Prompt for ssh password.  |
+| -K               | Prompt for sudo password. |
+| --ask-vault-pass | Prompt for vault password |
+
+If you can't use `sudo`, you can check the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/become.html)
+on how to configure other way to manage privilege escalation.
+
+## Upgrade
+- Download the last version of the quickstart: `git fetch && git checkout $(git describe --tags $(git rev-list --tags --max-count=1))`
+- Upgrade dependencies: `source venv/bin/activate && pip install -r requirements.txt`
+- Upgrade inventory: `./inventory-upgrade.py main`
+  The script will tell you if you need to edit some files, follow the instructions.
+- Deploy the new version: `ansible-playbook -i inventories/main/inventory.ini install-bimdata.yml`
+  You may need other options, for sudo for example. Check the install instruction for more details.
 
 ### applications.yml
+#### Version
+| Variables                   | Default value                          | Description                                                     |
+|-----------------------------|----------------------------------------|-----------------------------------------------------------------|
+| bimdata_version             | 20231116                               | Bimdata version, should match the first part of the github tag. |
+
 #### DNS configuration
 
 | Variables                   | Default value                          | Description                                            |
@@ -70,6 +106,7 @@ Then, you need to modify the variables to match your needs.
 | platform_back_dns_name      | "platform-back.{{ app_dns_domain }}"   | DNS name use for the Platform back URL.                |
 | platform_front_dns_name     | "platform.{{ app_dns_domain }}"        | DNS name use for the Platform URL.                     |
 | iam_dns_name                | "iam.{{ app_dns_domain }}"             | DNS name use for the Keycloak (identity provider) URL. |
+| rabbitmq_admin_dns_name     | "rabbitmq.{{ app_dns_domain }}"        | RabbitMQ dns name.                                     |
 | documentation_dns_name      | "doc.{{ app_dns_domain }}"             | DNS name use for the documentation URL.                |
 | archive_dns_name            | "archive.{{ app_dns_domain }}"         | DNS name use for the archive URL.                      |
 | marketplace_back_dns_name   | "marketplace-back.{{ app_dns_domain }}"| DNS name use for the marketplace back URL.             |
@@ -316,6 +353,7 @@ with the [db] server on these ports.
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                          | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                       | Postgres docker image (use Dockerhub by default).                         |
 | docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                     | Postgres docker tag.                                                      |
+| docker_bimdata_tag                      | "{{ bimdata_version }}                                           | Docker tag use by all bimdata images.                                     |
 | docker_api_image                        | "{{ docker_private_registry }}/on-premises/api"                  | API docker image.                                                         |
 | docker_api_tag                          | "{{ docker_bimdata_tag }}"                                       | API docker tag.                                                           |
 | docker_connect_image                    | "{{ docker_private_registry }}/on-premises/connect"              | Connect docker image.                                                     |
@@ -394,7 +432,6 @@ You should not have to modified these variables in most cases.
 | external_rabbitmq_port  | 5672                            | RabbitMQ cluster TCP port if use_external_rabbitmq: true.  |
 | rabbitmq_user           | "bimdata"                       | RabbitMQ user use for authentication.                      |
 | rabbitmq_password       | "{{ vault_rabbitmq_password }}" | RabbitMQ password use for authentication.                  |
-| rabbitmq_admin_dns_name | "rabbitmq.{{ app_dns_domain }}" | RabbitMQ dns name.                                         |
 | rabbitmq_external_port  | 5672                            | RabbitMQ external port.                                    |
 | rabbitmq_server_addr    | "{{ rabbitmq_admin_dns_name }}" | RabbitMQ server address.                                   |
 
@@ -439,22 +476,6 @@ We currently support 3 ways to manage TLS configuration:
 In this file, all private informations are defined. Like password, TLS keys or other security stuff.
 You should replace all the values and encrypt the file with `ansible-vault`.
 
-When everything is configured, you can deploy:
-```
-ansible-playbook -i inventories/main/inventory.ini install-bimdata.yml
-```
-
-You may need to add options:
-
-| Options          | Effect                    |
-|------------------|---------------------------|
-| -k               | Prompt for ssh password.  |
-| -K               | Prompt for sudo password. |
-| --ask-vault-pass | Prompt for vault password |
-
-If you can't use `sudo`, you can check the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/become.html)
-on how to configure other way to manage privilege escalation.
-
 ## Offline installation
 On each server you need to have:
 * Docker 20.10
@@ -467,7 +488,6 @@ You will need to do these steps before each installation or upgrade.:
 * Retrieve the docker image archives and put them in `files/offline/docker`
 * Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script doesn't need Docker but requires the other previously list dependencies.
 * Run the script and retrieve the created archive and put it in `file/offline/pip`
-* Update `inventories/your_inventory/group_vars/all/docker_images.yml`: `docker_bimdata_tag` needs to have the same value as the date in the docker archive name. For example if, the archive is named `docker-app-images-20211208.tar.bz2`, you need to have `docker_bimdata_tag: 20211208`
 
 ### offline.yml
 You also need to enable offline installation in the ansible inventory in

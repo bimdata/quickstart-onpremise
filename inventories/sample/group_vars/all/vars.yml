@@ -1,0 +1,17 @@
+---
+# DNS Domain
+app_dns_domain: CHANGEME
+
+# smtp service
+smtp_host: ""
+smtp_port: 587
+smtp_user: ""
+smtp_pass: "{{ vault_smtp_pass }}"
+smtp_use_tls: true
+smtp_default_email: ""
+debug_mail_to: ""
+
+# Docker registry
+docker_private_registry_login: CHANGEME
+
+# Add your other configurations after this comment
