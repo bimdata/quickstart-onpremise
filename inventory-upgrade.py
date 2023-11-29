@@ -251,21 +251,24 @@ class Inventory:
         template = Template(VARS_TEMPLATE_DEFINITION)
         with self.vars_path.open(mode="w+") as file:
             file.write(template.render(required_variables))
-            for group in grouped_variables:
-                if len(group["content"]) > 1:
-                    file.write(f"\n## {group['prefix']}\n")
-                else:
-                    file.write(f"\n")
-                yaml.dump(
-                    group["content"],
-                    file,
-                    indent=2,
-                    allow_unicode=True,
-                    default_flow_style=False,
-                    sort_keys=False,
-                    Dumper=MyDumper,
-                    width=160,
-                )
+            if grouped_variables:
+                for group in grouped_variables:
+                    if len(group["content"]) > 1:
+                        file.write(f"\n## {group['prefix']}\n")
+                    else:
+                        file.write(f"\n")
+                    yaml.dump(
+                        group["content"],
+                        file,
+                        indent=2,
+                        allow_unicode=True,
+                        default_flow_style=False,
+                        sort_keys=False,
+                        Dumper=MyDumper,
+                        width=160,
+                    )
+            else:
+                file.write(f"\n")
 
         if delete_legacy:
             for path in self.legacy_vars_paths:
