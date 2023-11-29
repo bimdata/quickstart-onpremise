@@ -91,6 +91,11 @@ on how to configure other way to manage privilege escalation.
   You may need other options, for sudo for example. Check the install instruction for more details.
 
 ### applications.yml
+#### Version
+| Variables                   | Default value                          | Description                                                     |
+|-----------------------------|----------------------------------------|-----------------------------------------------------------------|
+| bimdata_version             | 20231116                               | Bimdata version, should match the first part of the github tag. |
+
 #### DNS configuration
 
 | Variables                   | Default value                          | Description                                            |
@@ -348,6 +353,7 @@ with the [db] server on these ports.
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                          | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                       | Postgres docker image (use Dockerhub by default).                         |
 | docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                     | Postgres docker tag.                                                      |
+| docker_bimdata_tag                      | "{{ bimdata_version }}                                           | Docker tag use by all bimdata images.                                     |
 | docker_api_image                        | "{{ docker_private_registry }}/on-premises/api"                  | API docker image.                                                         |
 | docker_api_tag                          | "{{ docker_bimdata_tag }}"                                       | API docker tag.                                                           |
 | docker_connect_image                    | "{{ docker_private_registry }}/on-premises/connect"              | Connect docker image.                                                     |
@@ -482,7 +488,6 @@ You will need to do these steps before each installation or upgrade.:
 * Retrieve the docker image archives and put them in `files/offline/docker`
 * Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script doesn't need Docker but requires the other previously list dependencies.
 * Run the script and retrieve the created archive and put it in `file/offline/pip`
-* Update `inventories/your_inventory/group_vars/all/docker_images.yml`: `docker_bimdata_tag` needs to have the same value as the date in the docker archive name. For example if, the archive is named `docker-app-images-20211208.tar.bz2`, you need to have `docker_bimdata_tag: 20211208`
 
 ### offline.yml
 You also need to enable offline installation in the ansible inventory in

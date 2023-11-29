@@ -57,7 +57,6 @@ docker_private_registry_login: {{ docker_private_registry_login }}
 # Add your other configurations after this comment
 """
 
-# TODO: need to check all the deprecated variables with the git history
 DEPRECATED_VARS = {
     20221118: [".*extract_quantities.*"],
     20220928: ["mapbox_token"],
@@ -138,11 +137,12 @@ class Inventory:
             ):
                 del self.content[key]
 
-        # If docker_bimdata_tag is defined, but no custom images
+        # If docker_bimdata_tag is defined, but look like our default tag
         # Remove it, next time the upgrade will be automatic
-        if not self.use_custom_tag():
-            if "docker_bimdata_tag" in self.content:
-                del self.content["docker_bimdata_tag"]
+        if "docker_bimdata_tag" in self.content and is_valid_date(
+            self.content["docker_bimdata_tag"]
+        ):
+            del self.content["docker_bimdata_tag"]
 
         self.is_legacy = False
 
@@ -151,20 +151,11 @@ class Inventory:
             self.migrate_legacy(ref_values)
 
         if version:
-            self.content["docker_bimdata_tag"] = version
-        elif "docker_bimdata_tag" in self.content:
-            version = self.content["docker_bimdata_tag"]
+            self.content["bimdata_version"] = version
+        elif "bimdata_version" in self.content:
+            version = self.content["bimdata_version"]
         else:
-            version = ref_values.get("docker_bimdata_tag")
-            # Skip if no specified version and custom images
-            # We can't be sure the last version is used
-            if self.use_custom_tag():
-                print(
-                    f"Warning: this inventory use custom Docker images or tags."
-                    f"You should launch this script with --version XXXXXXXX."
-                    f"The inventory upgrade is skipped."
-                )
-                return 1
+            version = ref_values.get("bimdata_version")
 
         # Remove variables that are deprecated
         for version_depreciation in DEPRECATED_VARS.keys():
@@ -194,8 +185,7 @@ class Inventory:
 
     def use_custom_tag(self):
         """Returns True if the inventory contains custom images / tags"""
-        # TODO: this is not working when there are deprecated images in the inventory
-        # Not sure how to managed this case yet
+
         ignored_images = [
             "docker_rabbitmq.*",
             "docker_postgres.*",
@@ -203,10 +193,21 @@ class Inventory:
             "docker_acme_companion.*",
             "docker_bimdata_tag",
         ]
+        # If one the tag doesn't use docker_bimdata_tag as ref value, custom tag are use
         for key in self.content:
             if re.match("docker_.*_tag", key):
-                if self.content[key] == "{{ docker_bimdata_tag }}":
+                if (
+                    not match_any_regex(key, ignored_images)
+                    and self.content[key] != "{{ docker_bimdata_tag }}"
+                ):
                     return True
+        # if the version is defined (new inventory)
+        # and if docker_bimdata_tag doesn't use bimdata_version as ref value
+        if (
+            "docker_bimdata_tag" in self.content
+            and self.content["docker_bimdata_tag"] != "{{ bimdata_version }}"
+        ):
+            return True
         return False
 
     def backup(self, backup_suffix):
@@ -315,6 +316,23 @@ def yaml_load_files(yaml_files):
         raise ValueError(f"Some keys are duplicated: {duplicate_var_names}")
 
     return {key: value for dictionary in yaml_vars for key, value in dictionary.items()}
+
+
+# Try to convert tag as date with the expected format
+# If it failed, it's not a date
+def is_valid_date(tag):
+    try:
+        datetime.strptime(str(tag), "%Y%m%d")
+    except ValueError:
+        return False
+    return True
+
+
+def match_any_regex(data, patterns):
+    for pattern in patterns:
+        if re.match(pattern, data):
+            return True
+    return False
 
 
 def main() -> int:
