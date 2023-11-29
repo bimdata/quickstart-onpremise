@@ -132,7 +132,11 @@ class Inventory:
 
         # Remove variables that have a value matching those in ref_values
         for key, value in ref_values.items():
-            if key in self.content and self.content[key] == value:
+            if (
+                key not in REQUIRED_VARS
+                and key in self.content
+                and self.content[key] == value
+            ):
                 del self.content[key]
 
         # If docker_bimdata_tag is defined, but no custom images
