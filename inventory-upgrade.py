@@ -22,7 +22,7 @@ INVENTORY_OLD_MANAGED_FILES = [
 ]
 REFERENCE_VALUES_PATH = Path(sys.path[0]) / "roles/prepare_vars/defaults/main"
 
-REQUIRED_VARS = [
+TEMPLATED_VARS = [
     "app_dns_domain",
     "docker_private_registry_login",
     "smtp_host",
@@ -75,7 +75,7 @@ class Inventory:
         # Check that the inventory folder exists
         if not self.path.exists():
             raise FileNotFoundError(
-                f"{self.path} is not a directory. Please specify the correct inventory name when you call this script."
+                f"{self.path} not found. Please specify the correct inventory name when you call this script."
             )
         elif not self.path.is_dir():
             raise NotADirectoryError(
@@ -132,7 +132,7 @@ class Inventory:
         # Remove variables that have a value matching those in ref_values
         for key, value in ref_values.items():
             if (
-                key not in REQUIRED_VARS
+                key not in TEMPLATED_VARS
                 and key in self.content
                 and self.content[key] == value
             ):
@@ -217,7 +217,7 @@ class Inventory:
             backup_path = self.path.with_suffix(suffix)
             print(
                 f"Warning: {self.path.with_suffix(backup_suffix)} already exists.\n"
-                f"The inventory will be backup up into: {backup_path}\n"
+                f"The inventory will be backup up into: {backup_path}"
             )
         shutil.copytree(self.path, backup_path)
 
@@ -231,34 +231,34 @@ class Inventory:
 
         # Segregate the mandatory variables from the custom ones, there are is the template.
         # The custom variables are written at the end of the file
-        required_variables = {}
+        templated_variables = {}
         grouped_variables = []
-        previous_prefix = None
         for key, value in self.content.items():
-            if key in REQUIRED_VARS:
-                required_variables[key] = value
+            if key in TEMPLATED_VARS:
+                templated_variables[key] = value
             else:
+                # Group custom vars in list of dicts to be able to add comments
                 prefix = key.split("_")[0]
-                # Same prefix, add to same dict
-                if previous_prefix == prefix:
-                    grouped_variables[-1]["content"][key] = value
+                # if list not empty and same prefix, add to same dict
+                if grouped_variables and grouped_variables[-1]["prefix"] == prefix:
+                    grouped_variables[-1]["variables"][key] = value
+                # Else create a new group
                 else:
                     grouped_variables.append(
-                        {"prefix": prefix, "content": {key: value}}
+                        {"prefix": prefix, "variables": {key: value}}
                     )
-                previous_prefix = prefix
 
         template = Template(VARS_TEMPLATE_DEFINITION)
         with self.vars_path.open(mode="w+") as file:
-            file.write(template.render(required_variables))
+            file.write(template.render(templated_variables))
             if grouped_variables:
                 for group in grouped_variables:
-                    if len(group["content"]) > 1:
+                    if len(group["variables"]) > 1:
                         file.write(f"\n## {group['prefix']}\n")
                     else:
                         file.write(f"\n")
                     yaml.dump(
-                        group["content"],
+                        group["variables"],
                         file,
                         indent=2,
                         allow_unicode=True,
@@ -282,7 +282,7 @@ class MyDumper(yaml.Dumper):
     """
 
     def increase_indent(self, flow=False, indentless=False):
-        return super(MyDumper, self).increase_indent(flow, False)
+        return super().increase_indent(flow, False)
 
 
 def str_presenter(dumper, data):
