@@ -353,7 +353,7 @@ def main() -> int:
     if inventory_unknown_files:
         raise ValueError(
             "There are unknown files in the inventory, this script can't be safely use.\nUnknown files:\n"
-            + "\n".join(["  - " + file for file in inventory_unknown_files]),
+            + "\n".join(["  - " + str(file) for file in inventory_unknown_files]),
         )
 
     # Read the reference values

@@ -96,8 +96,7 @@ marketplace_front_client_id: "{{ 'marketplace_front_client_id' | to_uuid(namespa
 
 # SSO invitations
 sso_invitation_enabled: false
-sso_invitation_secret: "{{ vault_sso_invitation_secret }}" # Change me in the vault
-
+sso_invitation_secret: "{{ sso_invitation_enabled | ternary(vault_sso_invitation_secret, '') }}"
 
 # workers
 ## export
