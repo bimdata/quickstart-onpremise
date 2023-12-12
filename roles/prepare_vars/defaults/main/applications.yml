@@ -162,18 +162,18 @@ workers_preview_pdf_task_timeout: "{{ '10min' | community.general.to_seconds | i
 workers_dwg_properties_instance: 1
 workers_dwg_properties_cpu: 1
 workers_dwg_properties_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_dwg_properties_pdf_task_timeout: "{{ '1h' | community.general.to_seconds | int }}"
+workers_dwg_properties_task_timeout: "{{ '1h' | community.general.to_seconds | int }}"
 
 workers_dwg_geometries_instance: 1
 workers_dwg_geometries_cpu: 1
 workers_dwg_geometries_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_dwg_geometries_pdf_task_timeout: "{{ '4h' | community.general.to_seconds | int }}"
+workers_dwg_geometries_task_timeout: "{{ '4h' | community.general.to_seconds | int }}"
 
 ## Pointcloud
 workers_pointcloud_instance: 1
 workers_pointcloud_cpu: 1
 workers_pointcloud_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_pointcloud_pdf_task_timeout: "{{ '10h' | community.general.to_seconds | int }}"
+workers_pointcloud_task_timeout: "{{ '10h' | community.general.to_seconds | int }}"
 
 # Map
 # By default it uses our default token, uncomment and specify your token if needed
