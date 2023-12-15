@@ -48,6 +48,8 @@
       - "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
       # https://github.com/yaml/pyyaml/issues/724
       - pyyaml!=6.0.0,!=5.4.0,!=5.4.1
+      # https://github.com/docker/docker-py/issues/3194
+      - docker~=6.0
     virtualenv: "{{ bimdata_venv_path }}"
   environment: "{{ proxy_env }}"
 
