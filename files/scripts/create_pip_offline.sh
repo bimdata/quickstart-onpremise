@@ -10,6 +10,7 @@ pip
 selinux
 docker-compose==1.29.2
 requests<=2.29.0
+docker~=6.0
 EOF
 )
 
