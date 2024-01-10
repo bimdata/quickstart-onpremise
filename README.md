@@ -22,6 +22,11 @@ match your infrastructure and your security needs.
  - This project do not support high availability deployment.
 
 ## How to start
+Install some system dependancies:
+```
+sudo apt update
+sudo apt install git sshpass python3-venv
+```
 
 Clone the repository:
 ```
@@ -60,11 +65,17 @@ in the groups `app` or in the group `db`.
 Then, you need to modify the variables to match your needs:
     - you need to edit `inventories/main/group_vars/all/vars.yml`, add the DNS domain that will be use.
       Multiples sub-domains are needed. You can find the list in `roles/prepare_vars/defaults/main/applications.yml`.
-    - you can run the command `sed -i "${line}s/CHANGEME-BY-SOMETHING-SECURE/$(cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1)/" "./inventories/main/group_vars/all/vars.yml"`
+    - you can run the command :
+      ```
+      vault_path="inventories/main/group_vars/all/vault.yml" ;
+      for line in $(grep -n "CHANGEME-BY-SOMETHING-SECURE" "${vault_path}" | cut -d ':' -f 1) ; do
+        sed -i "${line}s/CHANGEME-BY-SOMETHING-SECURE/$(cat /dev/urandom | tr -dc '[:alnum:]' | fold -w 64 | head -n 1)/" "${vault_path}"
+      done
+      ```
       This will initiate most of the needed secure strings. You can then edit the file and add your password, for example if one is needed for the SMTP server.
 
 They are a lot of variables that can be added to your `inventories/main/group_vars/all/vars.yml` to customize how BIMData will be installed.
-You can find theme in the multiple files in `roles/prepare_vars/defaults/main/` or at the end of this file.
+You can find them in the multiple files in `roles/prepare_vars/defaults/main/` or at the end of this file.
 
 When everything is configured, you can deploy:
 ```
