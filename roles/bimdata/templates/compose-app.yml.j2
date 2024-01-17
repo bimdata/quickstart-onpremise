@@ -485,7 +485,7 @@ services:
 {% if tls_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
-{% if platform_back_use_custom_mail_templates  | bool %}
+{% if marketplace_back_use_custom_mail_templates  | bool %}
       - {{ bimdata_docker_volume_path }}/marketplace_back/mails:/opt/templates/invitations/:ro
 {% endif %}
 {% endif %}
