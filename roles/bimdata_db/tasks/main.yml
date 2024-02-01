@@ -30,3 +30,19 @@
     state: present
   vars:
     ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+  register: _db_compose_up
+
+# During an upgrade, we want to make sure that pg_isready before starting the app upgrade
+# to limit the risk of failed migrations because of connectivity issue.
+- name: "Save all the DB container names."
+  set_fact:
+    _db_containers: "{{ (_db_compose_up.services | dict2items | map(attribute='value') | combine).keys() }}"
+
+- name: "Wait for all the DB to be ready and accepting connection."
+  command: "docker exec {{ item }} pg_isready"
+  loop: "{{ _db_containers }}"
+  register: pg_isready
+  until: pg_isready.rc == 0
+  changed_when: false
+  retries: 60
+  delay: 5
