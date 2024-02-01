@@ -2,20 +2,6 @@
 - name: "Include tasks for prerequisites installation."
   include_tasks: "{{ install_offline | bool | ternary('offline.yml', 'online.yml') }}"
 
-# If the docker-compose file doesn't exist, we assume this is the first deployment
-# This will be use to not run handler that could restart service when some stuff
-- name: "Check if compose file already exist."
-  stat:
-    path: "{{ bimdata_path }}/docker-compose.yml"
-    get_checksum: false
-    get_attributes: false
-    get_mime: false
-  register: _compose_file
-
-- name: "Set a fact to be able to easly check if it's the first deployment."
-  set_fact:
-    _first_deploy: "{{ not _compose_file.stat.exists }}"
-
 - name: "Configure local /etc/hosts if needed."
   delegate_to: localhost
   connection: local

@@ -1,7 +1,4 @@
 ---
-- name: "Include tasks to set default value to undefined variables."
-  include_tasks: default.yml
-
 - name: "Include tasks to compute bastion variables."
   include_tasks: bastion.yml
   when: use_bastion | bool
@@ -10,6 +7,9 @@
 # Some are needed to set other varibles
 - name: "Gather ansible facts."
   setup:
+
+- name: "Include tasks to check if this is the first deployement."
+  include_tasks: first.yml
 
 - name: "Include tasks to compute proxy variables."
   include_tasks: proxy.yml

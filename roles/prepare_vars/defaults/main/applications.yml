@@ -35,6 +35,7 @@ bimdata_venv_path: "{{ bimdata_path }}/venv"
 
 # Object storage
 s3_enabled: false
+s3_connect_enabled: "{{ s3_enabled }}"
 s3_endpoint_url: ""
 s3_region_name: ""
 s3_access_key_id: ""
