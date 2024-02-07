@@ -6,7 +6,7 @@ src_repos=docker-registry.bimdata.io/bimdata
 src_tag=prod
 
 dest_repos=docker-registry.bimdata.io/on-premises
-dest_tag=20240117
+dest_tag=20240207
 
 img_list=(
   api
@@ -27,6 +27,7 @@ img_list=(
   image_preview_worker
   pdf_preview_worker
   pointcloud_worker
+  worker_b2d
 )
 
 for img in ${img_list[@]} ; do

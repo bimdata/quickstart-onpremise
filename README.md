@@ -105,7 +105,7 @@ on how to configure other way to manage privilege escalation.
 #### Version
 | Variables                   | Default value                          | Description                                                     |
 |-----------------------------|----------------------------------------|-----------------------------------------------------------------|
-| bimdata_version             | 20240117                               | Bimdata version, should match the first part of the github tag. |
+| bimdata_version             | 20240207                               | Bimdata version, should match the first part of the github tag. |
 
 #### DNS configuration
 
@@ -259,6 +259,10 @@ Object storage (S3):
 | workers_pointcloud_cpu                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_pointcloud_ram                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 | workers_pointcloud_task_timeout              | "{{ '10h' | community.general.to_seconds | int }}"                       | Timeout for a pointcloud process.                                |
+| workers_b2d_instance                         | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_b2d_cpu                              | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_b2d_ram                              | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_b2d_task_timeout                     | "{{ '30m' | community.general.to_seconds | int }}"                       | Timeout for a B2D process.                                       |
 ||||
 | uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
@@ -403,8 +407,10 @@ with the [db] server on these ports.
 | docker_workers_preview_2d_tag           | "{{ docker_bimdata_tag }}"                                       | Worker preview 2D tag.                                                    |
 | docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                 | 
 | docker_workers_preview_pdf_tag          | "{{ docker_bimdata_tag }}"                                       | Worker preview PDF tag.                                                   |
-| docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         | 
+| docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         |
 | docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
+| docker_workers_b2d_image                | "{{ docker_private_registry }}/on-premises/worker_b2d"           | Worker B2D image.                                                         | 
+| docker_workers_b2d_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker B2D tag.                                                           |
 
 ### docker.yml
 | Variables                       | Default value                                                         | Description                                                                                                  |
