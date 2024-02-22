@@ -78,6 +78,9 @@ platform_front_project_status_limit_active: "15"
 platform_front_authorized_identity_providers: "bimdataconnect"
 platform_front_translate_ifc_type: false
 
+# Archive
+archive_prefix: "bimdata-"
+
 # iam
 iam_user: "admin"
 iam_password: "{{ vault_iam_password }}" # Change me in the vault
