@@ -8,7 +8,7 @@ src_private_repos=docker-registry.bimdata.io/on-premises
 src_private_tag=20240207
 
 app_images=(
-  rabbitmq:3.8-management-alpine
+  rabbitmq:3.11-management-alpine
   nginxproxy/nginx-proxy:alpine
   nginxproxy/acme-companion:2.2
   ${src_private_repos}/api:${src_private_tag}
