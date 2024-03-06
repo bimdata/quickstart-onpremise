@@ -460,6 +460,7 @@ services:
       - SERVER_PORT=8000
       - API_URL={{ api_url }}
       - WORKERS_NB={{ archive_workers_nb }}
+      - ARCHIVE_PREFIX={{ archive_prefix }}
 {% if tls_enabled  | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}

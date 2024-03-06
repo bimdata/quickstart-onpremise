@@ -207,6 +207,8 @@ Object storage (S3):
 | marketplace_front_client_id                  | "{{ 'marketplace_front_client_id' | to_uuid(namespace=uuid_namespace) }}"| You should not change this.                                      |
 | marketplace_front_workers                    | 2                                                                        | Number of node workers.                                          |
 ||||
+| archive_prefix                               | "bimdata-"                                                               | Prefix use for the archive name when downloading multiple files. |
+||||
 | workers_export_instance                      | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_export_cpu                           | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_export_ram                           | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
