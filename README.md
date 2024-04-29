@@ -105,7 +105,7 @@ on how to configure other way to manage privilege escalation.
 #### Version
 | Variables                   | Default value                          | Description                                                     |
 |-----------------------------|----------------------------------------|-----------------------------------------------------------------|
-| bimdata_version             | 20240306                               | Bimdata version, should match the first part of the github tag. |
+| bimdata_version             | 20240429                               | Bimdata version, should match the first part of the github tag. |
 
 #### DNS configuration
 
@@ -405,13 +405,13 @@ with the [db] server on these ports.
 | docker_workers_xkt_v10_tag              | "{{ docker_bimdata_tag }}"                                       | Worker XKT v10 er tag.                                                    |
 | docker_workers_preview_image            | "{{ docker_private_registry }}/on-premises/viewer_360"           | Worker preview docker image.                                              |
 | docker_workers_preview_tag              | "{{ docker_bimdata_tag }}"                                       | Worker preview docker tag.                                                |
-| docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  | 
+| docker_workers_preview_2d_image         | "{{ docker_private_registry }}/on-premises/image_preview_worker" | Worker preview 2D image.                                                  |
 | docker_workers_preview_2d_tag           | "{{ docker_bimdata_tag }}"                                       | Worker preview 2D tag.                                                    |
-| docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                 | 
+| docker_workers_preview_pdf_image        | "{{ docker_private_registry }}/on-premises/pdf_preview_worker"   | Worker preview PDF image.                                                 |
 | docker_workers_preview_pdf_tag          | "{{ docker_bimdata_tag }}"                                       | Worker preview PDF tag.                                                   |
 | docker_workers_dwg_image                | "{{ docker_private_registry }}/on-premises/dwg_worker"           | Worker DWG image.                                                         |
 | docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
-| docker_workers_b2d_image                | "{{ docker_private_registry }}/on-premises/worker_b2d"           | Worker B2D image.                                                         | 
+| docker_workers_b2d_image                | "{{ docker_private_registry }}/on-premises/worker_b2d"           | Worker B2D image.                                                         |
 | docker_workers_b2d_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker B2D tag.                                                           |
 
 ### docker.yml

@@ -1,6 +1,6 @@
 ---
 # Version
-bimdata_version: 20240306
+bimdata_version: 20240429
 
 # DNS subdomains
 api_dns_name: "api.{{ app_dns_domain }}"
