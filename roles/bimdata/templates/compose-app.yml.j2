@@ -383,6 +383,65 @@ services:
       nginx-proxy:
         condition: service_started
 
+{% if platform_back_enable_cron | bool %}
+  platform-back-cron:
+    container_name: platform-back-cron
+    image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
+    command:
+      - /opt/cron.py
+    volumes:
+{% if tls_enabled  | bool %}
+      - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
+{% endif %}
+{% if platform_back_use_custom_mail_templates  | bool %}
+      - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
+{% endif %}
+      - {{ bimdata_docker_volume_path }}/platform_back/cron.py:/opt/cron.py:ro
+    environment:
+      - VIRTUAL_HOST={{ platform_back_dns_name }}
+      - ENV={{ app_env }}
+      - API_URL={{ api_url }}
+      - PLATFORM_BACK_URL={{ platform_back_url }}
+      - PLATFORM_URL={{ platform_front_url }}
+      - ALLOWED_HOSTS={{ platform_back_dns_name }}
+      - SECRET_KEY={{ platform_back_secret_key }}
+      - IAM_URL={{ iam_url }}
+      - IAM_CLIENT_ID={{ platform_back_client_id }}
+      - IAM_CLIENT_SECRET={{ platform_back_client_secret }}
+{% if smtp_host is defined and smtp_host | length %}
+      - SMTP_HOST={{ smtp_host }}
+      - SMTP_PORT={{ smtp_port }}
+{% if smtp_user is defined and smtp_user | length %}
+      - SMTP_USER={{ smtp_user }}
+      - SMTP_PASS={{ smtp_pass }}
+{% endif %}
+      - SMTP_USE_TLS={{ smtp_use_tls }}
+      - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
+      - DEBUG_MAIL_TO={{ debug_mail_to }}
+{% endif %}
+      - WEBHOOKS_SECRET={{ platform_back_webhook_secret }}
+      - DB_HOST={{ db_platform_host }}
+      - DB_PORT={{ db_platform_port }}
+      - DB_NAME={{ db_platform_name }}
+      - DB_USER={{ db_platform_user }}
+      - DB_PASSWORD={{ db_platform_password }}
+      - ADMIN_INTERFACE=True
+{% if tls_enabled  | bool %}
+      - CA_CERT=/opt/onprem-ca.crt
+{% endif %}
+    restart: unless-stopped
+{% if docker_use_extra_hosts | bool %}
+    extra_hosts: {{ docker_extra_hosts | to_yaml }}
+{% endif %}
+    depends_on:
+{% if not use_external_db and inventory_hostname in groups['db'] %}
+      platform-db:
+        condition: service_healthy
+{% endif %}
+      nginx-proxy:
+        condition: service_started
+{% endif %}
+
   platform:
     container_name: platform-front
     image: {{ docker_platform_front_image }}:{{ docker_platform_front_tag }}

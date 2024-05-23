@@ -1,0 +1,9 @@
+---
+- when: platform_back_enable_cron
+  block:
+  - name: "Check if all needed variables for platform cron are defined if platform_back_enable_cron: true."
+    assert:
+      that:
+        - smtp_host is defined
+        - smtp_host | length
+      fail_msg: "You choose to use the platform notifications (platform_back_enable_cron: true), smtp_host must be defined and not empty."

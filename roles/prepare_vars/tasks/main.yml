@@ -32,6 +32,9 @@
 - name: "Include tasks to compute sso variables."
   include_tasks: sso.yml
 
+- name: "Include tasks to compute cron platform variables."
+  include_tasks: cron.yml
+
 # Legacy check
 - name: "Fail if swift_enabled is still true."
   fail:
