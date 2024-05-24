@@ -70,6 +70,7 @@ platform_back_client_id: "{{ 'platform_back_client_id' | to_uuid(namespace=uuid_
 platform_back_client_secret: "{{ vault_platform_back_client_secret }}"
 platform_back_webhook_secret: "{{ vault_platform_back_webhook_secret }}" # Change me in the vault
 platform_back_use_custom_mail_templates: false
+platform_back_enable_cron: true
 
 # platform
 platform_front_client_id: "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"

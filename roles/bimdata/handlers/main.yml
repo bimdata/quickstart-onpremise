@@ -49,6 +49,17 @@
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
+- name: "Restart platform-back-cron."
+  docker_compose:
+    project_src: "{{ bimdata_path }}"
+    services: platform-back-cron
+    restarted: true
+  vars:
+    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+  when:
+    - not _first_deploy | bool
+    - _app_all_restart is not defined or not _app_all_restart | bool
+
 - name: "Restart marketplace-back."
   docker_compose:
     project_src: "{{ bimdata_path }}"

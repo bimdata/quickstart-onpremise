@@ -30,6 +30,22 @@
     notify: "Restart platform-back."
 # End of block
 
+- name: "Manage platform-back-cron templates."
+  when: platform_back_enable_cron | bool
+  block:
+  - name: "Create needed directories for platform-back templates."
+    file:
+      path: "{{ bimdata_docker_volume_path }}/platform_back"
+      state: directory
+      mode: 0755
+  - name: "Create platform-back-cron cron script."
+    template:
+      src: platform-back/cron.py.j2
+      dest: "{{ bimdata_docker_volume_path }}/platform_back/cron.py"
+      mode: 0755
+    notify: "Restart platform-back-cron."
+# End of block
+
 - name: "Manage marketplace-back templates."
   when: marketplace_back_use_custom_mail_templates | bool
   block:
