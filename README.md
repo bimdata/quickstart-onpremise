@@ -105,7 +105,7 @@ on how to configure other way to manage privilege escalation.
 #### Version
 | Variables                   | Default value                          | Description                                                     |
 |-----------------------------|----------------------------------------|-----------------------------------------------------------------|
-| bimdata_version             | 20250528                               | Bimdata version, should match the first part of the github tag. |
+| bimdata_version             | 20240528                               | Bimdata version, should match the first part of the github tag. |
 
 #### DNS configuration
 
