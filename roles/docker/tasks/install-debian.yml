@@ -1,54 +1,56 @@
 ---
-- name: "Install Docker prerequisites."
-  apt:
+- name: Install Docker prerequisites
+  ansible.builtin.apt:
     name: "{{ docker_apt_dependencies }}"
     state: present
     update_cache: true
   environment: "{{ proxy_env }}"
 
-- name: "Add Docker key."
-  apt_key:
+- name: Add Docker key
+  ansible.builtin.apt_key:
     url: "{{ docker_apt_repo_key_url }}"
     state: present
   environment: "{{ proxy_env }}"
 
-- name: "Get deb architecture"
-  command: "dpkg --print-architecture"
+- name: Get deb architecture
+  ansible.builtin.command: "dpkg --print-architecture"
   register: deb_arch
   changed_when: false
   check_mode: false
 
-- name: "Add Docker repository."
-  apt_repository:
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
     filename: docker
     repo: "{{ docker_apt_repo }}"
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
 
-- name: "Get installed Docker version."
-  command: "dpkg-query --showformat='${Version}' --show {{ docker_pkg_name }}"
-  register: docker_pkg_installed_version
-  failed_when: false
-  changed_when: false
-  check_mode: false
-
-- name: "Unhold Docker version."
-  dpkg_selections:
-    name: "{{ docker_pkg_name }}"
-    selection: install
-  when: not docker_pkg_version_hold or (docker_pkg_installed_version.stdout and docker_pkg_installed_version.stdout != docker_pkg_version)
-
-- name: "Install Docker."
-  apt:
-    name: "{{ docker_pkg_name }}{% if docker_pkg_version is defined and docker_pkg_version != '' %}={{ docker_pkg_version }}{% endif %}"
-    cache_valid_time: 3600
-    state: present
-  environment: "{{ proxy_env }}"
-  notify: "Restart Docker."
-
-- name: "Hold Docker version."
-  dpkg_selections:
+- name: Hold Docker version
+  ansible.builtin.dpkg_selections:
     name: "{{ docker_pkg_name }}"
     selection: "hold"
   when: docker_pkg_version_hold
+
+- name: Install Docker
+  ansible.builtin.apt:
+    name: "{{ docker_pkg_name }}{% if docker_pkg_version != '' %}={{ docker_pkg_version }}{% endif %}"
+    cache_valid_time: 3600
+    state: present
+    allow_change_held_packages: true
+  environment: "{{ proxy_env }}"
+  notify: "Restart Docker."
+
+- name: Hold Docker compose version
+  ansible.builtin.dpkg_selections:
+    name: "{{ docker_compose_pkg_name }}"
+    selection: "hold"
+  when: docker_compose_pkg_version_hold
+
+- name: Install Docker compose
+  ansible.builtin.apt:
+    name: "{{ docker_compose_pkg_name }}{% if docker_compose_pkg_version != '' %}={{ docker_pkg_version }}{% endif %}"
+    cache_valid_time: 3600
+    state: present
+    allow_change_held_packages: true
+  environment: "{{ proxy_env }}"

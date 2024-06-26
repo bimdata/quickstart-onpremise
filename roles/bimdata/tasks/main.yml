@@ -1,9 +1,9 @@
 ---
-- name: "Create needed directories."
-  file:
+- name: Create needed directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: 0755
+    mode: "0755"
   loop:
     - "{{ bimdata_path }}/scripts"
     - "{{ bimdata_docker_volume_path }}/keycloak/realms"
@@ -11,30 +11,30 @@
     - "{{ bimdata_docker_volume_path }}/web/vhost.d"
     - "{{ bimdata_docker_volume_path }}/web/certs"
 
-- name: "Create needed directories for API local storage."
-  file:
+- name: Create needed directories for API local storage
+  ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/web/api_storage"
     state: directory
-    mode: 0755
+    mode: "0755"
   when: not s3_enabled | bool
 
-- name: "Create needed directories for Connect local storage."
-  file:
+- name: Create needed directories for Connect local storage
+  ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/web/connect_storage"
     state: directory
-    mode: 0755
+    mode: "0755"
   when: not s3_connect_enabled | bool
 
-- name: "Include tasks to configure email templates."
-  include_tasks: templates.yml
+- name: Include tasks to configure email templates
+  ansible.builtin.include_tasks: templates.yml
 
-- name: "Create needed directories for db if needed."
-  file:
+- name: Create needed directories for db if needed
+  ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/db/{{ item }}"
     state: directory
     owner: 70
     group: 70
-    mode: 0700
+    mode: "0700"
   loop:
     - api
     - connect
@@ -45,69 +45,67 @@
     - not use_external_db
     - db_on_app
 
-- name: "Copy pre-generated DH params."
-  copy:
+- name: Copy pre-generated DH params
+  ansible.builtin.copy:
     src: pregen-dhparams.pem
     dest: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
-    mode: 0640
+    mode: "0640"
   when: nginx_use_pregen_dh | bool
   notify: "Restart nginx."
 
-- name: "Generate custom DH params."
-  openssl_dhparam:
+- name: Generate custom DH params
+  community.crypto.openssl_dhparam:
     path: "{{ bimdata_docker_volume_path }}/web/dhparam.pem"
     size: "{{ nginx_dhparam_size | default(omit) }}"
   when: not nginx_use_pregen_dh | bool
   notify: "Restart nginx."
 
-- name: "Include tasks for TLS."
-  include_tasks: tls.yml
+- name: Include tasks for TLS
+  ansible.builtin.include_tasks: tls.yml
 
-- name: "Copy nginx custom configuration."
-  template:
+- name: Copy nginx custom configuration
+  ansible.builtin.template:
     src: web/custom.conf.j2
     dest: "{{ bimdata_docker_volume_path }}/web/conf.d/custom.conf"
-    mode: 0640
+    mode: "0640"
   notify: "Restart nginx."
 
-- name: "Copy vhost override configuration."
-  template:
+- name: Copy vhost override configuration
+  ansible.builtin.template:
     src: web/vhost.conf.j2
     dest: "{{ bimdata_docker_volume_path }}/web/vhost.d/{{ item.vhost }}"
-    mode: 0640
+    mode: "0640"
   loop: "{{ nginx_vhost_override }}"
   notify: "Restart nginx."
 
-- name: "Copy keycloak realm."
-  template:
+- name: Copy keycloak realm
+  ansible.builtin.template:
     src: "keycloak/bimdata-realm.json.j2"
     dest: "{{ bimdata_docker_volume_path }}/keycloak/realms/bimdata-realm.json"
-    mode: 0640
+    mode: "0640"
   notify: "Restart iam."
 
-- name: "Create docker-compose file."
-  template:
+- name: Create docker-compose file
+  ansible.builtin.template:
     src: compose-app.yml.j2
     dest: "{{ bimdata_path }}/docker-compose.yml"
-    mode: 0640
+    mode: "0640"
 
-- name: "Start the containers."
-  docker_compose:
+- name: Start the containers
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
-    pull: "{{ not install_offline | bool }}"
+    pull: "{{ install_offline | ternary('never', 'always') }}"
     remove_orphans: true
     state: present
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
   register: _compose_up
 
 # Service may need to restart before we can talk the API / other for the init
 # Like if CA change
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
-- name: "Include tasks for initialization."
-  include_tasks: apps-init.yml
+- name: Include tasks for initialization
+  ansible.builtin.include_tasks: apps-init.yml
 
-- name: "Include tasks for cleanup."
-  include_tasks: cleanup.yml
+- name: Include tasks for cleanup
+  ansible.builtin.include_tasks: cleanup.yml

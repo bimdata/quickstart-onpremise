@@ -1,22 +1,22 @@
 ---
-- name: "Add Docker key."
-  rpm_key:
+- name: Add Docker key
+  ansible.builtin.rpm_key:
     key: "{{ docker_yum_repo_key_url }}"
     state: present
   environment: "{{ proxy_env }}"
 
-- name: "Add Docker repository."
-  get_url:
+- name: Add Docker repository
+  ansible.builtin.get_url:
     url: "{{ docker_yum_repo }}"
     dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   environment: "{{ proxy_env }}"
 
-- name: "Install Docker (YUM)."
-  yum:
-    name: "{{ docker_pkg_name }}{% if docker_pkg_version is defined and docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
+- name: Install Docker (YUM)
+  ansible.builtin.yum:
+    name: "{{ docker_pkg_name }}{% if docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
@@ -26,13 +26,35 @@
     ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 7 or
     ansible_distribution | lower == "alibaba" and ansible_distribution_major_version == 2
 
-- name: "Install Docker (DNF)."
-  dnf:
-    name: "{{ docker_pkg_name }}{% if docker_pkg_version is defined and docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
+- name: Install Docker compose (YUM)
+  ansible.builtin.yum:
+    name: "{{ docker_compose_pkg_name }}{% if docker_compose_pkg_version != '' %}-{{ docker_compose_pkg_version }}{% endif %}"
+    update_cache: true
+    state: present
+  environment: "{{ proxy_env }}"
+  when:
+    ansible_distribution | lower == "centos" and ansible_distribution_major_version == 7 or
+    ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 7 or
+    ansible_distribution | lower == "alibaba" and ansible_distribution_major_version == 2
+
+- name: Install Docker (DNF)
+  ansible.builtin.dnf:
+    name: "{{ docker_pkg_name }}{% if docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
   notify: "Restart Docker."
+  when:
+    ansible_distribution | lower == "centos" and ansible_distribution_major_version == 8 or
+    ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 8 or
+    ansible_distribution | lower == "alibaba" and ansible_distribution_major_version == 3
+
+- name: Install Docker compose (DNF)
+  ansible.builtin.dnf:
+    name: "{{ docker_compose_pkg_name }}{% if docker_compose_pkg_version != '' %}-{{ docker_compose_pkg_version }}{% endif %}"
+    update_cache: true
+    state: present
+  environment: "{{ proxy_env }}"
   when:
     ansible_distribution | lower == "centos" and ansible_distribution_major_version == 8 or
     ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 8 or

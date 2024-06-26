@@ -1,72 +1,74 @@
 ---
-- when: tls_enabled | bool
+- name: Copy TLS files
+  when: tls_enabled | bool
   block:
-  - name: "Copy the TLS CA."
-    template:
-      src: templates/tls/ca.crt.j2
-      dest: "{{ bimdata_docker_volume_path }}/ca.crt"
-      owner: root
-      group: root
-      mode: 0644
-    notify: "Restart all services."
+    - name: Copy the TLS CA
+      ansible.builtin.template:
+        src: templates/tls/ca.crt.j2
+        dest: "{{ bimdata_docker_volume_path }}/ca.crt"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: "Restart all services."
 
-  - name: "Copy the app TLS key."
-    template:
-      src: templates/tls/key.j2
-      dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
-      owner: root
-      group: root
-      mode: 0640
-    loop: "{{ needed_cert_tls }}"
-    notify: "Restart nginx."
+    - name: Copy the app TLS key
+      ansible.builtin.template:
+        src: templates/tls/key.j2
+        dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.key"
+        owner: root
+        group: root
+        mode: "0640"
+      loop: "{{ needed_cert_tls }}"
+      notify: "Restart nginx."
 
-  - name: "Copy the app TLS cert."
-    template:
-      src: templates/tls/cert.j2
-      dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
-      owner: root
-      group: root
-      mode: 0640
-    loop: "{{ needed_cert_tls }}"
-    notify: "Restart nginx."
+    - name: Copy the app TLS cert
+      ansible.builtin.template:
+        src: templates/tls/cert.j2
+        dest: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.crt"
+        owner: root
+        group: root
+        mode: "0640"
+      loop: "{{ needed_cert_tls }}"
+      notify: "Restart nginx."
 
 # ACME
-- name: "ACME related tasks if needed."
+- name: ACME related tasks if needed
   when: tls_acme | bool
   block:
-  - name: "Create needed acme directory."
-    file:
-      path: "{{ item }}"
-      state: directory
-      mode: 0755
-    loop:
-      - "{{ bimdata_docker_volume_path }}/web/acme"
-      - "{{ bimdata_docker_volume_path }}/web/html"
-  - name: "Check if acme cert alreaxy exist."
-    stat:
-      path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.chain.pem"
-      get_checksum: false
-    register: _acme_existing_certs
-    loop: "{{ needed_cert_tls }}"
+    - name: Create needed acme directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ bimdata_docker_volume_path }}/web/acme"
+        - "{{ bimdata_docker_volume_path }}/web/html"
+    - name: Check if acme cert alreaxy exist
+      ansible.builtin.stat:
+        path: "{{ bimdata_docker_volume_path }}/web/certs/{{ lookup('vars', item + '_dns_name') }}.chain.pem"
+        get_checksum: false
+      register: _acme_existing_certs
+      loop: "{{ needed_cert_tls }}"
 # End of block
 
-- when:
-  - not tls_enabled | bool
-  - not tls_acme | bool
+- name: Cleanup old tls files
+  when:
+    - not tls_enabled | bool
+    - not tls_acme | bool
   block:
-  - name: "Retrieve TLS directory content."
-    find:
-      path: "{{ bimdata_docker_volume_path }}/web/certs/"
-      file_type: any
-      hidden: true
-    register: _certs_dir
+    - name: Retrieve TLS directory content
+      ansible.builtin.find:
+        path: "{{ bimdata_docker_volume_path }}/web/certs/"
+        file_type: any
+        hidden: true
+      register: _certs_dir
 
-  - name: "Delete old TLS files."
-    file:
-      path: "{{ item.path }}"
-      state: absent
-    loop: "{{ _certs_dir.files }}"
-    loop_control:
-      label: "{{ item.path }}"
-    notify: "Restart nginx."
+    - name: Delete old TLS files
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ _certs_dir.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      notify: "Restart nginx."
 # End of block

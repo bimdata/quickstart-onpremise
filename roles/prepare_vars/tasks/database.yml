@@ -1,86 +1,88 @@
 ---
 # External DB
-- when: use_external_db | bool
+- name: Configure database variable when use_external_db is true
+  when: use_external_db | bool
   block:
-  - name: "Check if all needed variables for database are defined if use_external_db: true."
-    assert:
-      that:
-        - external_db_host is defined
-        - external_db_host | length
-        - external_db_port is defined
-        - external_db_port | int
-      fail_msg: "You choose to use an external database server (use_external_db: true), external_db_host, external_db_port must be defined and not empty."
+    - name: Check if all needed variables for database are defined if use_external_db is true
+      ansible.builtin.assert:
+        that:
+          - external_db_host is defined
+          - external_db_host | length
+          - external_db_port is defined
+          - external_db_port | int
+        fail_msg: "You choose to use an external database server (use_external_db: true), external_db_host, external_db_port must be defined and not empty."
 
-  - name: "Set database connection variable when use_external_db: true."
-    set_fact:
-      db_api_host: "{{ external_db_host }}"
-      db_connect_host: "{{ external_db_host }}"
-      db_platform_host: "{{ external_db_host }}"
-      db_iam_host: "{{ external_db_host }}"
-      db_marketplace_host:  "{{ external_db_host }}"
-      db_api_port: "{{ external_db_port }}"
-      db_connect_port: "{{ external_db_port }}"
-      db_platform_port: "{{ external_db_port }}"
-      db_iam_port: "{{ external_db_port }}"
-      db_marketplace_port: "{{ external_db_port }}"
+    - name: Set database connection variable when use_external_db is true
+      ansible.builtin.set_fact:
+        db_api_host: "{{ external_db_host }}"
+        db_connect_host: "{{ external_db_host }}"
+        db_platform_host: "{{ external_db_host }}"
+        db_iam_host: "{{ external_db_host }}"
+        db_marketplace_host: "{{ external_db_host }}"
+        db_api_port: "{{ external_db_port }}"
+        db_connect_port: "{{ external_db_port }}"
+        db_platform_port: "{{ external_db_port }}"
+        db_iam_port: "{{ external_db_port }}"
+        db_marketplace_port: "{{ external_db_port }}"
 
 # Not external DB
-- when: not use_external_db | bool
+- name: Configure database variable when use_external_db is not true
+  when: not use_external_db | bool
   block:
-  - name: "Check if app and db are the same host."
-    set_fact:
-      db_on_app: "{{ (groups['db'] | default(None) == groups['app']) | default(false) }}"
-      db_list: "{{
-        ['api', 'connect', 'platform', 'iam']
-        + (marketplace_enabled | ternary(['marketplace'], []))
-      }}"
+    - name: Check if app and db are the same host
+      ansible.builtin.set_fact:
+        db_on_app: "{{ (groups['db'] | default(None) == groups['app']) | default(false) }}"
+        db_list: "{{
+          ['api', 'connect', 'platform', 'iam']
+          + (marketplace_enabled | ternary(['marketplace'], [])) }}"
 
-  - when: inventory_hostname in groups['db']
-    block:
-      - name: "Retrieve current postgres version if already installed."
-        slurp:
-          src: "{{ bimdata_docker_volume_path }}/db/{{ item }}/PG_VERSION"
-        loop: "{{ db_list }}"
-        register: _get_current_pg_version
-        failed_when: false
+    - name: Check postrgres version on DB servers
+      when: inventory_hostname in groups['db']
+      block:
+        - name: Retrieve current postgres version if already installed
+          ansible.builtin.slurp:
+            src: "{{ bimdata_docker_volume_path }}/db/{{ item }}/PG_VERSION"
+          loop: "{{ db_list }}"
+          register: _get_current_pg_version
+          failed_when: false
 
-      - name: "Compute variable needed for postgres upgrade."
-        set_fact:
-          _postgres_infos: "{{
-            _postgres_infos | default([]) + 
-            [{
+        - name: Compute variable needed for postgres upgrade
+          ansible.builtin.set_fact:
+            _postgres_infos: "{{
+              _postgres_infos | default([]) +
+              [{
               'name': item.item,
               'current_version': item.content | default('') | b64decode | trim
-            }] }}"
-        loop: "{{ _get_current_pg_version.results }}"
+              }] }}"
+          loop: "{{ _get_current_pg_version.results }}"
 
-      - name: "Check that we do not try to downgrade postgres."
-        assert:
-          that: >
-            item.current_version == "" or
-            item.current_version is version(
-              db_pg_version |  string | split('.') | first, '<='
-            )
-          fail_msg: "We can't downgrade posgres: {{ item.name }} is currently in version {{ item.current_version }}, requested: {{ db_pg_version }}."
-        loop: "{{ _postgres_infos }}"
-  # End of block
+        - name: Check that we do not try to downgrade postgres
+          ansible.builtin.assert:
+            that: >
+              item.current_version == "" or
+              item.current_version is version(
+                db_pg_version |  string | split('.') | first, '<='
+              )
+            fail_msg: "We can't downgrade posgres: {{ item.name }} is currently in version {{ item.current_version }}, requested: {{ db_pg_version }}."
+          loop: "{{ _postgres_infos }}"
+    # End of block
 
-  - name: "Set database connection variable accordingly."
-    set_fact:
-      db_api_host: "{{ db_on_app | ternary('api-db', db_server_addr) }}"
-      db_connect_host: "{{ db_on_app | ternary('connect-db', db_server_addr) }}"
-      db_platform_host: "{{ db_on_app | ternary('platform-db', db_server_addr) }}"
-      db_iam_host: "{{ db_on_app | ternary('iam-db', db_server_addr) }}"
-      db_marketplace_host: "{{ db_on_app | ternary('marketplace-db', db_server_addr) }}"
+    - name: Set database connection variable accordingly
+      ansible.builtin.set_fact:
+        db_api_host: "{{ db_on_app | ternary('api-db', db_server_addr) }}"
+        db_connect_host: "{{ db_on_app | ternary('connect-db', db_server_addr) }}"
+        db_platform_host: "{{ db_on_app | ternary('platform-db', db_server_addr) }}"
+        db_iam_host: "{{ db_on_app | ternary('iam-db', db_server_addr) }}"
+        db_marketplace_host: "{{ db_on_app | ternary('marketplace-db', db_server_addr) }}"
 
-      db_api_port: "{{ db_on_app | ternary(5432, db_api_external_port) }}"
-      db_connect_port: "{{ db_on_app | ternary(5432, db_connect_external_port) }}"
-      db_platform_port: "{{ db_on_app | ternary(5432, db_platform_external_port) }}"
-      db_iam_port: "{{ db_on_app | ternary(5432, db_iam_external_port) }}"
-      db_marketplace_port: "{{ db_on_app | ternary(5432, db_marketplace_external_port) }}"
+        db_api_port: "{{ db_on_app | ternary(5432, db_api_external_port) }}"
+        db_connect_port: "{{ db_on_app | ternary(5432, db_connect_external_port) }}"
+        db_platform_port: "{{ db_on_app | ternary(5432, db_platform_external_port) }}"
+        db_iam_port: "{{ db_on_app | ternary(5432, db_iam_external_port) }}"
+        db_marketplace_port: "{{ db_on_app | ternary(5432, db_marketplace_external_port) }}"
 
-  - name: "Set docker-compose definition for databases."
-    set_fact:
-      compose_dbs: "{{ compose_dbs | default({}) | combine(lookup('template', 'compose_dbs.yml.j2') | from_yaml) }}"
-    loop: "{{ db_list }}"
+    - name: Set docker-compose definition for databases
+      ansible.builtin.set_fact:
+        compose_dbs: "{{ compose_dbs | default({}) | combine(lookup('template', 'compose_dbs.yml.j2') | from_yaml) }}"
+      loop: "{{ db_list }}"
 # End of block

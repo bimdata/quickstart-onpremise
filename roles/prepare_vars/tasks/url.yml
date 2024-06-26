@@ -1,6 +1,6 @@
 ---
-- name: "Check for incompatibilities in the TLS configuration."
-  fail:
+- name: Check for incompatibilities in the TLS configuration
+  ansible.builtin.fail:
     msg: "Only one of 'tls_enabled', 'tls_external' and 'tls_acme' can be set to true in the same time."
   when: _checklist | select() | list | length > 1
   vars:
@@ -9,8 +9,8 @@
       - "{{ tls_external | bool }}"
       - "{{ tls_acme | bool }}"
 
-- name: "Check if all needed variables for TLS are defined if needed."
-  assert:
+- name: Check if all needed variables for TLS are defined if needed
+  ansible.builtin.assert:
     that:
       - tls_ca_certificate is defined
       - tls_ca_certificate | length
@@ -54,8 +54,8 @@
       you need to defined all the keys and certificates in group_vars/all/tls.yml.
   when: tls_enabled | bool
 
-- name: "Check if all needed variables for marketplace TLS are defined if needed."
-  assert:
+- name: Check if all needed variables for marketplace TLS are defined if needed
+  ansible.builtin.assert:
     that:
       - tls_marketplace_back_key is defined
       - tls_marketplace_back_key | length
@@ -73,8 +73,8 @@
     - tls_enabled | bool
     - marketplace_enabled | bool
 
-- name: "Check if all needed variables for TLS are defined if needed."
-  assert:
+- name: Check if all needed variables for TLS are defined if needed
+  ansible.builtin.assert:
     that:
       - tls_rabbitmq_admin_key is defined
       - tls_rabbitmq_admin_key | length
@@ -87,8 +87,8 @@
     - tls_enabled | bool
     - not use_external_rabbitmq | bool
 
-- name: "Set URL variable."
-  set_fact:
+- name: Set URL variable
+  ansible.builtin.set_fact:
     api_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ api_dns_name }}"
     iam_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ iam_dns_name }}"
     connect_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ connect_dns_name }}"
