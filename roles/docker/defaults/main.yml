@@ -9,7 +9,9 @@ docker_apt_dependencies:
 docker_repo_url: https://download.docker.com/linux
 
 docker_apt_release_channel: stable
-docker_apt_repo: "deb [arch={{ deb_arch.stdout }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+docker_apt_repo: >-
+  deb [arch={{ deb_arch.stdout }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }}
+  {{ ansible_distribution_release }} {{ docker_apt_release_channel }}
 docker_apt_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
 
 docker_yum_repo: "{{ docker_repo_url }}/centos/docker-{{ docker_edition }}.repo"
@@ -20,6 +22,10 @@ docker_edition: ce # 'ee' for 'Enterprise Edition' or 'ce' for 'Community Editio
 docker_pkg_name: "docker-{{ docker_edition }}"
 docker_pkg_version: ""
 docker_pkg_version_hold: "{{ docker_pkg_version | default(false) | ternary(true, false) }}"
+
+docker_compose_pkg_name: "docker-compose-plugin"
+docker_compose_pkg_version: ""
+docker_compose_pkg_version_hold: "{{ docker_compose_pkg_version | default(false) | ternary(true, false) }}"
 
 # Docker service configuration
 docker_svc_name: docker

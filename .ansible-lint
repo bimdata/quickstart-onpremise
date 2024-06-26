@@ -1,4 +1,7 @@
 ---
 parseable: true
 skip_list:
-   - meta-no-info # Not intended for galaxy, os that's ok if meta/main miss informations
+   - meta-no-info # Not intended for galaxy, so that's ok if meta/main miss informations
+   - var-naming[no-role-prefix]
+   - yaml[quoted-strings]  # There is a bug in this rule
+   - jinja[spacing]  # Sometime this is just more readable to not respect this

@@ -2,14 +2,18 @@
 This ansible project aims to help you deploy the Bimdata applications on your servers.
 
 ## Prerequisites
- - You need to be able to download our docker images, if this is a not the case, contact
-our sales service to gain the proper accesses.
- - You need to have python3 on the computer that will run this playbook and you need
- to install the python prerequisites with `pip install -r requirement.txt`.
- - You need to be able to communicate through SSH with the servers where the software will be
- installed from the computer that will run this Ansible project, directly or through a SSH bastion.
- - The servers need to be able to download some resources from Internet (directly
-   or through a proxy) during the installation only.
+Ansible server:
+  - python >= 3.10
+  - must be able to contect through ssh to all the applicative servers
+
+For offline installation:
+  - Ansible server must have:
+    - ansible >= 10.1.0
+    - sshpass
+
+  - All servers must have:
+    - docker
+    - docker-compose >= 2.0
 
 ## Limitations
  - This project is given "as is", Bimdata.io can't be held accountable for data loss or
@@ -432,9 +436,9 @@ with the [db] server on these ports.
 | docker_pkg_version              | ""                                                                    | Docker APT package version that will be installed.                                                           |
 | docker_pkg_version_hold         | "{{ docker_pkg_version | default(false) | ternary(true, false) }}"    | Should APT be configure to hold the Docker version (false by default, true if docker_pkg_version is defined) |
 ||||
-| docker_compose_apt_dependencies | ["python3-pip", "virtualenv", "python3-setuptools", "python3-wheel "] | Apt packages installed before docker-compose.                                                                |
-| docker_compose_pkg_name         | docker-compose                                                        | Name of the docker-compose pip package.                                                                      |
-| docker_compose_pkg_version      | "==1.29.2"                                                            | Version of the docker-compose pip package.                                                                   |
+| docker_compose_pkg_name         | "docker-compose-plugin"                                               | Name of the docker-compose apt package.                                                                      |
+| docker_compose_pkg_version      | ""                                                                    | Version of the docker-compose apt package.                                                                   |
+| docker_compose_pkg_version_hold | "{{ docker_compose_pkg_version | default(false) | ternary(true, false) }}"| Should APT be configure to hold the Docker compose version (false by default, true if docker_compose_pkg_version is defined) |
 ||||
 | docker_use_extra_hosts          | false                                                                 | Add /etc/hosts value in containers if needed.                                                                |
 | docker_extra_hosts              | []                                                                    | list of hosts that will be added to /etc/hosts of containers.                                                |

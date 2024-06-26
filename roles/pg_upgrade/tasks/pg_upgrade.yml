@@ -1,6 +1,6 @@
 ---
-- name: "{{ db_info.name }} - Configure data paths."
-  set_fact:
+- name: "Configure data paths - {{ db_infoname }}"
+  ansible.builtin.set_fact:
     # Where the data are currently
     _pg_current_path: "{{ bimdata_docker_volume_path }}/db/{{ db_info.name }}"
     # We will need to move some data to be able to have them in the same value
@@ -8,31 +8,32 @@
     _pg_old_path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/{{ db_info.current_version }}/data"
     _pg_new_path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/{{ db_pg_version }}/data"
 
-- name: "{{ db_info.name }} - Create the needed directories."
-  file:
+- name: "Create the needed directories - {{ db_infoname }}"
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    mode: "0750"
   loop:
     - "{{ _pg_old_path }}"
     - "{{ _pg_new_path }}"
 
-- name: "{{ db_info.name }} - Stop the postgres container before upgrade."
-  docker_compose:
+- name: "Stop the postgres container before upgrade - {{ db_infoname }}"
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: "{{ db_info.name }}-db"
-    stopped: true
-    state: present
+    state: stopped
 
-- name: "{{ db_info.name }} - Move the current datas into the upgrade directory."
-  shell: "mv '{{ _pg_current_path }}'/* '{{ _pg_old_path }}'"
+- name: "Move the current datas into the upgrade directory - {{ db_infoname }}"
+  ansible.builtin.shell: "mv '{{ _pg_current_path }}'/* '{{ _pg_old_path }}'"
+  changed_when: true
 
-- name: "{{ db_info.name }} - remove the old pid file if needed."
-  file:
+- name: "Remove the old pid file if needed - {{ db_infoname }}"
+  ansible.builtin.file:
     path: "{{ _pg_old_path }}/postmaster.pid"
     state: absent
 
-- name: "{{ db_info.name }} - Run postgres data upgrade."
-  docker_container:
+- name: "Run postgres data upgrade - {{ db_infoname }}"
+  community.general.docker_container:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
     image: "tianon/postgres-upgrade:{{ db_info.current_version }}-to-{{ db_pg_version }}"
     volumes:
@@ -43,11 +44,11 @@
       PGUSER: "{{ lookup('vars', 'db_'+db_info.name+'_user') }}"
       POSTGRES_INITDB_ARGS: "-U {{ lookup('vars', 'db_'+db_info.name+'_user') }}"
     state: started
-    restart: no
-    restart_policy: no
+    restart: false
+    restart_policy: false
 
-- name: "{{ app.name }}: wait for the end of the upgrade."
-  docker_container_info:
+- name: "Wait for the end of the upgrade - {{ appname }}"
+  community.general.docker_container_info:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
   register: _pg_run_migration
   until: _pg_run_migration.container.State.Status == "exited"
@@ -55,30 +56,32 @@
   delay: 5
   failed_when: false
 
-- name: "{{ db_info.name }} -  Output debug information."
-  debug:
+- name: "Output debug information - {{ db_infoname }}"
+  ansible.builtin.debug:
     var: _pg_run_migration
 
-- name: "{{ db_info.name }} - Fail if needed."
-  fail:
+- name: "Fail if needed - {{ db_infoname }}"
+  ansible.builtin.fail:
     msg: "The exit code of the migration container is different than 0, you should check what happen."
   when: _pg_run_migration.container.State.ExitCode != 0
 
-- name: "{{ db_info.name }}- Copy the old pg_hba configuration."
-  copy:
+- name: "Copy the old pg_hba configuration - {{ db_infoname }}"
+  ansible.builtin.copy:
     remote_src: true
     src: "{{ _pg_old_path }}/pg_hba.conf"
     dest: "{{ _pg_new_path }}/pg_hba.conf"
+    mode: "0640"
 
-- name: "{{ db_info.name }} - Move the updated datas in the initial directory."
-  shell: "mv '{{ _pg_new_path }}'/* '{{ _pg_current_path }}'"
+- name: "Move the updated datas in the initial directory - {{ db_infoname }}"
+  ansible.builtin.shell: "mv '{{ _pg_new_path }}'/* '{{ _pg_current_path }}'"
+  changed: true
 
-- name: "{{ db_info.name }} - Cleanup migration data."
-  file:
+- name: "Cleanup migration data - {{ db_infoname }}"
+  ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/"
     state: absent
 
-- name: "{{ db_info.name }} - Remove postgres data upgrade container."
-  docker_container:
+- name: "Remove postgres data upgrade container - {{ db_infoname }}"
+  community.general.docker_container:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
     state: absent

@@ -1,36 +1,34 @@
 ---
-- name: "Create needed directories."
-  file:
+- name: Create needed directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: 0755
+    mode: "0755"
   loop:
     - "{{ bimdata_path }}"
     - "{{ bimdata_docker_volume_path }}/web/certs"
 
-- name: "Copy the TLS CA."
-  template:
+- name: Copy the TLS CA
+  ansible.builtin.template:
     src: templates/tls/ca.crt.j2
     dest: "{{ bimdata_docker_volume_path }}/ca.crt"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: tls_enabled | bool
   notify: "Restart all services."
 
-- name: "Create docker-compose file."
-  template:
+- name: Create docker-compose file
+  ansible.builtin.template:
     src: compose-workers.yml.j2
     dest: "{{ bimdata_path }}/docker-compose.yml"
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
 
-- name: "Start the containers."
-  docker_compose:
+- name: Start the containers
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
-    pull: "{{ not install_offline | bool }}"
+    pull: "{{ install_offline | ternary('never', 'always') }}"
     remove_orphans: true
     state: present
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
