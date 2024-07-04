@@ -28,7 +28,7 @@
   when: >
     (http_proxy is defined and http_proxy | length)
     or (https_proxy is defined and https_proxy | length)
-  notify: "Restart Docker."
+  notify: Restart Docker
 
 - name: Flush handlers to avoid any conflict with the desired state
   ansible.builtin.meta: flush_handlers

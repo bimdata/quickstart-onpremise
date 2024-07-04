@@ -20,7 +20,7 @@
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
-  notify: "Restart Docker."
+  notify: Restart Docker
   when:
     ansible_distribution | lower == "centos" and ansible_distribution_major_version == 7 or
     ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 7 or
@@ -43,7 +43,7 @@
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
-  notify: "Restart Docker."
+  notify: Restart Docker
   when:
     ansible_distribution | lower == "centos" and ansible_distribution_major_version == 8 or
     ansible_distribution | lower == "redhat" and ansible_distribution_major_version == 8 or

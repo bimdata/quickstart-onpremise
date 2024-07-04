@@ -9,7 +9,7 @@
         owner: root
         group: root
         mode: "0644"
-      notify: "Restart all services."
+      notify: Restart all services
 
     - name: Copy the app TLS key
       ansible.builtin.template:
@@ -19,7 +19,7 @@
         group: root
         mode: "0640"
       loop: "{{ needed_cert_tls }}"
-      notify: "Restart nginx."
+      notify: Restart nginx
 
     - name: Copy the app TLS cert
       ansible.builtin.template:
@@ -29,7 +29,7 @@
         group: root
         mode: "0640"
       loop: "{{ needed_cert_tls }}"
-      notify: "Restart nginx."
+      notify: Restart nginx
 
 # ACME
 - name: ACME related tasks if needed
@@ -70,5 +70,5 @@
       loop: "{{ _certs_dir.files }}"
       loop_control:
         label: "{{ item.path }}"
-      notify: "Restart nginx."
+      notify: Restart nginx
 # End of block
