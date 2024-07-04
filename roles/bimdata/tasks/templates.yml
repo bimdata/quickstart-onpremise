@@ -12,7 +12,7 @@
         src: files/connect/templates/
         dest: "{{ bimdata_docker_volume_path }}/connect/mails"
         mode: "0644"
-      notify: "Restart connect."
+      notify: Restart connect
 # End of block
 
 - name: Manage platform-back templates
@@ -28,7 +28,7 @@
         src: files/platform-back/templates/
         dest: "{{ bimdata_docker_volume_path }}/platform_back/mails"
         mode: "0644"
-      notify: "Restart platform-back."
+      notify: Restart platform-back
 # End of block
 
 - name: Manage platform-back-cron templates
@@ -44,7 +44,7 @@
         src: platform-back/cron.py.j2
         dest: "{{ bimdata_docker_volume_path }}/platform_back/cron.py"
         mode: "0755"
-      notify: "Restart platform-back-cron."
+      notify: Restart platform-back-cron
 # End of block
 
 - name: Manage marketplace-back templates
@@ -60,7 +60,7 @@
         src: files/marketplace-back/templates/
         dest: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
         mode: "0644"
-      notify: "Restart marketplace-back."
+      notify: Restart marketplace-back
 # End of block
 
 - name: Manage sso-invitations templates
@@ -76,5 +76,5 @@
         src: files/sso_invitation/mails/
         dest: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
         mode: "0644"
-      notify: "Restart sso-invitation."
+      notify: Restart sso-invitation
 # End of block
