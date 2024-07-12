@@ -177,6 +177,8 @@ Object storage (S3):
 | Variables                                    | Default value                                                            | Description                                                      |
 |----------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
 | api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
+| api_workers                                  | 8                                                                        | Number of web processes
+to handle requests.                        |
 ||||
 | connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
 | connect_client_id                            | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |

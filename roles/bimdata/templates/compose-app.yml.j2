@@ -147,7 +147,7 @@ services:
     environment:
       - VIRTUAL_HOST={{ api_dns_name }}
       - ENV={{ app_env }}
-      - WORKERS=8
+      - WORKERS={{ api_workers }}
       - API_URL={{ api_url }}
       - DOC_URL={{ documentation_url }}
       - ALLOWED_HOSTS={{ api_dns_name }}

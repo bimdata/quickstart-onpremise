@@ -54,6 +54,7 @@ csp_storage_url: "https://{{ s3_storage_connect_bucket_name }}.{{ (s3_endpoint_u
 
 # api
 api_secret_key: "{{ vault_api_secret_key }}" # Change me in the vault
+api_workers: 8
 
 # connect
 connect_secret_key: "{{ vault_connect_secret_key }}" # Change me in the vault
