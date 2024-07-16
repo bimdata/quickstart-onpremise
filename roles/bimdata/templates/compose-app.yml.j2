@@ -398,7 +398,7 @@ services:
 {% endif %}
       - {{ bimdata_docker_volume_path }}/platform_back/cron.py:/opt/cron.py:ro
     environment:
-      - VIRTUAL_HOST={{ platform_back_dns_name }}
+      - APPLY_MIGRATION=False
       - ENV={{ app_env }}
       - API_URL={{ api_url }}
       - PLATFORM_BACK_URL={{ platform_back_url }}
