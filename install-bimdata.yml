@@ -1,42 +1,42 @@
 ---
-- name: "Install BIMData.io stack."
+- name: Install BIMData.io stack
   hosts: all
   gather_facts: false
   become: true
   any_errors_fatal: true
   roles:
     - role: prepare_vars
-      tags: ['always']
+      tags: ["always"]
     - role: docker
-      tags: ['docker']
+      tags: ["docker"]
       when:
         - install_docker | bool
         - not install_offline | bool
     - role: prerequisites
-      tags: ['prerequisites']
+      tags: ["prerequisites"]
 
 # DBs
     - role: pg_upgrade
-      tags: ['database', 'db']
+      tags: ["database", "db"]
       when:
-        - inventory_hostname in groups['db']
+        - inventory_hostname in groups["db"]
         - not use_external_db | bool
     - role: bimdata_db
-      tags: ['database', 'db']
+      tags: ["database", "db"]
       when:
-        - inventory_hostname in groups['db']
+        - inventory_hostname in groups["db"]
         - not use_external_db | bool
-        - inventory_hostname not in groups['app']
+        - inventory_hostname not in groups["app"]
 
 # Apps
     - role: bimdata
-      tags: ['bimdata', 'app']
+      tags: ["bimdata", "app"]
       when:
-        - inventory_hostname in groups['app']
+        - inventory_hostname in groups["app"]
 
 # Workers
     - role: bimdata_workers
-      tags: ['bimdata', 'worker']
+      tags: ["bimdata", "worker"]
       when:
-        - inventory_hostname in groups['workers']
-        - inventory_hostname not in groups['app']
+        - inventory_hostname in groups["workers"]
+        - inventory_hostname not in groups["app"]

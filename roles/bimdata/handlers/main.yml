@@ -1,83 +1,69 @@
 ---
 # Restart doesn't respect depends_on and other stuff, so down + up instead
 # Cant' use block in handlers, so include_tasks instead
-- name: "Restart all services."
-  include_tasks: restart.yml
+- name: Restart all services
+  ansible.builtin.include_tasks: restart.yml
   when: not _first_deploy | bool
 
-- name: "Restart nginx."
-  docker_compose:
+- name: Restart nginx
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: nginx-proxy
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart iam."
-  docker_compose:
+- name: Restart iam
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: iam
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart connect."
-  docker_compose:
+- name: Restart connect
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: connect
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart platform-back."
-  docker_compose:
+- name: Restart platform-back
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: platform-back
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart platform-back-cron."
-  docker_compose:
+- name: Restart platform-back-cron
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: platform-back-cron
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart marketplace-back."
-  docker_compose:
+- name: Restart marketplace-back
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: marketplace-back
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool
 
-- name: "Restart sso-invitation."
-  docker_compose:
+- name: Restart sso-invitation
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: sso-invitation
-    restarted: true
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
+    state: restarted
   when:
     - not _first_deploy | bool
     - _app_all_restart is not defined or not _app_all_restart | bool

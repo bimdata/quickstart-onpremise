@@ -1,13 +1,13 @@
 ---
-- name: "Include tasks for prerequisites installation."
-  include_tasks: "{{ install_offline | bool | ternary('offline.yml', 'online.yml') }}"
+- name: Include tasks for prerequisites installation
+  ansible.builtin.include_tasks: "{{ install_offline | bool | ternary('offline.yml', 'online.yml') }}"
 
-- name: "Configure local /etc/hosts if needed."
+- name: Configure local /etc/hosts if needed
   delegate_to: localhost
   connection: local
   delegate_facts: true
   run_once: true
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/hosts
     block: |-
       {% for item in docker_extra_hosts %}
@@ -16,6 +16,6 @@
     marker: "# Ansible managed {mark}"
     unsafe_writes: true
     state: present
-  when: 
+  when:
     - ansible_use_extra_hosts is defined
     - ansible_use_extra_hosts | bool

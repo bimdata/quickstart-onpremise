@@ -1,79 +1,80 @@
-- name: "Manage connect templates."
+---
+- name: Manage connect templates
   when: connect_use_custom_mail_templates | bool
   block:
-  - name: "Create needed directories for Connect templates."
-    file:
-      path: "{{ bimdata_docker_volume_path }}/connect/mails"
-      state: directory
-      mode: 0755
-  - name: "Copy connect templates."
-    copy:
-      src: files/connect/templates/
-      dest: "{{ bimdata_docker_volume_path }}/connect/mails"
-      mode: 0644
-    notify: "Restart connect."
+    - name: Create needed directories for Connect templates
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/connect/mails"
+        state: directory
+        mode: "0755"
+    - name: Copy connect templates
+      ansible.builtin.copy:
+        src: files/connect/templates/
+        dest: "{{ bimdata_docker_volume_path }}/connect/mails"
+        mode: "0644"
+      notify: Restart connect
 # End of block
 
-- name: "Manage platform-back templates."
+- name: Manage platform-back templates
   when: platform_back_use_custom_mail_templates | bool
   block:
-  - name: "Create needed directories for platform-back templates."
-    file:
-      path: "{{ bimdata_docker_volume_path }}/platform_back/mails"
-      state: directory
-      mode: 0755
-  - name: "Copy platform-back templates."
-    copy:
-      src: files/platform-back/templates/
-      dest: "{{ bimdata_docker_volume_path }}/platform_back/mails"
-      mode: 0644
-    notify: "Restart platform-back."
+    - name: Create needed directories for platform-back templates
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/platform_back/mails"
+        state: directory
+        mode: "0755"
+    - name: Copy platform-back templates
+      ansible.builtin.copy:
+        src: files/platform-back/templates/
+        dest: "{{ bimdata_docker_volume_path }}/platform_back/mails"
+        mode: "0644"
+      notify: Restart platform-back
 # End of block
 
-- name: "Manage platform-back-cron templates."
+- name: Manage platform-back-cron templates
   when: platform_back_enable_cron | bool
   block:
-  - name: "Create needed directories for platform-back templates."
-    file:
-      path: "{{ bimdata_docker_volume_path }}/platform_back"
-      state: directory
-      mode: 0755
-  - name: "Create platform-back-cron cron script."
-    template:
-      src: platform-back/cron.py.j2
-      dest: "{{ bimdata_docker_volume_path }}/platform_back/cron.py"
-      mode: 0755
-    notify: "Restart platform-back-cron."
+    - name: Create needed directories for platform-back templates
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/platform_back"
+        state: directory
+        mode: "0755"
+    - name: Create platform-back-cron cron script
+      ansible.builtin.template:
+        src: platform-back/cron.py.j2
+        dest: "{{ bimdata_docker_volume_path }}/platform_back/cron.py"
+        mode: "0755"
+      notify: Restart platform-back-cron
 # End of block
 
-- name: "Manage marketplace-back templates."
+- name: Manage marketplace-back templates
   when: marketplace_back_use_custom_mail_templates | bool
   block:
-  - name: "Create needed directories for marketplace-back templates."
-    file:
-      path: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
-      state: directory
-      mode: 0755
-  - name: "Copy marketplace-back templates."
-    copy:
-      src: files/marketplace-back/templates/
-      dest: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
-      mode: 0644
-    notify: "Restart marketplace-back."
+    - name: Create needed directories for marketplace-back templates
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
+        state: directory
+        mode: "0755"
+    - name: Copy marketplace-back templates
+      ansible.builtin.copy:
+        src: files/marketplace-back/templates/
+        dest: "{{ bimdata_docker_volume_path }}/marketplace_back/mails"
+        mode: "0644"
+      notify: Restart marketplace-back
 # End of block
 
-- name: "Manage sso-invitations templates."
+- name: Manage sso-invitations templates
   when: sso_invitation_enabled
   block:
-  - name: "Create needed directories for sso-invitations templates."
-    file:
-      path: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
-      state: directory
-      mode: 0755
-  - name: "Copy sso-invitations templates."
-    copy:
-      src: files/sso_invitation/mails/
-      dest: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
-      mode: 0644
-    notify: "Restart sso-invitation."
+    - name: Create needed directories for sso-invitations templates
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
+        state: directory
+        mode: "0755"
+    - name: Copy sso-invitations templates
+      ansible.builtin.copy:
+        src: files/sso_invitation/mails/
+        dest: "{{ bimdata_docker_volume_path }}/sso_invitation/mails"
+        mode: "0644"
+      notify: Restart sso-invitation
 # End of block

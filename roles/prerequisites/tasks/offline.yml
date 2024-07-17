@@ -1,60 +1,24 @@
 ---
-- name: "Create needed directory for offline installation."
-  file:
-    path: "{{ item.dest }}"
-    state: directory
-    mode: 0750
-  loop: "{{ [install_offline_python] + install_offline_docker }}"
-  when: item.group is not defined or inventory_hostname in groups[item.group]
-
-- name: "Copy offline python requirements."
-  unarchive:
-    src: "offline/pip/{{ install_offline_python.src }}"
-    dest: "{{ install_offline_python.dest }}"
-  when: item.group is not defined or inventory_hostname in groups[item.group]
-
-- name: "Create virtualenv and update pip if needed."
-  pip:
-    name: pip
-    state: latest
-    virtualenv: "{{ bimdata_venv_path }}"
-    extra_args: >
-      --no-index
-      --find-links {{ install_offline_python.dest }}/{{ install_offline_python.name }}/
-  environment: "{{ proxy_env }}"
-
-- name: "Install Docker compose in the Bimdata virtualenv."
-  pip:
-    name: "{{ docker_compose_pkg_name }}{{ docker_compose_pkg_version }}"
-    virtualenv: "{{ bimdata_venv_path }}"
-    extra_args: >
-      --no-index
-      --find-links {{ install_offline_python.dest }}/{{ install_offline_python.name }}/
-  when: item.group is not defined or inventory_hostname in groups[item.group]
-
-- name: "Chenge the python interperter to use the venv."
-  set_fact:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
-
 # Can't use unarchived, this will extract the tar, we only want to remove the bzip2 compression
-- name: "Copy offline docker requirements."
-  copy:
+- name: Copy offline docker requirements
+  ansible.builtin.copy:
     src: "offline/docker/{{ item.src }}"
     dest: "{{ item.dest }}"
     checksum: "{{ item.checksum | default(omit) }}"
+    mode: "0640"
   loop: "{{ install_offline_docker }}"
   when: item.group is not defined or inventory_hostname in groups[item.group]
 
 # Not indempodent at all
-- name: "Extract docker requirements."
-  command: "bzip2 -k -d -f {{ item.dest }}/{{ item.src }}"
-  register: test
+- name: Extract docker requirements
+  ansible.builtin.command: "bzip2 -k -d -f {{ item.dest }}/{{ item.src }}"
   loop: "{{ install_offline_docker }}"
   when: item.group is not defined or inventory_hostname in groups[item.group]
+  changed_when: true
 
 # Docker_image do not allow multiple load at the same time, this is easier but not indempodent
-- name: "Import docker images."
-  command: "docker load -i {{ item.dest }}/{{ item.src | splitext | first }}"
-  register: test2
+- name: Import docker images
+  ansible.builtin.command: "docker load -i {{ item.dest }}/{{ item.src | splitext | first }}"
   loop: "{{ install_offline_docker }}"
   when: item.group is not defined or inventory_hostname in groups[item.group]
+  changed_when: true

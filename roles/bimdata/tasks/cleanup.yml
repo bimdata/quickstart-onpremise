@@ -1,6 +1,6 @@
 ---
-- name: "Remove legacy unused files/directory."
-  file:
+- name: Remove legacy unused files/directory
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop:

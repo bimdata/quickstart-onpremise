@@ -1,6 +1,6 @@
 ---
-- name: "Check if common needed variables for s3 are defined."
-  assert:
+- name: Check if common needed variables for s3 are defined
+  ansible.builtin.assert:
     that:
       - s3_endpoint_url is defined
       - s3_endpoint_url | length
@@ -15,8 +15,8 @@
       s3_endpoint_url, s3_region_name, s3_access_key_id, s3_secret_access_key must be defined and not empty.
   when: s3_enabled | bool or s3_connect_enabled | bool
 
-- name: "Check if API needed variables for s3 are defined."
-  assert:
+- name: Check if API needed variables for s3 are defined
+  ansible.builtin.assert:
     that:
       - s3_storage_api_bucket_name is defined
       - s3_storage_api_bucket_name | length
@@ -25,8 +25,8 @@
       s3_storage_api_bucket_name must be defined and not empty.
   when: s3_enabled | bool
 
-- name: "Check if Connect needed variables for s3 are defined."
-  assert:
+- name: Check if Connect needed variables for s3 are defined
+  ansible.builtin.assert:
     that:
       - s3_storage_connect_bucket_name is defined
       - s3_storage_connect_bucket_name | length
@@ -35,17 +35,17 @@
       s3_storage_connect_bucket_name must be defined and not empty.
   when: s3_connect_enabled | bool
 
-- name: "Import nginx variables."
-  include_vars:
+- name: Import nginx variables
+  ansible.builtin.include_vars:
     file: nginx_local_storage.yml
     name: _nginx_local_storage
 
-- name: "Add nginx configuration for API S3 if needed."
-  set_fact:
+- name: Add nginx configuration for API S3 if needed
+  ansible.builtin.set_fact:
     nginx_vhost_override: "{{
-        nginx_vhost_override
-        + (not s3_enabled) | ternary([_nginx_local_storage['api']], [])
-        + (not s3_connect_enabled) | ternary([_nginx_local_storage['connect']], [])
+      nginx_vhost_override
+      + (not s3_enabled) | ternary([_nginx_local_storage['api']], [])
+      + (not s3_connect_enabled) | ternary([_nginx_local_storage['connect']], [])
       }}"
   vars:
     nginx_vhost_override: []

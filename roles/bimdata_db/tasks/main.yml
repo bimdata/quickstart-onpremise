@@ -1,11 +1,11 @@
 ---
-- name: "Create needed directories."
-  file:
+- name: Create needed directories
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: 70
     group: 70
-    mode: 0700
+    mode: "0700"
   loop:
     - "{{ bimdata_path }}"
     - "{{ bimdata_docker_volume_path }}/db/api"
@@ -14,32 +14,30 @@
     - "{{ bimdata_docker_volume_path }}/db/iam"
     - "{{ bimdata_docker_volume_path }}/db/marketplace"
 
-- name: "Create docker-compose file."
-  template:
+- name: Create docker-compose file
+  ansible.builtin.template:
     src: compose-db.yml.j2
     dest: "{{ bimdata_path }}/docker-compose.yml"
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
 
-- name: "Start the containers."
-  docker_compose:
+- name: Start the containers
+  community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
-    pull: "{{ not install_offline | bool }}"
+    pull: "{{ install_offline | ternary('never', 'always') }}"
     remove_orphans: true
     state: present
-  vars:
-    ansible_python_interpreter: "{{ bimdata_venv_path }}/bin/python"
   register: _db_compose_up
 
 # During an upgrade, we want to make sure that pg_isready before starting the app upgrade
 # to limit the risk of failed migrations because of connectivity issue.
-- name: "Save all the DB container names."
-  set_fact:
-    _db_containers: "{{ (_db_compose_up.services | dict2items | map(attribute='value') | combine).keys() }}"
+- name: Save all the DB container names
+  ansible.builtin.set_fact:
+    _db_containers: "{{ _db_compose_up.containers | map(attribute='Name') }}"
 
-- name: "Wait for all the DB to be ready and accepting connection."
-  command: "docker exec {{ item }} pg_isready"
+- name: Wait for all the DB to be ready and accepting connection
+  ansible.builtin.command: "docker exec {{ item }} pg_isready"
   loop: "{{ _db_containers }}"
   register: pg_isready
   until: pg_isready.rc == 0
