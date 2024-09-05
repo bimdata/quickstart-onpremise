@@ -2,18 +2,25 @@
 This ansible project aims to help you deploy the Bimdata applications on your servers.
 
 ## Prerequisites
-Ansible server:
+### Online
+- Ansible server:
   - python >= 3.10
   - must be able to contect through ssh to all the applicative servers
+- Applicative servers:
+  - python >= 3.5
 
-For offline installation:
-  - Ansible server must have:
-    - ansible >= 10.1.0
-    - sshpass
+### Offline
+- Ansible server:
+  - python >= 3.10
+  - ansible >= 10.1.0
+  - sshpass
+  - must be able to contect through ssh to all the applicative servers
 
-  - All servers must have:
-    - docker
-    - docker-compose >= 2.0
+- Applicative servers:
+  - python >= 3.5
+  - docker
+  - docker-compose >= 2.0
+  - bzip2
 
 ## Limitations
  - This project is given "as is", Bimdata.io can't be held accountable for data loss or
@@ -503,20 +510,17 @@ You should replace all the values and encrypt the file with `ansible-vault`.
 
 ## Offline installation
 On each server you need to have:
-* Docker 20.10
-* python3
-* pip3
-* virtualenv
+* Docker
+* Docker compose v2
+* python3 >= 3.5
 * bzip2
 
 You will need to do these steps before each installation or upgrade.:
 * Retrieve the docker image archives and put them in `files/offline/docker`
-* Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script doesn't need Docker but requires the other previously list dependencies.
-* Run the script and retrieve the created archive and put it in `file/offline/pip`
 
 ### offline.yml
 You also need to enable offline installation in the ansible inventory in
-`inventories/your_inventory_name/group_vars/offline.yml`.
+`inventories/your_inventory_name/group_vars/all/vars.yml`.
 
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|
