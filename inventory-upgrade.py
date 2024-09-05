@@ -61,6 +61,7 @@ DEPRECATED_VARS = {
     20221118: [".*extract_quantities.*"],
     20220928: ["mapbox_token"],
     20230309: ["swift_.*"],
+    20240905: ["bimdata_venv_path"],
 }
 
 

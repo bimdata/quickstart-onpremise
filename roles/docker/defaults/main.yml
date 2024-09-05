@@ -1,18 +1,15 @@
 ---
 # Docker APT configuration
 docker_apt_dependencies:
-  - python3-docker
-  - gnupg
-  - apt-transport-https
   - ca-certificates
 
+docker_apt_keyring_path: /etc/apt/keyrings/docker.asc
+docker_apt_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
 docker_repo_url: https://download.docker.com/linux
-
 docker_apt_release_channel: stable
 docker_apt_repo: >-
-  deb [arch={{ deb_arch.stdout }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }}
+  deb [signed-by={{ docker_apt_keyring_path }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }}
   {{ ansible_distribution_release }} {{ docker_apt_release_channel }}
-docker_apt_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
 
 docker_yum_repo: "{{ docker_repo_url }}/centos/docker-{{ docker_edition }}.repo"
 docker_yum_repo_key_url: "{{ docker_repo_url }}/centos/gpg"
