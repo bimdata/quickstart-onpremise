@@ -1,1 +1,1 @@
-ansible==4.10.0 # Version 5.x required python >=3.8, keeping 4.10 for Buster
+ansible==10.1.0

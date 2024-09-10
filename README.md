@@ -2,14 +2,25 @@
 This ansible project aims to help you deploy the Bimdata applications on your servers.
 
 ## Prerequisites
- - You need to be able to download our docker images, if this is a not the case, contact
-our sales service to gain the proper accesses.
- - You need to have python3 on the computer that will run this playbook and you need
- to install the python prerequisites with `pip install -r requirement.txt`.
- - You need to be able to communicate through SSH with the servers where the software will be
- installed from the computer that will run this Ansible project, directly or through a SSH bastion.
- - The servers need to be able to download some resources from Internet (directly
-   or through a proxy) during the installation only.
+### Online
+- Ansible server:
+  - python >= 3.10
+  - must be able to contect through ssh to all the applicative servers
+- Applicative servers:
+  - python >= 3.5
+
+### Offline
+- Ansible server:
+  - python >= 3.10
+  - ansible >= 10.1.0
+  - sshpass
+  - must be able to contect through ssh to all the applicative servers
+
+- Applicative servers:
+  - python >= 3.5
+  - docker
+  - docker-compose >= 2.0
+  - bzip2
 
 ## Limitations
  - This project is given "as is", Bimdata.io can't be held accountable for data loss or
@@ -154,7 +165,6 @@ Each name need to be defined in the corresponding authoritative DNS server. This
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|
 | bimdata_path               | "/opt/bimdata"                   | Where we will install our needed files on the servers.      |
-| bimdata_venv_path          | "{{ bimdata_path }}/venv"        | Where will the needed virtualenv for bimdata will be set.   |
 | bimdata_docker_volume_path | "{{ bimdata_path }}/data"        | Where will your data will be store on the servers.          |
 
 Object storage (S3):
@@ -432,9 +442,9 @@ with the [db] server on these ports.
 | docker_pkg_version              | ""                                                                    | Docker APT package version that will be installed.                                                           |
 | docker_pkg_version_hold         | "{{ docker_pkg_version | default(false) | ternary(true, false) }}"    | Should APT be configure to hold the Docker version (false by default, true if docker_pkg_version is defined) |
 ||||
-| docker_compose_apt_dependencies | ["python3-pip", "virtualenv", "python3-setuptools", "python3-wheel "] | Apt packages installed before docker-compose.                                                                |
-| docker_compose_pkg_name         | docker-compose                                                        | Name of the docker-compose pip package.                                                                      |
-| docker_compose_pkg_version      | "==1.29.2"                                                            | Version of the docker-compose pip package.                                                                   |
+| docker_compose_pkg_name         | "docker-compose-plugin"                                               | Name of the docker-compose apt package.                                                                      |
+| docker_compose_pkg_version      | ""                                                                    | Version of the docker-compose apt package.                                                                   |
+| docker_compose_pkg_version_hold | "{{ docker_compose_pkg_version | default(false) | ternary(true, false) }}"| Should APT be configure to hold the Docker compose version (false by default, true if docker_compose_pkg_version is defined) |
 ||||
 | docker_use_extra_hosts          | false                                                                 | Add /etc/hosts value in containers if needed.                                                                |
 | docker_extra_hosts              | []                                                                    | list of hosts that will be added to /etc/hosts of containers.                                                |
@@ -500,20 +510,17 @@ You should replace all the values and encrypt the file with `ansible-vault`.
 
 ## Offline installation
 On each server you need to have:
-* Docker 20.10
-* python3
-* pip3
-* virtualenv
+* Docker
+* Docker compose v2
+* python3 >= 3.5
 * bzip2
 
 You will need to do these steps before each installation or upgrade.:
 * Retrieve the docker image archives and put them in `files/offline/docker`
-* Copy the script `scripts/create_pip_offline.sh` to a server with the same OS in the same version as production servers but with Internet access. The script doesn't need Docker but requires the other previously list dependencies.
-* Run the script and retrieve the created archive and put it in `file/offline/pip`
 
 ### offline.yml
 You also need to enable offline installation in the ansible inventory in
-`inventories/your_inventory_name/group_vars/offline.yml`.
+`inventories/your_inventory_name/group_vars/all/vars.yml`.
 
 | Variables                  | Default value                    | Description                                                 |
 |----------------------------|----------------------------------|-------------------------------------------------------------|

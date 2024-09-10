@@ -2,38 +2,6 @@
 # True if the playbook need to install docker
 install_docker: true
 
-# You can configure how docker / docker-compose is installed with the variable bellow.
-# These are the default values. Uncomment what you need to change and adapt the value.
-
-# # Docker APT configuration
-# docker_apt_dependencies:
-#   - python3-docker
-#   - gnupg
-#   - apt-transport-https
-#   - ca-certificates
-# docker_apt_release_channel: stable
-# docker_repo_base_url: https://download.docker.com/linux
-# docker_apt_key_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}/gpg"
-# docker_apt_repo_url: "{{ docker_repo_base_url }}/{{ ansible_distribution | lower }}"
-#
-# # Docker package selection
-# docker_edition: ce  # 'ee' for 'Enterprise Edition' or 'ce' for 'Community Edition'
-# docker_pkg_name: "docker-{{ docker_edition }}"
-# docker_pkg_version: ""
-# docker_pkg_version_hold: "{{ docker_pkg_version | default(false) | ternary(true, false) }}"
-#
-# # Docker service configuration
-# docker_svc_name: docker
-#
-# # Docker compose configuration
-# docker_compose_apt_dependencies:
-#   - python3-pip
-#   - virtualenv
-#   - python3-setuptools
-#   - python3-wheel
-# docker_compose_pkg_name: docker-compose
-# docker_compose_pkg_version: "==1.29.1"
-
 # If for some reason the containers can't resolv the DNS, this will defined the
 # needed values in their host files.
 docker_use_extra_hosts: false

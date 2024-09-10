@@ -1,43 +1,43 @@
 ---
-- name: "Include tasks to compute bastion variables."
-  include_tasks: bastion.yml
+- name: Include tasks to compute bastion variables
+  ansible.builtin.include_tasks: bastion.yml
   when: use_bastion | bool
 
 # Variables needed to established connection are all set, we can gather the facts
 # Some are needed to set other varibles
-- name: "Gather ansible facts."
-  setup:
+- name: Gather ansible facts
+  ansible.builtin.setup:
 
-- name: "Include tasks to check if this is the first deployement."
-  include_tasks: first.yml
+- name: Include tasks to check if this is the first deployement
+  ansible.builtin.include_tasks: first.yml
 
-- name: "Include tasks to compute proxy variables."
-  include_tasks: proxy.yml
+- name: Include tasks to compute proxy variables
+  ansible.builtin.include_tasks: proxy.yml
 
-- name: "Include tasks to compute database variables."
-  include_tasks: database.yml
+- name: Include tasks to compute database variables
+  ansible.builtin.include_tasks: database.yml
 
-- name: "Include tasks to compute rabbitmq variables."
-  include_tasks: rabbitmq.yml
+- name: Include tasks to compute rabbitmq variables
+  ansible.builtin.include_tasks: rabbitmq.yml
 
-- name: "Include tasks to compute URL variables."
-  include_tasks: url.yml
+- name: Include tasks to compute URL variables
+  ansible.builtin.include_tasks: url.yml
 
-- name: "Include tasks to compute storage variables."
-  include_tasks: storage.yml
+- name: Include tasks to compute storage variables
+  ansible.builtin.include_tasks: storage.yml
 
-- name: "Include tasks to compute workers variables."
-  include_tasks: workers.yml
+- name: Include tasks to compute workers variables
+  ansible.builtin.include_tasks: workers.yml
 
-- name: "Include tasks to compute sso variables."
-  include_tasks: sso.yml
+- name: Include tasks to compute sso variables
+  ansible.builtin.include_tasks: sso.yml
 
-- name: "Include tasks to compute cron platform variables."
-  include_tasks: cron.yml
+- name: Include tasks to compute cron platform variables
+  ansible.builtin.include_tasks: cron.yml
 
 # Legacy check
-- name: "Fail if swift_enabled is still true."
-  fail:
+- name: Fail if swift_enabled is still true
+  ansible.builtin.fail:
     msg: >
       Your inventory contains `swift_enabled: true` but this version
       of our playbook doesn't support Swift anymore.

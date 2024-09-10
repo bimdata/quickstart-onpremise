@@ -1,6 +1,6 @@
 ---
-- name: "Check if all needed variables for bastion are defined."
-  assert:
+- name: Check if all needed variables for bastion are defined
+  ansible.builtin.assert:
     that:
       - bastion_ssh_addr is defined
       - bastion_ssh_addr | length
@@ -12,8 +12,8 @@
       You choose to use a connection through a bastion (use_bastion: true),
       bastion_ssh_addr, bastion_ssh_port, bastion_ssh_user must be defined and not empty.
 
-- name: "Compute easy to use bastion configuration."
-  set_fact:
+- name: Compute easy to use bastion configuration
+  ansible.builtin.set_fact:
     ansible_ssh_common_args: >
       -o ProxyCommand='ssh -W %h:%p -q -p {{ bastion_ssh_port | default(22) }} {{ bastion_ssh_user }}@{{ bastion_ssh_addr }}
       {%- if bastion_ssh_extra_options is defined and bastion_ssh_extra_options | length %}

@@ -31,7 +31,6 @@ max_upload_size: 1g
 # Some path where data will be stored
 bimdata_path: /opt/bimdata
 bimdata_docker_volume_path: "{{ bimdata_path }}/data"
-bimdata_venv_path: "{{ bimdata_path }}/venv"
 
 # Object storage
 s3_enabled: false
