@@ -1,4 +1,20 @@
 ---
+- name: "Install prerequisites (apt)."
+  ansible.builtin.apt:
+    name: "{{ prerequisites_apt_dependencies }}"
+    state: present
+    update_cache: true
+  environment: "{{ proxy_env }}"
+  when: ansible_os_family | lower == "debian"
+
+- name: "Install prerequisites (dnf)."
+  ansible.builtin.dnf:
+    name: "{{ prerequisites_dnf_dependencies }}"
+    state: present
+    update_cache: true
+  environment: "{{ proxy_env }}"
+  when: ansible_os_family | lower == "redhat"
+
 - name: Login to the define docker registries
   community.docker.docker_login:
     registry: "{{ item.url }}"

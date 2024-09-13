@@ -1,0 +1,7 @@
+---
+prerequisites_apt_dependencies:
+  - python3-requests
+
+# Centos 7 and derivatives
+prerequisites_dnf_dependencies:
+  - python3-requests

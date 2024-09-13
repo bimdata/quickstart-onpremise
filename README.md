@@ -12,12 +12,14 @@ This ansible project aims to help you deploy the Bimdata applications on your se
 ### Offline
 - Ansible server:
   - python >= 3.10
+  - python3-request
   - ansible >= 10.1.0
   - sshpass
   - must be able to contect through ssh to all the applicative servers
 
 - Applicative servers:
   - python >= 3.5
+  - python3-request
   - docker
   - docker-compose >= 2.0
   - bzip2
