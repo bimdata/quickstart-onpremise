@@ -1,0 +1,48 @@
+---
+# Rabbitmq may need to have all feature flags enabled to be upgraded
+# This is the case for upgrading from 3.11 to 3.12 for example
+# But this may require to use specific version to do an upgrade
+# For example it's not possible to upgrade an existing cluster from 3.8 to 3.12
+# We need to upgrade to 3.11, then run the command to enable all feature flag, then upgrade to 3.12
+# To avoid that, like the queue are mostlikely empty (we check that of course)
+# if the previous version is different we trash the existing rabbitmq and create a new one
+- name: "Check if Rabbitmq version change."
+  ansible.builtin.set_fact:
+    _rabbitmq_need_upgrade: "{{ docker_rabbitmq_image + ':' + docker_rabbitmq_tag != _previous_compose_content.services.rabbitmq.image }}"
+
+- name: "If Rabbitmq version change, check if we can migrate."
+  when: _rabbitmq_need_upgrade
+  vars:
+    _rabbitmq_queues_with_messages: []
+  block:
+    # Could use community.docker.docker_compose_v2_exec when upgrading to ansible 2.11
+    - name: "Retrieve Rabbit queues and message count."
+      community.docker.docker_container_exec:
+        container: "{{ _previous_compose_content.services.rabbitmq.container_name }}"
+        command: rabbitmqctl list_queues name messages --formatter=json
+      register: _rabbitmq_list_queues
+
+    - name: "Check if some queues are not empty."
+      ansible.builtin.set_fact:
+        _rabbitmq_queues_with_messages: "{{ _rabbitmq_queues_with_messages + [item] }}"
+      loop: "{{ _rabbitmq_list_queues.stdout | from_json}}"
+      when: item.messages > 0
+
+    - name: "Fail if some queues are not empty."
+      ansible.builtin.assert:
+        that: _rabbitmq_queues_with_messages | length == 0
+        fail_msg: >
+          Rabbitmq is not empty and must be upgraded. Upgrade are not supported for this case right know.
+          Please let all the model process end before trying to upgrade.
+          Queues with messages:
+          {%- for queue in _rabbitmq_queues_with_messages %}
+          {{ queue.name }} ({{ queue.messages }}){%- if not loop.last %},{% else %}.{% endif %}
+          {%- endfor -%}
+
+    - name: "Remove Rabbitmq container and its data before the upgrade."
+      community.docker.docker_compose_v2:
+        project_src: "{{ bimdata_path }}"
+        services:
+          - rabbitmq
+        remove_volumes: true
+        state: absent
