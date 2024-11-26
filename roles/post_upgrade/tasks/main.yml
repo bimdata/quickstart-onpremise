@@ -1,19 +1,26 @@
 ---
 - name: "Retrieve previous version"
   when:
-    - not _first_deploy
-    - inventory_hostname in groups["app"]
   ansible.builtin.set_fact:
-    _previous_version: "{{ _post_upgrade_version | default(_previous_compose_content.services.api.image.split(':')[-1]) | int }}"
+    _previous_version: "{{
+      _post_upgrade_version
+      | default(
+          hostvars[groups['app'][0]]['_previous_compose_content']['services']['api']['image'].split(':')[-1]
+        )
+      | default(0) }}"
 
-- name: "Include tasks for 20241016 upgrade."
-  ansible.builtin.include_tasks: "20241016.yml"
+- name: "Apply needed post_upgrade tasks if this is a different version"
   when:
-    - not _first_deploy | bool
-    - hostvars[groups['app'][0]]['_previous_version'] | int < 20241016
-
-- name: "Include tasks for 20241126 upgrade."
-  ansible.builtin.include_tasks: "20241126.yml"
-  when:
-    - not _first_deploy | bool
-    - hostvars[groups['app'][0]]['_previous_version'] | int < 20241126
+    - _previous_version != bimdata_version
+  block:
+    - name: "Include tasks for 20241016 upgrade."
+      ansible.builtin.include_tasks: "20241016.yml"
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20241016
+    - name: "Include tasks for 20241126 upgrade."
+      ansible.builtin.include_tasks: "20241126.yml"
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20241126
+# End of block
