@@ -280,6 +280,10 @@ to handle requests.                        |
 | workers_b2d_cpu                              | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_b2d_ram                              | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 | workers_b2d_task_timeout                     | "{{ '30m' | community.general.to_seconds | int }}"                       | Timeout for a B2D process.                                       |
+| workers_elevation_instance                   | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_elevation_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_elevation_ram                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_elevation_task_timeout               | "{{ '15m' | community.general.to_seconds | int }}"                       | Timeout for a Elevation process.                                 |
 ||||
 | uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
@@ -428,6 +432,8 @@ with the [db] server on these ports.
 | docker_workers_dwg_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker DWG tag.                                                           |
 | docker_workers_b2d_image                | "{{ docker_private_registry }}/on-premises/worker_b2d"           | Worker B2D image.                                                         |
 | docker_workers_b2d_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker B2D tag.                                                           |
+| docker_workers_elevation_image          | "{{ docker_private_registry }}/on-premises/elevation_worker"     | Worker Elevation image.                                                   |
+| docker_workers_elevation_tag            | "{{ docker_bimdata_tag }}"                                       | Worker Elevation tag.                                                     |
 
 ### docker.yml
 | Variables                       | Default value                                                         | Description                                                                                                  |

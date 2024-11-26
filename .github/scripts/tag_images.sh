@@ -29,6 +29,7 @@ img_list=(
   pdf_preview_worker
   pointcloud_worker
   worker_b2d
+  elevation_worker
 )
 
 for img in ${img_list[@]} ; do

@@ -91,5 +91,8 @@ docker_workers_pointcloud_tag: "{{ docker_bimdata_tag }}"
 docker_workers_b2d_image: "{{ docker_private_registry }}/on-premises/worker_b2d"
 docker_workers_b2d_tag: "{{ docker_bimdata_tag }}"
 
+docker_workers_elevation_image: "{{ docker_private_registry }}/on-premises/elevation_worker"
+docker_workers_elevation_tag: "{{ docker_bimdata_tag }}"
+
 docker_sso_invitation_image: "{{ docker_private_registry }}/on-premises/sso_invitation_email_sender"
 docker_sso_invitation_tag: "{{ docker_bimdata_tag }}"
