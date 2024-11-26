@@ -1,0 +1,30 @@
+---
+- name: "Retrieve previous version"
+  when:
+  ansible.builtin.set_fact:
+    _previous_version: "{{
+      _post_upgrade_version
+      | default(
+          hostvars[groups['app'][0]]['_previous_compose_content']['services']['api']['image'].split(':')[-1]
+        )
+      | default(0) }}"
+
+- name: "Apply needed post_upgrade tasks if this is a different version"
+  when:
+    - (_previous_version | int) != (bimdata_version | int )
+  block:
+    - name: "Print which version are use to determine which post upgrade tasks to run"
+      ansible.builtin.debug:
+        msg: "Post-upgrade from {{ _previous_version }} to {{ bimdata_version }}."
+
+    - name: "Include tasks for 20241016 upgrade."
+      ansible.builtin.include_tasks: "20241016.yml"
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20241016
+    - name: "Include tasks for 20241126 upgrade."
+      ansible.builtin.include_tasks: "20241126.yml"
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20241126
+# End of block

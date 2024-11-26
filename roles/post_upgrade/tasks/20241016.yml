@@ -1,0 +1,5 @@
+---
+- name: "Remove old venv directory if exists"
+  ansible.builtin.file:
+    name: "{{ bimdata_venv_path | default(bimdata_path + '/venv') }}"
+    state: absent
