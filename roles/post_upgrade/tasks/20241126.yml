@@ -1,0 +1,11 @@
+---
+# We should use docker_compose_v2_exec when ansible will be updated to 11 or another version that support it
+# With this module we could avoid relaying on container name
+- name: "Run Postgres vaccum analyze on the API databases"
+  run_once: true
+  community.docker.docker_container_exec:
+    container: "api-db"
+    command: "vacuumdb -U {{ db_api_user }} --maintenance-db {{ db_api_name }} --all --jobs={{ ansible_processor_count }} --analyze"
+  when:
+    - inventory_hostname in groups["db"]
+    - not use_external_db | bool
