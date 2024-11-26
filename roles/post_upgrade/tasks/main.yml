@@ -11,8 +11,12 @@
 
 - name: "Apply needed post_upgrade tasks if this is a different version"
   when:
-    - _previous_version != bimdata_version
+    - (_previous_version | int) != (bimdata_version | int )
   block:
+    - name: "Print which version are use to determine which post upgrade tasks to run"
+      ansible.builtin.debug:
+        msg: "Post-upgrade from {{ _previous_version }} to {{ bimdata_version }}."
+
     - name: "Include tasks for 20241016 upgrade."
       ansible.builtin.include_tasks: "20241016.yml"
       when:
