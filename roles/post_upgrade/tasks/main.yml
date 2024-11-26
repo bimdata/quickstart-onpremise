@@ -3,7 +3,7 @@
   when:
   ansible.builtin.set_fact:
     _previous_version: "{{
-      _post_upgrade_version
+      post_upgrade_version
       | default(
           hostvars[groups['app'][0]]['_previous_compose_content']['services']['api']['image'].split(':')[-1]
         )

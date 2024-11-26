@@ -289,7 +289,7 @@ to handle requests.                        |
 | master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
 | app_env                                      | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
 | maptiler_token                               | Undefined                                                                | Token for authentication on the Maptiler API.                    |
-| _post_upgrade_version                        | Undefined                                                                | Use to force specific post upgrade tasks.                        |
+| post_upgrade_version                        | Undefined                                                                | Use to force specific post upgrade tasks.                        |
 
 ### SSO
 If you want to use your own userbase and connect them to BIMData services, contact us.
