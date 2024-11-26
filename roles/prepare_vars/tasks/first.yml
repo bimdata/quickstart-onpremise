@@ -12,3 +12,16 @@
 - name: Set a fact to be able to easly check if it's the first deployment
   ansible.builtin.set_fact:
     _first_deploy: "{{ not _compose_file.stat.exists }}"
+
+- name: "If this the compose file exists, retrieve its content and parse it"
+  when: not _first_deploy
+  block:
+    - name: "Retrieve docker-compose.yml content"
+      ansible.builtin.slurp:
+        src: "{{ bimdata_path }}/docker-compose.yml"
+      check_mode: false
+      register: _compose_file_slurp
+    - name: "Parse the docker-compose.yml content and store it in a fact"
+      ansible.builtin.set_fact:
+        _previous_compose_content: "{{ _compose_file_slurp.content | b64decode | from_yaml }}"
+# End of block _first_deploy

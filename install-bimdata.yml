@@ -28,6 +28,14 @@
         - not use_external_db | bool
         - inventory_hostname not in groups["app"]
 
+# RabbitMQ
+    - role: rabbitmq_upgrade
+      tags: ["rabbitmq", "app"]
+      when:
+        - not _first_deploy
+        - inventory_hostname in groups["app"]
+        - not use_external_rabbitmq | bool
+
 # Apps
     - role: bimdata
       tags: ["bimdata", "app"]
