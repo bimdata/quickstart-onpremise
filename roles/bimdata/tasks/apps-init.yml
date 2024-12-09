@@ -89,6 +89,14 @@
   vars:
     container_name: "{{ _compose_up.containers | selectattr('Service', 'equalto', 'api') | map(attribute='Name') | first }}"
   block:
+    - name: Wait for API migrations
+      ansible.builtin.command: 'docker exec {{ container_name }} bash -c ''/opt/manage.py showmigrations | grep -F -c "[ ]"'''
+      register: api_migration
+      until: api_migration.stdout == "0"
+      failed_when: api_migration.rc != 1
+      changed_when: false
+      retries: 36
+      delay: 10
     - name: Wait for API to respond
       ansible.builtin.uri:
         url: "{{ api_url }}"
@@ -102,14 +110,6 @@
     - name: API - copy the needed scripts
       ansible.builtin.command: "docker cp {{ bimdata_path }}/scripts/create_apps.py {{ container_name }}:/opt/"
       changed_when: false
-    - name: Wait for API migrations
-      ansible.builtin.command: 'docker exec {{ container_name }} bash -c ''/opt/manage.py showmigrations | grep -F -c "[ ]"'''
-      register: api_migration
-      until: api_migration.stdout == "0"
-      failed_when: api_migration.rc != 1
-      changed_when: false
-      retries: 36
-      delay: 10
     - name: API - init apps
       ansible.builtin.command: |
         docker exec
@@ -137,6 +137,14 @@
     - name: Platform back - copy the needed scripts
       ansible.builtin.command: "docker cp {{ bimdata_path }}/scripts/create_webhook_notifs.py {{ container_name }}:/opt/"
       changed_when: false
+    - name: Wait for platform back migrations
+      ansible.builtin.command: 'docker exec {{ container_name }} bash -c ''/opt/manage.py showmigrations | grep -F -c "[ ]"'''
+      register: platform_back_migration
+      until: platform_back_migration.stdout == "0"
+      failed_when: platform_back_migration.rc != 1
+      changed_when: false
+      retries: 36
+      delay: 10
     - name: Wait for platform back to respond
       ansible.builtin.uri:
         url: "{{ platform_back_url }}"
@@ -147,14 +155,6 @@
       until: connect_get.status == 200
       retries: 36
       delay: 5
-    - name: Wait for platform back migrations
-      ansible.builtin.command: 'docker exec {{ container_name }} bash -c ''/opt/manage.py showmigrations | grep -F -c "[ ]"'''
-      register: platform_back_migration
-      until: platform_back_migration.stdout == "0"
-      failed_when: platform_back_migration.rc != 1
-      changed_when: false
-      retries: 36
-      delay: 10
     - name: Platform back - init apps
       ansible.builtin.command: |
         docker exec
