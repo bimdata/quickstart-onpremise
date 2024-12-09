@@ -448,11 +448,11 @@ with the [db] server on these ports.
 ||||
 | docker_edition                  | ce                                                                    | Docker edition that will be installed ('ee' for 'Enterprise Edition' or 'ce' for 'Community Edition')        |
 | docker_pkg_name                 | "docker-{{ docker_edition }}"                                         | Docker APT package name that will be installed.                                                              |
-| docker_pkg_version              | ""                                                                    | Docker APT package version that will be installed.                                                           |
+| docker_pkg_version              | "5:27.*"                                                              | Docker APT package version that will be installed. (Only works for APT system currently)                     |
 | docker_pkg_version_hold         | "{{ docker_pkg_version | default(false) | ternary(true, false) }}"    | Should APT be configure to hold the Docker version (false by default, true if docker_pkg_version is defined) |
 ||||
 | docker_compose_pkg_name         | "docker-compose-plugin"                                               | Name of the docker-compose apt package.                                                                      |
-| docker_compose_pkg_version      | ""                                                                    | Version of the docker-compose apt package.                                                                   |
+| docker_compose_pkg_version      | "2.*"                                                                 | Version of the docker-compose apt package. (Only works for APT system currently)                             |
 | docker_compose_pkg_version_hold | "{{ docker_compose_pkg_version | default(false) | ternary(true, false) }}"| Should APT be configure to hold the Docker compose version (false by default, true if docker_compose_pkg_version is defined) |
 ||||
 | docker_use_extra_hosts          | false                                                                 | Add /etc/hosts value in containers if needed.                                                                |

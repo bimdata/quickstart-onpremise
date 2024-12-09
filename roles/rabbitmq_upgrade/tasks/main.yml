@@ -11,7 +11,9 @@
     _rabbitmq_need_upgrade: "{{ docker_rabbitmq_image + ':' + docker_rabbitmq_tag != _previous_compose_content.services.rabbitmq.image }}"
 
 - name: "If Rabbitmq version change, check if we can migrate."
-  when: _rabbitmq_need_upgrade
+  when:
+    - _rabbitmq_need_upgrade
+    - not _legacy_venv_cleanup
   vars:
     _rabbitmq_queues_with_messages: []
   block:
