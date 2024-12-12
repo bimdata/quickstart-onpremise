@@ -1,13 +1,13 @@
 ---
 - name: Add Docker key
   ansible.builtin.rpm_key:
-    key: "{{ docker_yum_repo_key_url }}"
+    key: "{{ docker_dnf_repo_key_url }}"
     state: present
   environment: "{{ proxy_env }}"
 
 - name: Add Docker repository
   ansible.builtin.get_url:
-    url: "{{ docker_yum_repo }}"
+    url: "{{ docker_dnf_repo }}"
     dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
     owner: root
     group: root
@@ -16,7 +16,7 @@
 
 - name: Install Docker (DNF)
   ansible.builtin.dnf:
-    name: "{{ docker_pkg_name }}{% if docker_pkg_version != '' %}-{{ docker_pkg_version }}{% endif %}"
+    name: "{{ docker_pkg_name }}"
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
@@ -24,7 +24,7 @@
 
 - name: Install Docker compose (DNF)
   ansible.builtin.dnf:
-    name: "{{ docker_compose_pkg_name }}{% if docker_compose_pkg_version != '' %}-{{ docker_compose_pkg_version }}{% endif %}"
+    name: "{{ docker_compose_pkg_name }}"
     update_cache: true
     state: present
   environment: "{{ proxy_env }}"
