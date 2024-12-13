@@ -217,6 +217,13 @@ services:
 {% if tls_acme | bool %}
       - LETSENCRYPT_HOST={{ api_dns_name }}
 {% endif %}
+{% if api_swagger_customization  | bool %}
+      - SWAGGER_TITLE={{ api_swagger_title }}
+      - SWAGGER_TOS={{ api_swagger_tos }}
+      - SWAGGER_CONTACT_NAME={{ api_swagger_contact_name }}
+      - SWAGGER_CONTACT_URL={{ api_swagger_contact_url }}
+      - SWAGGER_CONTACT_EMAIL={{ api_swagger_contact_email }}
+{% endif %}
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
