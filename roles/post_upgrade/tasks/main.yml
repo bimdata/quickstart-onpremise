@@ -23,9 +23,9 @@
       when:
         - not _first_deploy | bool
         - _previous_version | int < 20241016
-    - name: "Include tasks for 20250107 upgrade."
-      ansible.builtin.include_tasks: "20250107.yml"
+    - name: "Include tasks for 20241126 upgrade."
+      ansible.builtin.include_tasks: "20241126.yml"
       when:
         - not _first_deploy | bool
-        - _previous_version | int < 20250107
+        - _previous_version | int < 20241126
 # End of block
