@@ -92,9 +92,10 @@ services:
       - VIRTUAL_HOST={{ iam_dns_name }}
       - VIRTUAL_PORT=8080
       - ENV={{ app_env }}
-      - KC_HOSTNAME={{ iam_dns_name }}
-      - KC_HOSTNAME_ADMIN_URL=https://{{ iam_dns_name }}/auth/
-      - KC_PROXY=edge
+      - KC_HOSTNAME=https://{{ iam_dns_name }}/auth/
+      - KC_HOSTNAME_ADMIN=https://{{ iam_dns_name }}/auth/
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HTTP_ENABLED=true
       - KC_DB_SCHEMA=public
       - KC_DB_URL_DATABASE={{ db_iam_name }}
       - KC_DB_USERNAME={{ db_iam_user }}
