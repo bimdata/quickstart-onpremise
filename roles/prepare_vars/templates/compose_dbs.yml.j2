@@ -19,3 +19,6 @@
     start_period: 10s
     retries: 5
   restart: unless-stopped
+{% if item == "api" %}
+  shm_size: 1g
+{% endif %}
