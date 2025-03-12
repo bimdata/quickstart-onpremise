@@ -138,18 +138,18 @@ workers_merge_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 workers_xkt_instance: 1
 workers_xkt_cpu: 1
 workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_xkt_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
+workers_xkt_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
 workers_xkt_v10_instance: 1
 workers_xkt_v10_cpu: 1
 workers_xkt_v10_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_xkt_v10_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
+workers_xkt_v10_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
 ## preview 3D
 workers_preview_instance: 1
 workers_preview_cpu: 1
 workers_preview_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_preview_task_timeout: "{{ '3min' | community.general.to_seconds | int }}"
+workers_preview_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
 ## preview 2D
 workers_preview_2d_instance: 1
