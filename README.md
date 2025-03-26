@@ -214,6 +214,7 @@ to handle requests.                        |
 ||||
 | iam_user                                     | "admin"                                                                  | Keycloak administrator user.                                     |
 | iam_password                                 | "{{ vault_iam_password }}"                                               | Keycloak administrator password.                                 |
+| iam_default_idp                              | "bimdataconnect"                                                         | Keycloak default identity provider.                              |
 ||||
 | marketplace_enabled                          | false                                                                    | Enable / disable marketplace.                                    |
 | marketplace_back_secret_key                  | "{{ vault_marketplace_back_secret_key }}"                                | You should not change this.                                      |

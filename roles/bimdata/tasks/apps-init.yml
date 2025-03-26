@@ -43,7 +43,7 @@
         authenticationConfig:
           alias: bimdata_connect_as_default
           config:
-            defaultProvider: bimdataconnect
+            defaultProvider: "{{ iam_default_idp }}"
   environment:
     REQUESTS_CA_BUNDLE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
     SSL_CERT_FILE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
