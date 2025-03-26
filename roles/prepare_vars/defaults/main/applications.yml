@@ -85,6 +85,7 @@ archive_prefix: "bimdata-"
 # iam
 iam_user: "admin"
 iam_password: "{{ vault_iam_password }}" # Change me in the vault
+iam_default_idp: "bimdataconnect"
 
 # Archive
 archive_workers_nb: 2
