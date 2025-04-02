@@ -34,7 +34,7 @@
       - tls_archive_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
-      you need to defined all the keys and certificates in group_vars/all/vars.yml.
+      you need to define all the keys and certificates in group_vars/all/vars.yml.
   when: tls_enabled | bool
 
 - name: Check if all needed variables for marketplace TLS are defined if needed
@@ -47,7 +47,7 @@
       - tls_marketplace_front_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
-      you need to defined all the keys and certificates in group_vars/all/tls.yml.
+      you need to define all the keys and certificates in group_vars/all/tls.yml.
   when:
     - tls_enabled | bool
     - marketplace_enabled | bool
@@ -59,7 +59,7 @@
       - tls_rabbitmq_admin_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true) and you don't use external rabbitmq,
-      you need to defined the key and certificate in group_vars/all/tls.yml for rabbitmq.
+      you need to define the key and certificate in group_vars/all/tls.yml for rabbitmq.
   when:
     - tls_enabled | bool
     - not use_external_rabbitmq | bool
