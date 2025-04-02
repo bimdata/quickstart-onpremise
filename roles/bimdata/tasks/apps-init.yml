@@ -18,10 +18,10 @@
 
 - name: Wait for IAM to respond
   ansible.builtin.uri:
-    url: "{{ iam_url }}/auth/"
+    url: "{{ urls['iam'] }}/auth/"
     method: GET
     status_code: 200
-    ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+    ca_path: "{{ tls_custom_ca | bool | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
   register: iam_get
   until: iam_get.status == 200
   retries: 36
@@ -29,7 +29,7 @@
 
 - name: IAM - configure default provider
   community.general.keycloak_authentication:
-    auth_keycloak_url: "{{ iam_url }}/auth"
+    auth_keycloak_url: "{{ urls['iam'] }}/auth"
     auth_realm: master
     auth_username: "{{ iam_user }}"
     auth_password: "{{ iam_password }}"
@@ -45,8 +45,8 @@
           config:
             defaultProvider: "{{ iam_default_idp }}"
   environment:
-    REQUESTS_CA_BUNDLE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
-    SSL_CERT_FILE: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+    REQUESTS_CA_BUNDLE: "{{ tls_custom_ca | bool | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+    SSL_CERT_FILE: "{{ tls_custom_ca | bool | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
 
 - name: Connect - initialization
   vars:
@@ -77,7 +77,7 @@
     - name: Connect - init provider
       ansible.builtin.command: |
         docker exec connect python create_connect_provider.py
-        {{ connect_client_id }} {{ connect_client_secret }} {{ iam_url }}
+        {{ connect_client_id }} {{ connect_client_secret }} {{ urls['iam'] }}
       register: exec_return
       changed_when:
         - exec_return.rc == 0
@@ -99,10 +99,10 @@
       delay: 10
     - name: Wait for API to respond
       ansible.builtin.uri:
-        url: "{{ api_url }}"
+        url: "{{ urls['api'] }}"
         method: GET
         status_code: 200
-        ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+        ca_path: "{{ tls_custom_ca | bool | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
       register: connect_get
       until: connect_get.status == 200
       retries: 36
@@ -113,7 +113,7 @@
     - name: API - init apps
       ansible.builtin.command: |
         docker exec
-        {% if tls_enabled | bool %}
+        {% if tls_custom_ca | bool %}
         -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
         -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
         {% endif %}
@@ -121,8 +121,8 @@
         {{ connect_invitation_client }} {{ connect_invitation_client_secret }}
         {{ platform_front_client_id }} {{ platform_back_client_id }} {{ platform_back_client_secret }}
         {{ connect_client_id }} {{ connect_client_secret }} {{ marketplace_front_client_id }}
-        {{ platform_front_url }} {{ platform_back_url }} {{ marketplace_front_url }}
-        {{ connect_url }}
+        {{ urls['platform_front'] }} {{ urls['platform_back'] }} {{ urls['marketplace_front'] }}
+        {{ urls['connect'] }}
       no_log: true
       register: exec_return
       changed_when:
@@ -147,10 +147,10 @@
       delay: 10
     - name: Wait for platform back to respond
       ansible.builtin.uri:
-        url: "{{ platform_back_url }}"
+        url: "{{ urls['platform_back'] }}"
         method: GET
         status_code: 200
-        ca_path: "{{ tls_enabled | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
+        ca_path: "{{ tls_custom_ca | bool | ternary(bimdata_docker_volume_path + '/ca.crt', omit) }}"
       register: connect_get
       until: connect_get.status == 200
       retries: 36
@@ -158,7 +158,7 @@
     - name: Platform back - init apps
       ansible.builtin.command: |
         docker exec
-        {% if tls_enabled | bool %}
+        {% if tls_custom_ca | bool | bool %}
         -e REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
         -e SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
         {% endif %}

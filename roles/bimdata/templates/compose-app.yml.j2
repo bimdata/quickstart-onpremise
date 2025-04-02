@@ -85,7 +85,7 @@ services:
     command: --import-realm
     volumes:
       - {{ bimdata_docker_volume_path }}/keycloak/realms:/opt/keycloak/data/import:ro
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
     environment:
@@ -107,7 +107,7 @@ services:
 {% if not tls_enabled and not tls_external and not tls_acme %}
       - KC_HOSTNAME_STRICT_HTTPS=false
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - X509_CA_BUNDLE=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -136,12 +136,12 @@ services:
     image: {{ docker_api_image }}:{{ docker_api_tag }}
     expose:
       - 8000
-{% if not s3_enabled | bool or tls_enabled  | bool %}
+{% if not s3_enabled | bool or tls_custom_ca | bool %}
     volumes:
 {% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/api_storage:/opt/storage:rw
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% endif %}
@@ -149,8 +149,8 @@ services:
       - VIRTUAL_HOST={{ api_dns_name }}
       - ENV={{ app_env }}
       - WORKERS={{ api_workers }}
-      - API_URL={{ api_url }}
-      - DOC_URL={{ documentation_url }}
+      - API_URL={{ urls['api'] }}
+      - DOC_URL={{ urls['documentation'] }}
       - ALLOWED_HOSTS={{ api_dns_name }}
       - MASTER_TOKEN={{ master_token }}
       - SECRET_KEY={{ api_secret_key }}
@@ -163,7 +163,7 @@ services:
       - RABBITMQ_PORT={{ rabbitmq_port }}
       - RABBITMQ_USER={{ rabbitmq_user }}
       - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-      - IAM_URL={{ iam_url }}
+      - IAM_URL={{ urls['iam'] }}
       - IAM_ADMIN_LOGIN={{ iam_user }}
       - IAM_ADMIN_PASSWORD={{ iam_password }}
 {% if smtp_host is defined and smtp_host | length %}
@@ -212,7 +212,7 @@ services:
       - API_DATA_PACK={{ api_data_pack }}
       - GED_DATA_RATIO={{ ged_data_ratio }}
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -241,12 +241,12 @@ services:
     image: {{ docker_connect_image }}:{{ docker_connect_tag }}
     expose:
       - 8000
-{% if not s3_connect_enabled | bool or tls_enabled | bool or connect_use_custom_mail_templates | bool %}
+{% if not s3_connect_enabled | bool or tls_custom_ca | bool or connect_use_custom_mail_templates | bool %}
     volumes:
 {% if not s3_connect_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/opt/storage:rw
 {% endif %}
-{% if tls_enabled | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if connect_use_custom_mail_templates | bool %}
@@ -258,12 +258,12 @@ services:
       - ENV={{ app_env }}
       - COMPILE_SCSS=true
       - PROCESS_TASKS=true
-      - API_URL={{ api_url }}
-      - DOC_URL={{ documentation_url }}
-      - SITE_URL={{ connect_url }}
-      - ADMIN_URL={{ connect_url }}
-      - PLATFORM_URL={{ platform_front_url }}
-      - IAM_URL={{ iam_url }}
+      - API_URL={{ urls['api'] }}
+      - DOC_URL={{ urls['documentation'] }}
+      - SITE_URL={{ urls['connect'] }}
+      - ADMIN_URL={{ urls['connect'] }}
+      - PLATFORM_URL={{ urls['platform_front'] }}
+      - IAM_URL={{ urls['iam'] }}
       - IAM_ADMIN_LOGIN={{ iam_user }}
       - IAM_ADMIN_PASSWORD={{ iam_password }}
       - ALLOWED_HOSTS={{ connect_dns_name }}
@@ -304,7 +304,7 @@ services:
       - INVITATION_CLIENT_ID={{ connect_invitation_client }}
       - INVITATION_CLIENT_SECRET={{ connect_invitation_client_secret }}
       - ADMIN_INTERFACE=True
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -329,9 +329,9 @@ services:
     image: {{ docker_platform_back_image }}:{{ docker_platform_back_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool or platform_back_use_custom_mail_templates | bool %}
+{% if tls_custom_ca | bool or platform_back_use_custom_mail_templates | bool %}
     volumes:
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if platform_back_use_custom_mail_templates  | bool %}
@@ -341,12 +341,12 @@ services:
     environment:
       - VIRTUAL_HOST={{ platform_back_dns_name }}
       - ENV={{ app_env }}
-      - API_URL={{ api_url }}
-      - PLATFORM_BACK_URL={{ platform_back_url }}
-      - PLATFORM_URL={{ platform_front_url }}
+      - API_URL={{ urls['api'] }}
+      - PLATFORM_BACK_URL={{ urls['platform_back'] }}
+      - PLATFORM_URL={{ urls['platform_front'] }}
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
-      - IAM_URL={{ iam_url }}
+      - IAM_URL={{ urls['iam'] }}
       - IAM_CLIENT_ID={{ platform_back_client_id }}
       - IAM_CLIENT_SECRET={{ platform_back_client_secret }}
 {% if smtp_host is defined and smtp_host | length %}
@@ -367,7 +367,7 @@ services:
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
       - ADMIN_INTERFACE=True
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -392,7 +392,7 @@ services:
     command:
       - /opt/cron.py
     volumes:
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if platform_back_use_custom_mail_templates  | bool %}
@@ -402,12 +402,12 @@ services:
     environment:
       - APPLY_MIGRATION=False
       - ENV={{ app_env }}
-      - API_URL={{ api_url }}
-      - PLATFORM_BACK_URL={{ platform_back_url }}
-      - PLATFORM_URL={{ platform_front_url }}
+      - API_URL={{ urls['api'] }}
+      - PLATFORM_BACK_URL={{ urls['platform_back'] }}
+      - PLATFORM_URL={{ urls['platform_front'] }}
       - ALLOWED_HOSTS={{ platform_back_dns_name }}
       - SECRET_KEY={{ platform_back_secret_key }}
-      - IAM_URL={{ iam_url }}
+      - IAM_URL={{ urls['iam'] }}
       - IAM_CLIENT_ID={{ platform_back_client_id }}
       - IAM_CLIENT_SECRET={{ platform_back_client_secret }}
 {% if smtp_host is defined and smtp_host | length %}
@@ -428,7 +428,7 @@ services:
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
       - ADMIN_INTERFACE=True
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
     restart: unless-stopped
@@ -454,17 +454,17 @@ services:
     environment:
       - VIRTUAL_HOST={{ platform_front_dns_name }}
       - HOST=0.0.0.0
-      - VUE_APP_BASE_URL={{ platform_front_url }}
-      - VUE_APP_IAM_BASE_URL={{ iam_url }}
-      - VUE_APP_API_BASE_URL={{ api_url }}
-      - VUE_APP_BACKEND_BASE_URL={{ platform_back_url }}
+      - VUE_APP_BASE_URL={{ urls['platform_front'] }}
+      - VUE_APP_IAM_BASE_URL={{ urls['iam'] }}
+      - VUE_APP_API_BASE_URL={{ urls['api'] }}
+      - VUE_APP_BACKEND_BASE_URL={{ urls['platform_back'] }}
       - VUE_APP_OIDC_CLIENT_ID={{ platform_front_client_id }}
       - VUE_APP_MAPTILER_TOKEN={{ maptiler_token | default('Woyh7tiaYohpinpQkArU') }}
       - VUE_APP_MAX_UPLOAD_SIZE={{ max_upload_size | human_to_bytes }}
-      - VUE_APP_URL_BIMDATACONNECT={{ connect_url }}
-      - VUE_APP_URL_DOCUMENTATION={{ documentation_url }}
-      - VUE_APP_ARCHIVE_BASE_URL={{ archive_url }}
-      - VUE_APP_URL_MARKETPLACE={{ marketplace_front_url }}
+      - VUE_APP_URL_BIMDATACONNECT={{ urls['connect'] }}
+      - VUE_APP_URL_DOCUMENTATION={{ urls['documentation'] }}
+      - VUE_APP_ARCHIVE_BASE_URL={{ urls['archive'] }}
+      - VUE_APP_URL_MARKETPLACE={{ urls['marketplace_front'] }}
       - VUE_APP_PROJECT_STATUS_LIMIT_NEW={{ platform_front_project_status_limit_new }}
       - VUE_APP_PROJECT_STATUS_LIMIT_ACTIVE={{ platform_front_project_status_limit_active }}
       - VUE_APP_AUTHORIZED_IDENTITY_PROVIDERS={{ platform_front_authorized_identity_providers }}
@@ -512,7 +512,7 @@ services:
     image: {{ docker_archive_image }}:{{ docker_archive_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     volumes:
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
@@ -521,10 +521,10 @@ services:
       - ENV={{ app_env }}
       - APP_NAME=archive
       - SERVER_PORT=8000
-      - API_URL={{ api_url }}
+      - API_URL={{ urls['api'] }}
       - WORKERS_NB={{ archive_workers_nb }}
       - ARCHIVE_PREFIX={{ archive_prefix }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -544,9 +544,9 @@ services:
     image: {{ docker_marketplace_back_image }}:{{ docker_marketplace_back_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool or marketplace_back_use_custom_mail_templates | bool %}
+{% if tls_custom_ca | bool or marketplace_back_use_custom_mail_templates | bool %}
     volumes:
-{% if tls_enabled | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if marketplace_back_use_custom_mail_templates  | bool %}
@@ -563,9 +563,9 @@ services:
       - DB_PASSWORD={{ db_marketplace_password }}
       - ALLOWED_HOSTS={{ marketplace_back_dns_name }}
       - MASTER_TOKEN={{ master_token }}
-      - MARKETPLACE_URL={{ marketplace_front_url }}
-      - IAM_URL={{ iam_url }}
-      - API_URL={{ api_url }}
+      - MARKETPLACE_URL={{ urls['marketplace_front'] }}
+      - IAM_URL={{ urls['iam'] }}
+      - API_URL={{ urls['api'] }}
       - SECRET_KEY={{ marketplace_back_secret_key }}
       - ADMIN_INTERFACE=true
 {% if smtp_host is defined and smtp_host | length %}
@@ -579,7 +579,7 @@ services:
       - DEFAULT_FROM_EMAIL={{ smtp_default_email }}
       - DEBUG_MAIL_TO={{ debug_mail_to }}
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -602,7 +602,7 @@ services:
     image: {{ docker_marketplace_front_image }}:{{ docker_marketplace_front_tag }}
     expose:
       - 8000
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     volumes:
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
@@ -610,14 +610,14 @@ services:
       - VIRTUAL_HOST={{ marketplace_front_dns_name }}
       - ENV={{ app_env }}
 
-      - APP_URL={{ marketplace_front_url }}
-      - OIDC_ISSUER={{ iam_url }}/auth/realms/bimdata
-      - API_URL={{ api_url }}
-      - BACKEND_URL={{ marketplace_back_url }}
+      - APP_URL={{ urls['marketplace_front'] }}
+      - OIDC_ISSUER={{ urls['iam'] }}/auth/realms/bimdata
+      - API_URL={{ urls['api'] }}
+      - BACKEND_URL={{ urls['marketplace_back'] }}
       - WORKERS_NB={{ marketplace_front_workers }}
 
       - CLIENT_ID={{ marketplace_front_client_id }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
 {% if tls_acme | bool %}
@@ -650,8 +650,8 @@ services:
     environment:
       - ENV={{ app_env }}
       - WORKERS=8
-      - API_URL={{ api_url }}
-      - IAM_URL={{ iam_url }}
+      - API_URL={{ urls['api'] }}
+      - IAM_URL={{ urls['iam'] }}
       - INVITATION_SECRET={{ sso_invitation_secret }}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}

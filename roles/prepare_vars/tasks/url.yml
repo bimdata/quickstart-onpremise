@@ -12,59 +12,38 @@
 - name: Check if all needed variables for TLS are defined if needed
   ansible.builtin.assert:
     that:
-      - tls_ca_certificate is defined
-      - tls_ca_certificate | length
-
-      - tls_api_key is defined
       - tls_api_key | length
-      - tls_api_cert is defined
       - tls_api_cert | length
 
-      - tls_connect_key is defined
       - tls_connect_key | length
-      - tls_connect_cert is defined
       - tls_connect_cert | length
 
-      - tls_platform_back_key is defined
       - tls_platform_back_key | length
-      - tls_platform_back_cert is defined
       - tls_platform_back_cert | length
 
-      - tls_platform_front_key is defined
       - tls_platform_front_key | length
-      - tls_platform_front_cert is defined
       - tls_platform_front_cert | length
 
-      - tls_iam_key is defined
       - tls_iam_key | length
-      - tls_iam_cert is defined
       - tls_iam_cert | length
 
-      - tls_documentation_key is defined
       - tls_documentation_key | length
-      - tls_documentation_cert is defined
       - tls_documentation_cert | length
 
-      - tls_archive_key is defined
       - tls_archive_key | length
-      - tls_archive_cert is defined
       - tls_archive_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
-      you need to defined all the keys and certificates in group_vars/all/tls.yml.
+      you need to defined all the keys and certificates in group_vars/all/vars.yml.
   when: tls_enabled | bool
 
 - name: Check if all needed variables for marketplace TLS are defined if needed
   ansible.builtin.assert:
     that:
-      - tls_marketplace_back_key is defined
       - tls_marketplace_back_key | length
-      - tls_marketplace_back_cert is defined
       - tls_marketplace_back_cert | length
 
-      - tls_marketplace_front_key is defined
       - tls_marketplace_front_key | length
-      - tls_marketplace_front_cert is defined
       - tls_marketplace_front_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true),
@@ -76,9 +55,7 @@
 - name: Check if all needed variables for TLS are defined if needed
   ansible.builtin.assert:
     that:
-      - tls_rabbitmq_admin_key is defined
       - tls_rabbitmq_admin_key | length
-      - tls_rabbitmq_admin_cert is defined
       - tls_rabbitmq_admin_cert | length
     fail_msg: >
       You choose to enable TLS (tls_enabled: true) and you don't use external rabbitmq,
@@ -87,19 +64,11 @@
     - tls_enabled | bool
     - not use_external_rabbitmq | bool
 
-- name: Set URL variable
-  ansible.builtin.set_fact:
-    api_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ api_dns_name }}"
-    iam_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ iam_dns_name }}"
-    connect_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ connect_dns_name }}"
-    platform_back_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
-    platform_front_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
-    rabbitmq_admin_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
-    documentation_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ documentation_dns_name }}"
-    archive_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ archive_dns_name }}"
-    marketplace_back_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
-    marketplace_front_url: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"
-    needed_cert_tls: "{{
-      ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
-      + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
-      + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], [])) }}"
+- name: Import TLS variables
+  ansible.builtin.include_vars:
+    file: tls.yml
+
+- name: Import URLs variables
+  ansible.builtin.include_vars:
+    file: urls.yml
+    name: urls

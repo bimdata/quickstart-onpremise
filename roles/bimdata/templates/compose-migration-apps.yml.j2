@@ -17,7 +17,7 @@ services:
 {% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/static/api_storage:/opt/storage:rw
 {% endif %}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
     environment:

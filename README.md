@@ -486,31 +486,33 @@ We currently support 3 ways to manage TLS configuration:
 
 | Variables                  | Default value                           | Description                                                                                                                    |
 |----------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| tls_enabled                | false                                   | Enable external TLS or not.                                                                                                    |
+| tls_enabled                | false                                   | Enable TLS with provided certs or not.                                                                                         |
 | tls_external               | false                                   | Set it to true if the TLS is manage by another web server, like a reverse proxy.                                               |
 | nginx_use_pregen_dh        | true                                    | Use pre-defined diffie hellman parameters. If false it'll generate new one. This take a lot of time.                           |
 | tls_ca_certificate         | ""                                      | CA certificate of the CA used to sign the certificates for the applications. (PEM format.)                                     |
 | tls_subca_certificates     | []                                      | If a complexe CA architecture is used, tls_ca_certificate should contain the main CA, and this list all the intermediate ones. |
-| tls_api_key                | "{{ vault_tls_api_key }}"               | API TLS key (PEM format).                                                                                                      |
-| tls_api_cert               | ""                                      | API TLS Certificate (PEM format).                                                                                              |
-| tls_connect_key            | "{{ vault_tls_connect_key }}"           | Connect TLS key (PEM format).                                                                                                  |
-| tls_connect_cert           | ""                                      | Connect TLS Certificate (PEM format).                                                                                          |
-| tls_platform_back_key      | "{{ vault_tls_platform_back_key }}"     | Platform back TLS key (PEM format).                                                                                            |
-| tls_platform_back_cert     | ""                                      | Platform back TLS Certificate (PEM format).                                                                                    |
-| tls_platform_front_key     | "{{ vault_tls_platform_front_key }}"    | Platform front TLS key (PEM format).                                                                                           |
-| tls_platform_front_cert    | ""                                      | Platform front TLS Certificate (PEM format).                                                                                   |
-| tls_iam_key                | "{{ vault_tls_iam_key }}"               | Keycloak TLS key (PEM format).                                                                                                 |
-| tls_iam_cert               | ""                                      | Keycloak TLS Certificate (PEM format).                                                                                         |
-| tls_rabbitmq_admin_key     | "{{ vault_tls_rabbitmq_admin_key }}"    | RabbitMQ TLS key (PEM format). (Only needed if use_external_rabbitmq: false.)                                                  |
-| tls_rabbitmq_admin_cert    | ""                                      | RabbitMQ TLS Certificate (PEM format). (Only needed if use_external_rabbitmq: false.)                                          |
-| tls_documentation_key      | "{{ vault_tls_documentation_key }}"     | Documentation TLS key (PEM format).                                                                                            |
-| tls_documentation_cert     | ""                                      | Documentation TLS Certificate (PEM format).                                                                                    |
-| tls_archive_key            | "{{ vault_tls_archive_key }}"           | Archive TLS key (PEM format).                                                                                                  |
-| tls_archive_cert           | ""                                      | Archive TLS Certificate (PEM format).                                                                                          |
-| tls_marketplace_back_key   | "{{ vault_tls_marketplace_back_key }}"  | Marketplace back TLS key (PEM format).                                                                                         |
-| tls_marketplace_back_cert  | ""                                      | Marketplace back TLS Certificate (PEM format).                                                                                 |
-| tls_marketplace_front_key  | "{{ vault_tls_marketplace_front_key }}" | Marketplace front TLS key (PEM format).                                                                                        |
-| tls_marketplace_front_cert | ""                                      | Marketplace front TLS Certificate (PEM format).                                                                                |
+| tls_key                    | "{{ vault_tls_key }}"                   | Empty by default, use by all the other tls_*_key variables. (PEM format)                                                       |
+| tls_cert                   | ""                                      | Empty by default, use to define all the other tls_*_cert variables. (PEM format)                                               |
+| tls_api_key                | "{{ vault_tls_key }}"                   | API TLS key (PEM format).                                                                                                      |
+| tls_api_cert               | "{{ tls_cert }}"                        | API TLS Certificate (PEM format).                                                                                              |
+| tls_connect_key            | "{{ vault_tls_key }}"                   | Connect TLS key (PEM format).                                                                                                  |
+| tls_connect_cert           | "{{ tls_cert }}"                        | Connect TLS Certificate (PEM format).                                                                                          |
+| tls_platform_back_key      | "{{ vault_tls_key }}"                   | Platform back TLS key (PEM format).                                                                                            |
+| tls_platform_back_cert     | "{{ tls_cert }}"                        | Platform back TLS Certificate (PEM format).                                                                                    |
+| tls_platform_front_key     | "{{ vault_tls_key }}"                   | Platform front TLS key (PEM format).                                                                                           |
+| tls_platform_front_cert    | "{{ tls_cert }}"                        | Platform front TLS Certificate (PEM format).                                                                                   |
+| tls_iam_key                | "{{ vault_tls_key }}"                   | Keycloak TLS key (PEM format).                                                                                                 |
+| tls_iam_cert               | "{{ tls_cert }}"                        | Keycloak TLS Certificate (PEM format).                                                                                         |
+| tls_rabbitmq_admin_key     | "{{ vault_tls_key }}"                   | RabbitMQ TLS key (PEM format). (Only needed if use_external_rabbitmq: false.)                                                  |
+| tls_rabbitmq_admin_cert    | "{{ tls_cert }}"                        | RabbitMQ TLS Certificate (PEM format). (Only needed if use_external_rabbitmq: false.)                                          |
+| tls_documentation_key      | "{{ vault_tls_key }}"                   | Documentation TLS key (PEM format).                                                                                            |
+| tls_documentation_cert     | "{{ tls_cert }}"                        | Documentation TLS Certificate (PEM format).                                                                                    |
+| tls_archive_key            | "{{ vault_tls_key }}"                   | Archive TLS key (PEM format).                                                                                                  |
+| tls_archive_cert           | "{{ tls_cert }}"                        | Archive TLS Certificate (PEM format).                                                                                          |
+| tls_marketplace_back_key   | "{{ vault_tls_key }}"                   | Marketplace back TLS key (PEM format).                                                                                         |
+| tls_marketplace_back_cert  | "{{ tls_cert }}"                        | Marketplace back TLS Certificate (PEM format).                                                                                 |
+| tls_marketplace_front_key  | "{{ vault_tls_key }}"                   | Marketplace front TLS key (PEM format).                                                                                        |
+| tls_marketplace_front_cert | "{{ tls_cert }}"                        | Marketplace front TLS Certificate (PEM format).                                                                                |
 | tls_acme                   | false                                   | Use ACME (Letsencrypt) to generate TLS certificarte.                                                                           |
 | tls_acme_email             | "{{ debug_mail_to }}"                   | Email for Letsencrypt notification.                                                                                            |
 
