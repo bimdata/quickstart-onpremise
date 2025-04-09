@@ -39,7 +39,6 @@
       - displayName: Identity Provider Redirector
         flowAlias: browser
         requirement: "ALTERNATIVE"
-        index: 2
         authenticationConfig:
           alias: bimdata_connect_as_default
           config:
