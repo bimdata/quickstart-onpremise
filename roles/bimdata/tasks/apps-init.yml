@@ -36,9 +36,9 @@
     alias: browser
     realm: bimdata
     authenticationExecutions:
-      - displayName: Identity Provider Redirector
-        flowAlias: browser
+      - flowAlias: browser
         requirement: "ALTERNATIVE"
+        providerId: "identity-provider-redirector"
         authenticationConfig:
           alias: bimdata_connect_as_default
           config:
