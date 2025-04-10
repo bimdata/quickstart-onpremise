@@ -1,0 +1,11 @@
+---
+api: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ api_dns_name }}"
+iam: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ iam_dns_name }}"
+connect: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ connect_dns_name }}"
+platform_back: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_back_dns_name }}"
+platform_front: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ platform_front_dns_name }}"
+rabbitmq_admin: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ rabbitmq_admin_dns_name }}"
+documentation: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ documentation_dns_name }}"
+archive: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ archive_dns_name }}"
+marketplace_back: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_back_dns_name }}"
+marketplace_front: "{{ (tls_enabled or tls_external or tls_acme) | ternary('https', 'http') }}://{{ marketplace_front_dns_name }}"

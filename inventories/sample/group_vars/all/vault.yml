@@ -26,22 +26,15 @@ vault_smtp_pass: CHANGEME-BY-YOUR-PASSWORD-ON-THE-SMTP-SERVER
 
 vault_s3_secret_access_key: CHANGEME-BY-YOUR-S3_API_KEY
 
-vault_tls_api_key: ""
-
-vault_tls_connect_key: ""
-
-vault_tls_platform_back_key: ""
-
-vault_tls_platform_front_key: ""
-
-vault_tls_iam_key: ""
-
-vault_tls_rabbitmq_admin_key: ""
-
-vault_tls_documentation_key: ""
-
-vault_tls_archive_key: ""
-
-vault_tls_marketplace_back_key: ""
-
-vault_tls_marketplace_front_key: ""
+vault_tls_key: ""
+# Each key can be customize independantly if needed
+# vault_tls_api_key: ""
+# vault_tls_connect_key: ""
+# vault_tls_platform_back_key: ""
+# vault_tls_platform_front_key: ""
+# vault_tls_iam_key: ""
+# vault_tls_rabbitmq_admin_key: ""
+# vault_tls_documentation_key: ""
+# vault_tls_archive_key: ""
+# vault_tls_marketplace_back_key: ""
+# vault_tls_marketplace_front_key: ""

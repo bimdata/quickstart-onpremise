@@ -1,0 +1,6 @@
+---
+tls_custom_ca: "{{ (tls_enabled | bool and tls_ca_certificate | length) | ternary(true, false) }}"
+tls_needed_certs: "{{
+  ['api', 'connect', 'platform_back', 'platform_front', 'iam', 'documentation', 'archive']
+  + ((not use_external_rabbitmq) | ternary(['rabbitmq_admin'], []))
+  + (marketplace_enabled | ternary(['marketplace_back', 'marketplace_front'], [])) }}"

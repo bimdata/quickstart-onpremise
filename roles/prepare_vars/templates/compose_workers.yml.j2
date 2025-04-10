@@ -12,12 +12,12 @@ workers-export:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_export_cpu }}
     - TIMEOUT={{ workers_export_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -41,12 +41,12 @@ workers-gltf:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_gltf_cpu }}
     - TIMEOUT={{ workers_gltf_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -70,12 +70,12 @@ workers-extract:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_extract_cpu }}
     - TIMEOUT={{ workers_extract_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -99,12 +99,12 @@ workers-svg:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_svg_cpu }}
     - TIMEOUT={{ workers_svg_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -128,12 +128,12 @@ workers-merge:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_merge_cpu }}
     - TIMEOUT={{ workers_merge_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -156,12 +156,12 @@ workers-xkt:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - QUEUE=xkt
     - TIMEOUT={{ workers_xkt_task_timeout }}
     - MASTER_TOKEN={{ master_token }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -184,12 +184,12 @@ workers-xkt-v10:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - QUEUE=xktv10
     - TIMEOUT={{ workers_xkt_v10_task_timeout }}
     - MASTER_TOKEN={{ master_token }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -214,10 +214,10 @@ workers-preview-3d:
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
     - QUEUE=viewer_360
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - MASTER_TOKEN={{ master_token }}
     - TIMEOUT={{ workers_preview_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -240,11 +240,11 @@ workers-preview-2d:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - TIMEOUT={{ workers_preview_2d_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -267,11 +267,11 @@ workers-preview-pdf:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - TIMEOUT={{ workers_preview_pdf_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -294,12 +294,12 @@ workers-dwg-properties:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - WORKER_NAME=properties
     - TIMEOUT={{ workers_dwg_properties_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -322,12 +322,12 @@ workers-dwg-geometries:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - WORKER_NAME=geometries
     - TIMEOUT={{ workers_dwg_geometries_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -350,12 +350,12 @@ workers-pointcloud:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - CPU_ALLOCATED={{ workers_pointcloud_cpu }}
     - TIMEOUT={{ workers_pointcloud_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -378,11 +378,11 @@ workers-b2d:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - TIMEOUT={{ workers_b2d_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
@@ -405,11 +405,11 @@ workers-elevation:
     - RABBITMQ_PORT={{ rabbitmq_port }}
     - RABBITMQ_USER={{ rabbitmq_user }}
     - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ api_url }}
+    - API_URL={{ urls['api'] }}
     - ENV={{ app_env }}
     - MASTER_TOKEN={{ master_token }}
     - TIMEOUT={{ workers_elevation_task_timeout }}
-{% if tls_enabled  | bool %}
+{% if tls_custom_ca | bool %}
     - CA_CERT=/opt/onprem-ca.crt
   volumes:
     - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro

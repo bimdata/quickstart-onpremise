@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: tls_enabled | bool
+  when: tls_custom_ca | bool
   notify: Restart all services
 
 - name: Create docker-compose file
