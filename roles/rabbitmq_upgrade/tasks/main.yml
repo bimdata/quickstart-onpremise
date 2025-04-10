@@ -23,12 +23,16 @@
         container: "{{ _previous_compose_content.services.rabbitmq.container_name }}"
         command: rabbitmqctl list_queues name messages --formatter=json
       register: _rabbitmq_list_queues
+      # If the container is not running, we don't want to failed, we assume we can upgrade
+      failed_when: false
 
     - name: "Check if some queues are not empty."
       ansible.builtin.set_fact:
         _rabbitmq_queues_with_messages: "{{ _rabbitmq_queues_with_messages + [item] }}"
       loop: "{{ _rabbitmq_list_queues.stdout | from_json}}"
-      when: item.messages > 0
+      when:
+        - not (_rabbitmq_list_queues.msg is defined and _rabbitmq_list_queues.msg is regex("Could not find container.*"))
+        - item.messages > 0
 
     - name: "Fail if some queues are not empty."
       ansible.builtin.assert:
