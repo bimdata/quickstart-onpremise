@@ -1,24 +1,11 @@
 ---
-# Can't use unarchived, this will extract the tar, we only want to remove the bzip2 compression
-- name: Copy offline docker requirements
-  ansible.builtin.copy:
-    src: "offline/docker/{{ item.src }}"
-    dest: "{{ item.dest }}"
-    checksum: "{{ item.checksum | default(omit) }}"
-    mode: "0640"
-  loop: "{{ install_offline_docker }}"
-  when: item.group is not defined or inventory_hostname in groups[item.group]
+- name: "Create offline cache directory"
+  ansible.builtin.file:
+    path: "{{ install_offline_cache_path }}"
+    state: directory
+    mode: "0750"
 
-# Not indempodent at all
-- name: Extract docker requirements
-  ansible.builtin.command: "bzip2 -k -d -f {{ item.dest }}/{{ item.src }}"
+- name: "Upload docker images"
+  include_tasks: upload_docker_images.yml
   loop: "{{ install_offline_docker }}"
   when: item.group is not defined or inventory_hostname in groups[item.group]
-  changed_when: true
-
-# Docker_image do not allow multiple load at the same time, this is easier but not indempodent
-- name: Import docker images
-  ansible.builtin.command: "docker load -i {{ item.dest }}/{{ item.src | splitext | first }}"
-  loop: "{{ install_offline_docker }}"
-  when: item.group is not defined or inventory_hostname in groups[item.group]
-  changed_when: true

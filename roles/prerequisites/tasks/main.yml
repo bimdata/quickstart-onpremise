@@ -32,14 +32,12 @@
   ansible.builtin.set_fact:
     _legacy_venv_cleanup: "{{ stat_venv.stat.isdir is defined and stat_venv.stat.isdir }}"
 
+# Since Ansible 11, the legacy docker_compose module is removed so we use the command
 - name: "Cleanup old docker compose if needed"
   when: _legacy_venv_cleanup
   block:
     - name: "Stop all containers setup with compose < 2"
-      community.docker.docker_compose:
-        project_src: "{{ bimdata_path }}"
-        remove_orphans: true
-        state: absent
-      vars:
-        ansible_python_interpreter: "{{ bimdata_path }}/venv/bin/python"
-# Enf of block
+      ansible.builtin.command:
+        cmd: "{{ bimdata_path }}/venv/bin/docker-compose down --remove-orphans --timeout 60"
+        chdir: "{{ bimdata_path }}"
+      # Enf of block

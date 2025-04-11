@@ -8,7 +8,7 @@ src_private_repos=docker-registry.bimdata.io/on-premises
 src_private_tag=20250404
 
 app_images=(
-  rabbitmq:3.11-management-alpine
+  rabbitmq:3.12-management-alpine
   nginxproxy/nginx-proxy:alpine
   nginxproxy/acme-companion:2.2
   ${src_private_repos}/api:${src_private_tag}
@@ -47,11 +47,14 @@ for img in ${app_images[@]} ${db_images[@]} ${worker_images[@]} ; do
     sudo docker pull ${img}
 done
 
+echo "Creating archive directory if it does not exist..."
+mkdir -p ${archive_path}
+
 echo "Creating app archive in ${app_archive_path}..."
 sudo docker save ${app_images[@]} | bzip2 > ${app_archive_path}
 
-# echo "Creating db archive in ${db_archive_path}..."
+echo "Creating db archive in ${db_archive_path}..."
 sudo docker save ${db_images[@]} | bzip2 > ${db_archive_path}
 
-# echo "Creating worker archive in ${worker_archive_path}..."
+echo "Creating worker archive in ${worker_archive_path}..."
 sudo docker save ${worker_images[@]} | bzip2 > ${worker_archive_path}

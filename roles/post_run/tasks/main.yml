@@ -2,12 +2,12 @@
 - name: "Retrieve previous version"
   ansible.builtin.set_fact:
     _previous_version: "{{
-        post_upgrade_version
-        | default(
-          hostvars[groups['app'][0]]['_previous_compose_content']['services']['api']['image'].split(':')[-1]
-          if hostvars[groups['app'][0]]['_previous_compose_content'] is defined
-          else 0
-        )
+      post_upgrade_version
+      | default(
+      hostvars[groups['app'][0]]['_previous_compose_content']['services']['api']['image'].split(':')[-1]
+      if hostvars[groups['app'][0]]['_previous_compose_content'] is defined
+      else 0
+      )
       }}"
 
 - name: "Apply needed post_upgrade tasks if this is a different version"
@@ -29,3 +29,11 @@
         - not _first_deploy | bool
         - _previous_version | int < 20241126
 # End of block
+
+- name: "Delete offline cache directory if requested"
+  ansible.builtin.blockinfile:
+    path: "{{ install_offline_cache_path }}"
+    state: absent
+  when:
+    - install_offline | bool
+    - install_offline_clear_cache | bool
