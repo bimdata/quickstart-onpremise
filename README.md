@@ -535,7 +535,7 @@ You also need to enable offline installation in the ansible inventory in
 | Variables                   | Default value                      | Description                                                                                |
 |-----------------------------|------------------------------------|--------------------------------------------------------------------------------------------|
 | install_offline             | false                              | Enable the offline installation.                                                           |
-| install_offline_cache_path  | "{{ bimdata_path }}/offline-cache" | Cache directory where archives with dockeer images will be store on the servers            |
+| install_offline_cache_path  | "{{ bimdata_path }}/offline-cache" | Cache directory where archives with docker images will be stored on the servers            |
 | install_offline_clear_cache | false                              | Delete the cache directory after loading the docker image (will re-upload playbook re-run) |
 
 
