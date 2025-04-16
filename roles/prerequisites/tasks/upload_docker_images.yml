@@ -1,0 +1,49 @@
+---
+- name: "Compute some path: {{ item.name }}"
+  ansible.builtin.set_fact:
+    bzip2_path: "{{ install_offline_cache_path }}/{{ item.name }}"
+    tar_path: "{{ install_offline_cache_path }}/{{ item.name | splitext | first }}"
+
+# If we create the offline archive, we could also save and check the checksum of the tar file before compression
+# But for now we assume the tag are immutable so the filename should be enough and in case of any issue, we can just manually cleanup the tar file
+- name: "Check if docker tar container is already on the server: {{ item.name }}"
+  ansible.builtin.stat:
+    path: "{{ tar_path }}"
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: _tar_stat
+
+- name: "Upload and uncompress docker tar container if needed: {{ item.name }}"
+  when: _tar_stat.stat.exists is not defined or not _tar_stat.stat.exists
+  block:
+    - name: "Copy offline docker images: {{ item.name }}"
+      ansible.builtin.copy:
+        src: "offline/docker/{{ item.name }}"
+        dest: "{{ bzip2_path }}"
+        checksum: "{{ item.checksum | default(omit) }}"
+        mode: "0640"
+
+    - name: "Uncompress the offline docker images {{ item.name }}"
+      community.general.decompress:
+        src: "{{ bzip2_path }}"
+        dest: "{{ tar_path }}"
+        mode: "0640"
+        format: bz2
+# End of block
+
+# TODO: it seams there is a bug if the disk is full
+# docker_image_load task silently failed and the play continued
+# An investigation is needed to probably open a bug on the community.docker repos
+- name: "Import docker images"
+  community.docker.docker_image_load:
+    path: "{{ tar_path }}"
+  register: _docker_image_load
+
+- name: "Warning to check if all image are properly loaded when low disk space {{ item.name }}"
+  ansible.builtin.pause:
+    prompt: |
+      There is probably not enough space on the disk of {{ inventory_hostname }} to load the docker images.
+      There is currently a bug in the docker image load task that doesn't raise an error if the disk is full.
+      Please check the disk space is ok and all docker image are loaded with the command: docker image ls
+  when: (ansible_mounts | selectattr("mount", "equalto", "/") | first)["size_available"] < ("10GB" | human_to_bytes)

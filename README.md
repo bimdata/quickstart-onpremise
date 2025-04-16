@@ -13,7 +13,7 @@ This ansible project aims to help you deploy the Bimdata applications on your se
 - Ansible server:
   - python >= 3.10
   - python3-request
-  - ansible >= 10.1.0
+  - ansible >= 11.4.0
   - sshpass
   - must be able to contect through ssh to all the applicative servers
 
@@ -534,9 +534,12 @@ You will need to do these steps before each installation or upgrade.:
 You also need to enable offline installation in the ansible inventory in
 `inventories/your_inventory_name/group_vars/all/vars.yml`.
 
-| Variables                  | Default value                    | Description                                                 |
-|----------------------------|----------------------------------|-------------------------------------------------------------|
-| install_offline            | false                            | Enable the offline installation.                            |
+| Variables                   | Default value                      | Description                                                                                |
+|-----------------------------|------------------------------------|--------------------------------------------------------------------------------------------|
+| install_offline             | false                              | Enable the offline installation.                                                           |
+| install_offline_cache_path  | "{{ bimdata_path }}/offline-cache" | Cache directory where archives with docker images will be stored on the servers            |
+| install_offline_clear_cache | false                              | Delete the cache directory after loading the docker image (will re-upload playbook re-run) |
+
 
 ## Email templates
 You can use custom emails templates for different part of our application. To do so, you need to set the variables:

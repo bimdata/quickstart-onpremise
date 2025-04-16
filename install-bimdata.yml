@@ -49,6 +49,6 @@
         - inventory_hostname in groups["workers"]
         - inventory_hostname not in groups["app"]
 
-# Post-upgrade
-    - role: post_upgrade
-      tags: ["post_upgrade"]
+# Post-run
+    - role: post_run
+      tags: ["post_run"]
