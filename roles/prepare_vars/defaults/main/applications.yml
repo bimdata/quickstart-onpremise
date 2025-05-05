@@ -199,6 +199,7 @@ workers_elevation_task_timeout: "{{ '15m' | community.general.to_seconds | int }
 # maptiler_token: ""
 
 # Misc
+run_app_initialization: "{{ _first_deploy | default(true) }}"
 uuid_namespace: "{{ app_dns_domain | to_uuid }}"
 master_token: "{{ vault_master_token }}"
 app_env: on-premises

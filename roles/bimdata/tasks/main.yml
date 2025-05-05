@@ -104,8 +104,12 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
+# Currently this only make sense to tun those script the first time
+# as we can't really modified created app and stuff like that
+# Ans it also make sense that IAM default provider may be configure manually
 - name: Include tasks for initialization
   ansible.builtin.include_tasks: apps-init.yml
+  when: run_app_initialization
 
 - name: Include tasks for cleanup
   ansible.builtin.include_tasks: cleanup.yml
