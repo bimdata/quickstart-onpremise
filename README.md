@@ -286,6 +286,7 @@ Object storage (S3):
 | workers_elevation_ram                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 | workers_elevation_task_timeout               | "{{ '15m' | community.general.to_seconds | int }}"                       | Timeout for a Elevation process.                                 |
 ||||
+| run_app_initialization                       | true if first deployment else false                                      | Configure if initialization script are run.                      |
 | uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
 | master_token                                 | "{{ vault_master_token }}"                                               | Master token use for authentication between workers and API.     |
 | app_env                                      | "staging"                                                                | Environnement definition for some app. Must not be changed.      |
