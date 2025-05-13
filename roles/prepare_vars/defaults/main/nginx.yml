@@ -1,5 +1,5 @@
 ---
-# A lot of the nginx configuration is handle automaticly by the docker image
+# A lot of the nginx configuration is handle automatically by the docker image
 # we are using: https://hub.docker.com/r/jwilder/nginx-proxy
 # We only add some stuff to specific vhost
 

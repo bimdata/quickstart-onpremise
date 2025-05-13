@@ -555,10 +555,10 @@ You can use custom emails templates for different part of our application. To do
   - `marketplace_back_use_custom_mail_templates`: to use custom templates for the marketplace.
 
 #### Connect
-If you set `connect_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/connect/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+If you set `connect_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/connect/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.
 
 #### Platform
-If you set `platform_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/platform-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+If you set `platform_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/platform-back/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.
 
 #### Marketplace
-If you set `marketplace_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/marketplace-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+If you set `marketplace_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/marketplace-back/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.
