@@ -189,8 +189,8 @@ Object storage (S3):
 | Variables                                    | Default value                                                            | Description                                                      |
 |----------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
 | api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
-| api_workers                                  | 8                                                                        | Number of web processes
-to handle requests.                        |
+| api_workers                                  | 8                                                                        | Number of web processes to handle requests.                      |
+| api_custom_export_logo_bcf                   | false                                                                    | Configure usage of a custom logo for bcf export.                 |
 ||||
 | connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
 | connect_client_id                            | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |
@@ -540,18 +540,25 @@ You also need to enable offline installation in the ansible inventory in
 | install_offline_cache_path  | "{{ bimdata_path }}/offline-cache" | Cache directory where archives with docker images will be stored on the servers            |
 | install_offline_clear_cache | false                              | Delete the cache directory after loading the docker image (will re-upload playbook re-run) |
 
+## Customization
+### BCF Excel logo
+You can customize the BCF export logo. To Do so, you need to:
+  - set `api_custom_export_logo_bcf` to `true` in your `vars.yml` inventory file,
+  - create the folder `files/api` in the quickstart directory,
+  - create the file `bcf-xls-export-logo.png` which contains your logo in this newly created folder `files/api`,
+  - re-deploy the application.
 
-## Email templates
+### Email templates
 You can use custom emails templates for different part of our application. To do so, you need to set the variables:
   - `connect_use_custom_mail_templates`: to use custom templates for connect,
   - `platform_back_use_custom_mail_templates`: to use custom templates for the platform,
   - `marketplace_back_use_custom_mail_templates`: to use custom templates for the marketplace.
 
-### Connect
-If you set `connect_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/connect/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+#### Connect
+If you set `connect_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/connect/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.
 
-### Platform
-If you set `platform_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/platform-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+#### Platform
+If you set `platform_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/platform-back/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.
 
-### Marketplace
-If you set `marketplace_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/marketplace-back/templates` in the quickstart folder. The files will be automaticly copy into the right places on the applicative servers.
+#### Marketplace
+If you set `marketplace_back_use_custom_mail_templates` to `true`, before deploying, you need to put all the need templates into `files/marketplace-back/templates` in the quickstart folder. The files will be automatically copy into the right places on the applicative servers.

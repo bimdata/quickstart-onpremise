@@ -1,4 +1,19 @@
 ---
+- name: Manage API file customization
+  when: api_custom_export_logo_bcf | bool
+  block:
+    - name: Create needed directories for API customization
+      ansible.builtin.file:
+        path: "{{ bimdata_docker_volume_path }}/api"
+        state: directory
+        mode: "0755"
+    - name: Copy BCF export logo
+      ansible.builtin.copy:
+        src: "files/api/bcf-xls-export-logo.png"
+        dest: "{{ bimdata_docker_volume_path }}/api/bcf-xls-export-logo.png"
+        mode: "0644"
+# End of block
+
 - name: Manage connect templates
   when: connect_use_custom_mail_templates | bool
   block:
