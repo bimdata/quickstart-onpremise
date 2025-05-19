@@ -5,7 +5,7 @@ set -euo pipefail
 archive_path="./files/offline/docker"
 
 src_private_repos=docker-registry.bimdata.io/on-premises
-src_private_tag=20250513
+src_private_tag=20250519
 
 app_images=(
   rabbitmq:3.12-management-alpine
