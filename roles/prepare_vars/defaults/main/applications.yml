@@ -165,6 +165,12 @@ workers_preview_pdf_cpu: 1
 workers_preview_pdf_ram: "{{ ansible_memtotal_mb / 2 }}m"
 workers_preview_pdf_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
 
+# prewieq office
+workers_preview_office_instance: 1
+workers_preview_office_cpu: 1
+workers_preview_office_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_preview_office_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
+
 ## dwg
 workers_dwg_properties_instance: 1
 workers_dwg_properties_cpu: 1
