@@ -32,8 +32,8 @@
   ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/db/{{ item }}"
     state: directory
-    owner: 70
-    group: 70
+    owner: 999
+    group: 999
     mode: "0700"
   loop:
     - api

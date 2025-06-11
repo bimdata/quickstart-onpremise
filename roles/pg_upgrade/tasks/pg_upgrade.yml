@@ -88,3 +88,11 @@
   community.general.docker_container:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
     state: absent
+
+- name: "Save facts"
+  ansible.builtin.set_fact:
+    _dbs_upgraded: "{{ _dbs_upgraded + [{
+        'name': db_info.name,
+        'from': db_info.current_version,
+        'to': db_pg_version
+      }] }}"
