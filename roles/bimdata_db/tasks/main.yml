@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    owner: 70
-    group: 70
+    owner: 999
+    group: 999
     mode: "0700"
   loop:
     - "{{ bimdata_path }}"
