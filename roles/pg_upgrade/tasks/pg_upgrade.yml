@@ -1,5 +1,5 @@
 ---
-- name: "Configure data paths - {{ db_infoname }}"
+- name: "Configure data paths - {{ db_info.name }}"
   ansible.builtin.set_fact:
     # Where the data are currently
     _pg_current_path: "{{ bimdata_docker_volume_path }}/db/{{ db_info.name }}"
@@ -8,34 +8,36 @@
     _pg_old_path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/{{ db_info.current_version }}/data"
     _pg_new_path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/{{ db_pg_version }}/data"
 
-- name: "Create the needed directories - {{ db_infoname }}"
+- name: "Create the needed directories - {{ db_info.name }}"
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0750"
+    owner: 999
+    group: 999
   loop:
     - "{{ _pg_old_path }}"
     - "{{ _pg_new_path }}"
 
-- name: "Stop the postgres container before upgrade - {{ db_infoname }}"
+- name: "Stop the postgres container before upgrade - {{ db_info.name }}"
   community.docker.docker_compose_v2:
     project_src: "{{ bimdata_path }}"
     services: "{{ db_info.name }}-db"
     state: stopped
 
-- name: "Move the current datas into the upgrade directory - {{ db_infoname }}"
-  ansible.builtin.shell: "mv '{{ _pg_current_path }}'/* '{{ _pg_old_path }}'"
+- name: "Move the current datas into the upgrade directory - {{ db_info.name }}"
+  ansible.builtin.shell: "mv '{{ _pg_current_path }}'/* '{{ _pg_old_path }}' && chown -R 999:999 '{{ _pg_old_path }}'"
   changed_when: true
 
-- name: "Remove the old pid file if needed - {{ db_infoname }}"
+- name: "Remove the old pid file if needed - {{ db_info.name }}"
   ansible.builtin.file:
     path: "{{ _pg_old_path }}/postmaster.pid"
     state: absent
 
-- name: "Run postgres data upgrade - {{ db_infoname }}"
+- name: "Run postgres data upgrade - {{ db_info.name }}"
   community.general.docker_container:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
-    image: "tianon/postgres-upgrade:{{ db_info.current_version }}-to-{{ db_pg_version }}"
+    image: "{{ docker_postgres_upgrade_image }}:{{ db_info.current_version }}-to-{{ db_pg_version }}"
     volumes:
       - "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}:/var/lib/postgresql"
     command:
@@ -56,32 +58,41 @@
   delay: 5
   failed_when: false
 
-- name: "Output debug information - {{ db_infoname }}"
+- name: "Output debug information - {{ db_info.name }}"
   ansible.builtin.debug:
     var: _pg_run_migration
 
-- name: "Fail if needed - {{ db_infoname }}"
+- name: "Fail if needed - {{ db_info.name }}"
   ansible.builtin.fail:
     msg: "The exit code of the migration container is different than 0, you should check what happen."
   when: _pg_run_migration.container.State.ExitCode != 0
 
-- name: "Copy the old pg_hba configuration - {{ db_infoname }}"
+- name: "Copy the old pg_hba configuration - {{ db_info.name }}"
   ansible.builtin.copy:
     remote_src: true
     src: "{{ _pg_old_path }}/pg_hba.conf"
     dest: "{{ _pg_new_path }}/pg_hba.conf"
     mode: "0640"
 
-- name: "Move the updated datas in the initial directory - {{ db_infoname }}"
-  ansible.builtin.shell: "mv '{{ _pg_new_path }}'/* '{{ _pg_current_path }}'"
-  changed: true
+- name: "Move the updated datas in the initial directory - {{ db_info.name }}"
+  ansible.builtin.shell:
+    cmd: "mv '{{ _pg_new_path }}'/* '{{ _pg_current_path }}'"
+  changed_when: true
 
-- name: "Cleanup migration data - {{ db_infoname }}"
+- name: "Cleanup migration data - {{ db_info.name }}"
   ansible.builtin.file:
     path: "{{ bimdata_docker_volume_path }}/pg_upgrade/{{ db_info.name }}/"
     state: absent
 
-- name: "Remove postgres data upgrade container - {{ db_infoname }}"
+- name: "Remove postgres data upgrade container - {{ db_info.name }}"
   community.general.docker_container:
     name: "{{ db_info.name }}-{{ db_info.current_version }}-to-{{ db_pg_version }}"
     state: absent
+
+- name: "Save facts"
+  ansible.builtin.set_fact:
+    _dbs_upgraded: "{{ _dbs_upgraded + [{
+        'name': db_info.name,
+        'from': db_info.current_version,
+        'to': db_pg_version
+      }] }}"

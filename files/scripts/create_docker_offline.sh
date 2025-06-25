@@ -23,7 +23,11 @@ app_images=(
   ${src_private_repos}/sso_invitation_email_sender:${src_private_tag}
 )
 
-db_images=(postgres:13-alpine)
+db_images=(
+  postgres:13
+  postgres:17
+  tianon/postgres-upgrade:13-to-17
+)
 
 worker_images=(
   ${src_private_repos}/workers:${src_private_tag}

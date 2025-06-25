@@ -1,6 +1,6 @@
 ---
 # Use include tasks to be able to loop over multiple tasks
-- name: Include tasks to upgrade postgres - {{ db_infoname }}
+- name: Include tasks to upgrade postgres - {{ db_info.name }}
   ansible.builtin.include_tasks: pg_upgrade.yml
   loop: "{{ _postgres_infos }}"
   loop_control:

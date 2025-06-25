@@ -1,4 +1,13 @@
 ---
+- name: "Apply post upgrade tasks for Postgresql major upgrade."
+  when:
+    - _dbs_upgraded is defined
+    - _dbs_upgraded | length
+  ansible.builtin.include_tasks: db_upgraded.yml
+  loop: "{{ _dbs_upgraded }}"
+  loop_control:
+    loop_var: _db
+
 - name: "Retrieve previous version"
   ansible.builtin.set_fact:
     _previous_version: "{{
