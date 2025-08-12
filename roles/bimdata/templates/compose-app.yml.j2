@@ -464,7 +464,7 @@ services:
     command:
       - celery
       - "--app=platform_back"
-      - beat"
+      - "beat"
       - "--scheduler=django_celery_beat.schedulers:DatabaseScheduler"
       - "--loglevel=info"
     volumes:
@@ -506,6 +506,7 @@ services:
       - DB_NAME={{ db_platform_name }}
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
+      - ADMIN_INTERFACE=False
 {% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
@@ -571,6 +572,7 @@ services:
       - DB_NAME={{ db_platform_name }}
       - DB_USER={{ db_platform_user }}
       - DB_PASSWORD={{ db_platform_password }}
+      - ADMIN_INTERFACE=False
 {% if tls_custom_ca | bool %}
       - CA_CERT=/opt/onprem-ca.crt
 {% endif %}
@@ -587,7 +589,6 @@ services:
         condition: service_started
       platform-back:
         condition: service_started
-
 {% endif %}
 
   platform:
