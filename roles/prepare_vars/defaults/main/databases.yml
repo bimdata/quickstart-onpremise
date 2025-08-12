@@ -37,7 +37,7 @@ db_marketplace_password: "{{ vault_db_marketplace_password }}"
 # This variable define which version of postgres will be installed
 # It's not use for external postgres cluster
 # This need to be define for when postgres need data upgrade
-db_pg_version: 13
+db_pg_version: 17
 
 # [app] server will needed to be able to contact [db] server on these ports
 db_api_external_port: 5432
