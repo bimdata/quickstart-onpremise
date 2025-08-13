@@ -50,8 +50,12 @@ services:
       - {{ bimdata_docker_volume_path }}/web/vhost.d:/etc/nginx/vhost.d:ro
       - {{ bimdata_docker_volume_path }}/web/certs:/etc/nginx/certs:ro
       - {{ bimdata_docker_volume_path }}/web/dhparam.pem:/etc/nginx/dhparam/dhparam.pem:ro
+{% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/api_storage:/var/www/static/api_storage/:ro
+{% endif %}
+{% if not s3_connect_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/connect_storage:/var/www/static/connect_storage/:ro
+{% endif %}
 {% if tls_acme | bool %}
       - {{ bimdata_docker_volume_path }}/web/html:/usr/share/nginx/html:ro
 {% endif %}
@@ -152,6 +156,7 @@ services:
       - VIRTUAL_HOST={{ api_dns_name }}
       - ENV={{ app_env }}
       - WORKERS={{ api_workers }}
+      - GUNICORN_EXTRA_ARGS={{ api_workers_args | join(" ") }}
       - API_URL={{ urls['api'] }}
       - DOC_URL={{ urls['documentation'] }}
       - ALLOWED_HOSTS={{ api_dns_name }}

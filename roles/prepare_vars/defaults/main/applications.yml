@@ -53,7 +53,14 @@ csp_storage_url: "https://{{ s3_storage_connect_bucket_name }}.{{ (s3_endpoint_u
 
 # api
 api_secret_key: "{{ vault_api_secret_key }}" # Change me in the vault
-api_workers: 8
+api_workers: 4
+api_workers_args:
+  # Use async gevent worker to handle more parallel requests
+  - --worker-class gevent
+  # Restart each worker after X requests to avoid ram usage to increase too much
+  - --max-requests 5000
+  # Add some jitter to the restart to avoid each worker restarting at the same time
+  - --max-requests-jitter 1000
 api_custom_export_logo_bcf: false
 
 # connect

@@ -190,6 +190,7 @@ Object storage (S3):
 |----------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
 | api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
 | api_workers                                  | 8                                                                        | Number of web processes to handle requests.                      |
+| api_workers_args                             | ["-k gevent", "--max-requests 5000", "--max-requests-jitter 1000"]       | List of arguments to configure gunicorn workers.                 |
 | api_custom_export_logo_bcf                   | false                                                                    | Configure usage of a custom logo for bcf export.                 |
 ||||
 | connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
