@@ -376,7 +376,7 @@ with the [db] server on these ports.
 
 | Variables                    | Default value                                                        | Description                                                                              |
 |------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| db_pg_version                | 13                                                                   | Postgres version.                                                                        |
+| db_pg_version                | 17                                                                   | Postgres version.                                                                        |
 | db_api_external_port         | 5432                                                                 | Postgres external port for the API.                                                      |
 | db_connect_external_port     | 5433                                                                 | Postgres external port for Connect.                                                      |
 | db_platform_external_port    | 5434                                                                 | Postgres external port for the Platform.                                                 |
