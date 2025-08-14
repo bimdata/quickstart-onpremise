@@ -166,6 +166,11 @@ services:
       - DB_PORT={{ db_api_port }}
       - DB_NAME={{ db_api_name }}
       - DB_USER={{ db_api_user }}
+{% if api_db_pool_enabled | bool %}
+      - DB_POOL_ENABLED={{ api_db_pool_enabled }}
+      - DB_POOL_MIN_SIZE={{ api_db_pool_min }}
+      - DB_POOL_MAX_SIZE={{ api_db_pool_max }}
+{% endif %}
       - DB_PASSWORD={{ db_api_password }}
       - RABBITMQ_HOST={{ rabbitmq_host }}
       - RABBITMQ_PORT={{ rabbitmq_port }}

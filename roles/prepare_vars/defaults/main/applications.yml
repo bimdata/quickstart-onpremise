@@ -61,6 +61,13 @@ api_workers_args:
   - --max-requests 5000
   # Add some jitter to the restart to avoid each worker restarting at the same time
   - --max-requests-jitter 1000
+api_db_pool_enabled: true
+api_db_pool_min: 4
+api_db_pool_max: "{{
+  [(db_api_max_conn * 0.95 // api_workers)
+  | int, api_db_pool_min]
+  | max
+  }}"
 api_custom_export_logo_bcf: false
 
 # connect
