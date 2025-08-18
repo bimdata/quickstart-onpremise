@@ -196,6 +196,13 @@ Object storage (S3):
 | api_db_pool_max                              | "{{ [(db_api_max_conn * 0.95 // api_workers) | int, api_db_pool_min] | max }}" | Max pool size for each worker.                             |
 | api_custom_export_logo_bcf                   | false                                                                    | Configure usage of a custom logo for bcf export.                 |
 ||||
+| api_swagger_customization                    | false                                                                    | Enable/Disable API swagger (/doc/) text customization.           |
+| api_swagger_title                            | "BIMData API"                                                            | API swagger (/doc/) page title.                                  |
+| api_swagger_tos                              | ""                                                                       | API swagger (/doc/) URL to TOS.                                  |
+| api_swagger_contact_name                     | "Support"                                                                | API swagger (/doc/) contact name information.                    |
+| api_swagger_contact_url                      | ""                                                                       | API swagger (/doc/) contact URL information.                     |
+| api_swagger_contact_email                    | "{{ debug_mail_to }}"                                                    | API swagger (/doc/) contaxct mail information.                   |
+||||
 | connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
 | connect_client_id                            | "{{ 'connect_client_id' \| to_uuid(namespace=uuid_namespace) }}"         | You should not change this.                                      |
 | connect_client_secret                        | "{{ 'connect_client_secret' \| to_uuid(namespace=uuid_namespace) }}"     | You should not change this.                                      |
