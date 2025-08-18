@@ -20,5 +20,8 @@
     retries: 5
   restart: unless-stopped
 {% if item == "api" %}
+  command:
+    - -c
+    - "max_connections={{ db_api_max_conn }}"
   shm_size: 1g
 {% endif %}

@@ -191,6 +191,9 @@ Object storage (S3):
 | api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
 | api_workers                                  | 8                                                                        | Number of web processes to handle requests.                      |
 | api_workers_args                             | ["-k gevent", "--max-requests 5000", "--max-requests-jitter 1000"]       | List of arguments to configure gunicorn workers.                 |
+| api_db_pool_enabled                          | true                                                                     | Enable app postgres connection pooling (1 pool per worker)       |
+| api_db_pool_min                              | 4                                                                        | Min pool size for each worker.                                   |
+| api_db_pool_max                              | "{{ [(db_api_max_conn * 0.95 // api_workers) | int, api_db_pool_min] | max }}" | Max pool size for each worker.                             |
 | api_custom_export_logo_bcf                   | false                                                                    | Configure usage of a custom logo for bcf export.                 |
 ||||
 | connect_secret_key                           | "{{ vault_connect_secret_key }}"                                         | You should not change this.                                      |
@@ -353,6 +356,7 @@ to access our docker registry for example.
 | db_api_name             | "api"                                 | Database name for the API.             |
 | db_api_user             | "api"                                 | Postgres user for the API.             |
 | db_api_password         | "{{ vault_db_api_password }}"         | Postgres password for the API.         |
+| db_api_max_conn         | 200                                   | Postgres max_connections value.        |
 ||||
 | db_connect_name         | "connect"                             | Database name for Connect.             |
 | db_connect_user         | "connect"                             | Postgres user for Connect.             |

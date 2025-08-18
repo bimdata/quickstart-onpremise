@@ -10,6 +10,7 @@ external_db_port: 5432
 db_api_name: api
 db_api_user: api
 db_api_password: "{{ vault_db_api_password }}"
+db_api_max_conn: 200
 
 ## connect
 db_connect_name: connect
