@@ -62,16 +62,16 @@
       changed_when: false
       retries: 36
       delay: 10
-    - name: Connect - check if we need to initialize the RSA key
-      ansible.builtin.command: >
-        docker exec {{ container_name }} python manage.py shell -c
-        'from oidc_provider.models import RSAKey; print(RSAKey.objects.count())'
-      changed_when: false
-      register: _connect_rsa_status
 
-    - name: Connect - init needed rsa key # noqa: no-changed-when
-      ansible.builtin.command: "docker exec {{ container_name }} python manage.py creatersakey"
-      when: _connect_rsa_status.stdout == "0"
+    - name: Connect - Initialize rsa key if needed
+      ansible.builtin.command: >-
+        docker exec {{ container_name }} python manage.py shell -c
+        'from oidc_provider.models import RSAKey;
+        from django.core.management import call_command;
+        call_command("creatersakey") if RSAKey.objects.count() == 0 else None'
+      register: _connect_rsa_creation
+      changed_when:
+        - "'RSA key successfully created' in _connect_rsa_creation.stdout"
 
     - name: Connect - init provider
       ansible.builtin.command: |
