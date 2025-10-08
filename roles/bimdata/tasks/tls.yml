@@ -20,6 +20,7 @@
         group: root
         mode: "0640"
       loop: "{{ tls_needed_certs }}"
+      no_log: true
       notify: Restart nginx
 
     - name: Copy the app TLS cert

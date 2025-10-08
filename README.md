@@ -209,7 +209,6 @@ Object storage (S3):
 | platform_back_client_id                      | "{{ 'platform_back_client_id' \| to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
 | platform_back_client_secret                  | "{{ vault_platform_back_client_secret }}"                                | You should not change this.                                      |
 | platform_back_use_custom_mail_templates      | false                                                                    | Configure usage of custom platform mail templates.               |
-| platform_back_enable_cron                    | true                                                                     | Configure usage of cron to be able to send notifications.        |
 | platform_back_enable_celery                  | true                                                                     | Configure usage of celery to be able to send notifications.      |
 ||||
 | platform_front_client_id                     | "{{ 'platform_front_client_id' | to_uuid(namespace=uuid_namespace) }}"   | You should not change this.                                      |
