@@ -6,3 +6,4 @@ inventories/*
 venv
 files/old_env
 files/offline
+.python-version

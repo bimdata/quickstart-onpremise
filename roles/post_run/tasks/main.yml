@@ -37,6 +37,11 @@
       when:
         - not _first_deploy | bool
         - _previous_version | int < 20241126
+    - name: "Include tasks for 20251008 upgrade."
+      ansible.builtin.include_tasks: "20251008.yml"
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20251008
 # End of block
 
 - name: "Delete offline cache directory if requested"

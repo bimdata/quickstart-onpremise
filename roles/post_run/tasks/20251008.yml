@@ -1,0 +1,5 @@
+---
+- name: "Remove old platform-back cron file"
+  ansible.builtin.file:
+    name: "{{ bimdata_docker_volume_path }}/platform_back/cron.py"
+    state: absent
