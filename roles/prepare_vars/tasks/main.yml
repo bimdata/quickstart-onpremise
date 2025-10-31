@@ -32,6 +32,9 @@
 - name: Include tasks to compute sso variables
   ansible.builtin.include_tasks: sso.yml
 
+- name: Include tasks to compute nginx variables
+  ansible.builtin.include_tasks: nginx.yml
+
 # Legacy check
 - name: Fail if swift_enabled is still true
   ansible.builtin.fail:

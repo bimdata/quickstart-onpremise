@@ -69,6 +69,7 @@ api_db_pool_max: "{{
   | max
   }}"
 api_custom_export_logo_bcf: false
+api_nginx_custom_conf: ""
 
 # connect
 connect_secret_key: "{{ vault_connect_secret_key }}" # Change me in the vault
