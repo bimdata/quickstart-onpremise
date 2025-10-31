@@ -1,0 +1,15 @@
+---
+- name: Import nginx variables
+  ansible.builtin.include_vars:
+    file: nginx_local_storage.yml
+    name: _nginx_local_storage
+
+- name: Add nginx configuration if needed
+  ansible.builtin.set_fact:
+    nginx_vhost_override: "{{
+      nginx_vhost_override
+      + (not s3_enabled or (api_nginx_custom_conf | length > 0)) | ternary([_nginx_local_storage['api']], [])
+      + (not s3_connect_enabled) | ternary([_nginx_local_storage['connect']], [])
+      }}"
+  vars:
+    nginx_vhost_override: []

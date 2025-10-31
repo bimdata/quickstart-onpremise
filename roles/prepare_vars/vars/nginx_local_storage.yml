@@ -2,6 +2,7 @@
 api:
   vhost: "{{ api_dns_name }}"
   config: |
+    {% if not s3_enabled | bool %}
     location /storage/ {
       alias /var/www/static/api_storage/;
       add_header 'Access-Control-Allow-Origin' '*';
@@ -13,10 +14,15 @@ api:
         return 204;
       }
     }
+    {% endif %}
+    {% if api_nginx_custom_conf | length %}
+    {{ api_nginx_custom_conf | trim }}
+    {% endif %}
 
 connect:
   vhost: "{{ connect_dns_name }}"
   config: |
+    {% if not s3_connect_enabled %}
     location /storage/ {
       alias /var/www/static/connect_storage/;
       add_header 'Access-Control-Allow-Origin' '*';
@@ -28,3 +34,4 @@ connect:
         return 204;
       }
     }
+    {% endif %}

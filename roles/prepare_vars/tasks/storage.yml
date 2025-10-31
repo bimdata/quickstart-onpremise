@@ -34,18 +34,3 @@
       You choose to use an object storage for the API (s3_connect_enabled: true),
       s3_storage_connect_bucket_name must be defined and not empty.
   when: s3_connect_enabled | bool
-
-- name: Import nginx variables
-  ansible.builtin.include_vars:
-    file: nginx_local_storage.yml
-    name: _nginx_local_storage
-
-- name: Add nginx configuration for API S3 if needed
-  ansible.builtin.set_fact:
-    nginx_vhost_override: "{{
-      nginx_vhost_override
-      + (not s3_enabled) | ternary([_nginx_local_storage['api']], [])
-      + (not s3_connect_enabled) | ternary([_nginx_local_storage['connect']], [])
-      }}"
-  vars:
-    nginx_vhost_override: []
