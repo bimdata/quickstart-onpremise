@@ -69,6 +69,8 @@ api_db_pool_max: "{{
   | max
   }}"
 api_custom_export_logo_bcf: false
+api_bcf_admin_no_special_permissions: false
+api_bcf_creator_no_special_permissions: false
 api_nginx_custom_conf: ""
 
 # connect

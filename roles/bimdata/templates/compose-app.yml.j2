@@ -206,6 +206,8 @@ services:
 {% endif %}
       - ADMIN_INTERFACE=True
       - DATA_UPLOAD_MAX_MEMORY_SIZE={{ max_upload_size | human_to_bytes }}
+      - BCF_ADMIN_NO_SPECIAL_PERMISSIONS={{ api_bcf_admin_no_special_permissions }}
+      - BCF_CREATOR_NO_SPECIAL_PERMISSIONS={{ api_bcf_creator_no_special_permissions }}
 {% if payment_enabled is defined and payment_enabled | bool %}
       - PAYMENT_ENABLED=True
       - PLATFORM_PLAN_ID={{ platform_plan_id }}
