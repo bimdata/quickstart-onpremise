@@ -6,7 +6,7 @@ src_repos=docker-registry.bimdata.io/bimdata
 src_tag=prod
 
 dest_repos=docker-registry.bimdata.io/on-premises
-dest_tag=20250917
+dest_tag=20251114
 
 img_list=(
   api
