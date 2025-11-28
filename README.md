@@ -260,7 +260,7 @@ Object storage (S3):
 | workers_preview_instance                     | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_preview_cpu                          | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_preview_ram                          | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
-| workers_preview_task_timeout                 | "{{ '3min' | community.general.to_seconds | int }}"                      | Timeout for a 3D preview process.                                |
+| workers_preview_task_timeout                 | "{{ '10min' | community.general.to_milliseconds | int }}"                | Timeout for a 3D preview process.                                |
 | workers_preview_2d_instance                  | 1                                                                        | Number of replicas deployed on *each* worker server.             |
 | workers_preview_2d_cpu                       | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_preview_2d_ram                       | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
