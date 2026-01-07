@@ -421,7 +421,6 @@ services:
 {% if platform_back_use_custom_mail_templates  | bool %}
       - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
 {% endif %}
-      - {{ bimdata_docker_volume_path }}/platform_back/cron.py:/opt/cron.py:ro
     environment:
       - APPLY_MIGRATION=False
       - ENV={{ app_env }}
@@ -487,7 +486,6 @@ services:
 {% if platform_back_use_custom_mail_templates  | bool %}
       - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
 {% endif %}
-      - {{ bimdata_docker_volume_path }}/platform_back/cron.py:/opt/cron.py:ro
     environment:
       - APPLY_MIGRATION=False
       - ENV={{ app_env }}
