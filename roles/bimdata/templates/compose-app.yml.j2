@@ -414,12 +414,14 @@ services:
       - "beat"
       - "--scheduler=django_celery_beat.schedulers:DatabaseScheduler"
       - "--loglevel=info"
+{% if not tls_custom_ca | bool or platform_back_use_custom_mail_templates | bool %}
     volumes:
 {% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if platform_back_use_custom_mail_templates  | bool %}
       - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
+{% endif %}
 {% endif %}
     environment:
       - APPLY_MIGRATION=False
@@ -479,12 +481,14 @@ services:
       - "worker"
       - "--queues=celery_platform_back"
       - "--loglevel=info"
+{% if not tls_custom_ca | bool or platform_back_use_custom_mail_templates | bool %}
     volumes:
 {% if tls_custom_ca | bool %}
       - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
 {% endif %}
 {% if platform_back_use_custom_mail_templates  | bool %}
       - {{ bimdata_docker_volume_path }}/platform_back/mails:/opt/templates/mails/:ro
+{% endif %}
 {% endif %}
     environment:
       - APPLY_MIGRATION=False
