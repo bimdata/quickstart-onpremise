@@ -1,16 +1,53 @@
 ---
 # We should use docker_compose_v2_exec when ansible will be updated to 11 or another version that support it
 # With this module we could avoid relaying on container name
+- name: "Make sure to upgrade all extensions on the database {{ _db.name }}"
+  community.docker.docker_container_exec:
+    container: "{{ _db.name }}-db"
+    argv:
+      - bash
+      - -c
+      - >-
+        psql -U {{ lookup('vars', 'db_'+_db.name+'_user') }} -d "{{ _db.name }}" -c "
+          SELECT 'ALTER EXTENSION ' || quote_ident(extname) || ' UPDATE;'
+          FROM pg_extension;
+        "
+
+# Not completly sure, it may happen when the glibc is upgraded at least?
+# hard to detect, few pg upgrade, so ok to do it at every major upgrade?
+- name: "Re-index the database to avoid corruption of some indexes on the database {{ _db.name }}"
+  community.docker.docker_container_exec:
+    container: "{{ _db.name }}-db"
+    command: >-
+      reindexdb
+      --username={{ lookup('vars', 'db_'+_db.name+'_user') }}
+      --jobs={{ ansible_processor_count }}
+      --all
+  when:
+    - inventory_hostname in groups["db"]
+    - not use_external_db | bool
+
+- name: "Make sure to update the COLLATION on the database {{ _db.name }}"
+  community.docker.docker_container_exec:
+    container: "{{ _db.name }}-db"
+    command: >-
+      psql
+      --username={{ lookup('vars', 'db_'+_db.name+'_user') }}
+      --command="ALTER DATABASE {{ _db.name }} REFRESH COLLATION VERSION;"
+  when:
+    - inventory_hostname in groups["db"]
+    - not use_external_db | bool
+    - db_pg_version is version("15", ">=")
+
 - name: "Run Postgres vaccum analyze on the database {{ _db.name }}"
   community.docker.docker_container_exec:
     container: "{{ _db.name }}-db"
     command: >-
       vacuumdb
       --username={{ lookup('vars', 'db_'+_db.name+'_user') }}
-      --maintenance-db={{ _db.name }}
-      --dbname={{ _db.name }}
       --jobs={{ ansible_processor_count }}
-      --analyze
+      --all
+      --analyze-in-stages
   when:
     - inventory_hostname in groups["db"]
     - not use_external_db | bool
