@@ -54,7 +54,7 @@
         - inventory_hostname in groups["db"]
         - not use_external_db | bool
         - db_info.current_version != ""
-        - db_info.current_version is version(db_pg_version, "==")
+        - db_info.current_version is version(db_pg_version | string | split('.') | first, "==")
 # End of block
 
 - name: "Delete offline cache directory if requested"

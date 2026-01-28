@@ -8,10 +8,11 @@
       - bash
       - -c
       - >-
-        psql -U {{ lookup('vars', 'db_'+_db.name+'_user') }} -d "{{ _db.name }}" -c "
+        psql -U {{ lookup('vars', 'db_'+_db.name+'_user') }} -d "{{ _db.name }}" -v ON_ERROR_STOP=1 <<'EOF'
           SELECT 'ALTER EXTENSION ' || quote_ident(extname) || ' UPDATE;'
           FROM pg_extension;
-        "
+          \gexec
+        EOF
 
 # Not completly sure, it may happen when the glibc is upgraded at least?
 # hard to detect, few pg upgrade, so ok to do it at every major upgrade?

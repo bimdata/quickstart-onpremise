@@ -1,6 +1,7 @@
+---
 # We should use docker_compose_v2_exec when ansible will be updated to 11 or another version that support it
 # With this module we could avoid relaying on container name
-- name: "Re-index the database to avoid corruption of some indexes on the database {{ _db.name }}"
+- name: "Re-index the database to avoid corruption of some indexes on the database {{ db_info.name }}"
   community.docker.docker_container_exec:
     container: "{{ db_info.name }}-db"
     command: >-
@@ -9,7 +10,7 @@
       --jobs={{ ansible_processor_count }}
       --all
 
-- name: "Make sure to update the COLLATION on the database {{ _db.name }}"
+- name: "Make sure to update the COLLATION on the database {{ db_info.name }}"
   community.docker.docker_container_exec:
     container: "{{ db_info.name }}-db"
     command: >-
@@ -19,7 +20,7 @@
   when:
     - db_info.current_version is version("15", ">=")
 
-- name: "Run Postgres vaccum analyze on the database {{ db_info.name }} on the database {{ _db.name }}"
+- name: "Run Postgres vaccum analyze on the database {{ db_info.name }} on the database {{ db_info.name }}"
   community.docker.docker_container_exec:
     container: "{{ db_info.name }}-db"
     command: >-

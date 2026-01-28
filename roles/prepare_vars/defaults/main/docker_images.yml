@@ -13,7 +13,7 @@ docker_rabbitmq_image: rabbitmq
 docker_rabbitmq_tag: 3.12-management-alpine
 
 docker_postgres_image: postgres  # Only use when use_external_db: false
-docker_postgres_tag: "{{ db_pg_version }}-trixie" # use a tag with OS in it to avoid unplanified libc upgrade
+docker_postgres_tag: "{{ db_pg_version }}-trixie" # use a tag with OS in it to avoid unplanned libc upgrade
 
 docker_postgres_upgrade_image: tianon/postgres-upgrade
 
