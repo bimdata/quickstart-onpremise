@@ -42,6 +42,19 @@
       when:
         - not _first_deploy | bool
         - _previous_version | int < 20251008
+
+    - name: "Include tasks for 20260128 upgrade."
+      ansible.builtin.include_tasks: "20260128.yml"
+      loop: "{{ _postgres_infos }}"
+      loop_control:
+        loop_var: db_info
+      when:
+        - not _first_deploy | bool
+        - _previous_version | int < 20260128
+        - inventory_hostname in groups["db"]
+        - not use_external_db | bool
+        - db_info.current_version != ""
+        - db_info.current_version is version(db_pg_version | string | split('.') | first, "==")
 # End of block
 
 - name: "Delete offline cache directory if requested"

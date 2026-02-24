@@ -400,8 +400,8 @@ with the [db] server on these ports.
 | docker_rabbitmq_image                   | "rabbitmq"                                                       | RabbitMQ docker image (use Dockerhub by default).                         |
 | docker_rabbitmq_tag                     | "3.8-management-alpine"                                          | RabbitMQ docker tag.                                                      |
 | docker_postgres_image                   | "postgres"                                                       | Postgres docker image (use Dockerhub by default).                         |
-| docker_postgres_tag                     | "{{ db_pg_version }}-alpine"                                     | Postgres docker tag.                                                      |
-| docker_bimdata_tag                      | "{{ bimdata_version }}                                           | Docker tag use by all bimdata images.                                     |
+| docker_postgres_tag                     | "{{ db_pg_version }}-trixie"                                     | Postgres docker tag.                                                      |
+| docker_bimdata_tag                      | "{{ bimdata_version }}"                                          | Docker tag use by all bimdata images.                                     |
 | docker_api_image                        | "{{ docker_private_registry }}/on-premises/api"                  | API docker image.                                                         |
 | docker_api_tag                          | "{{ docker_bimdata_tag }}"                                       | API docker tag.                                                           |
 | docker_connect_image                    | "{{ docker_private_registry }}/on-premises/connect"              | Connect docker image.                                                     |
