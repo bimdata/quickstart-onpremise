@@ -73,6 +73,14 @@ api_bcf_admin_no_special_permissions: false
 api_bcf_creator_no_special_permissions: false
 api_nginx_custom_conf: ""
 
+# API swagger (/doc/)
+api_swagger_customization: false
+api_swagger_title: BIMData API
+api_swagger_tos: ""
+api_swagger_contact_name: "Support"
+api_swagger_contact_url: ""
+api_swagger_contact_email: "{{ debug_mail_to }}"
+
 # connect
 connect_secret_key: "{{ vault_connect_secret_key }}" # Change me in the vault
 connect_client_id: "{{ 'connect_client_id' | to_uuid(namespace=uuid_namespace) }}"
