@@ -85,6 +85,12 @@
     mode: "0640"
   notify: Restart iam
 
+- name: Copy license file
+  ansible.builtin.template:
+    src: license.txt.j2
+    dest: "{{ bimdata_docker_volume_path }}/license.txt"
+    mode: "0640"
+
 - name: Create docker-compose file
   ansible.builtin.template:
     src: compose-app.yml.j2

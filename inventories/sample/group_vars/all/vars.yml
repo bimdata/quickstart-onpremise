@@ -14,4 +14,10 @@ debug_mail_to: ""
 # Docker registry
 docker_private_registry_login: CHANGEME
 
+# license
+bimdata_license: |
+  -----BEGIN LICENSE FILE-----
+  [...]
+  -----END LICENSE FILE-----
+
 # Add your other configurations after this comment

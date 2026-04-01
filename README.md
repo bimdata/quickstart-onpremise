@@ -2,6 +2,23 @@
 This ansible project aims to help you deploy the Bimdata applications on your servers.
 
 ## Prerequisites
+### License
+For all versions, publish after the 2026-04-01, a valid license is required to deploy and run the application.
+You must contact BIMData.io support to get a valid license.
+
+The content of the license should then be added to your inventory in the variable `bimdata_license`, this should look like:
+```
+bimdata_license: |
+  -----BEGIN LICENSE FILE-----
+  [...]
+  -----END LICENSE FILE-----
+```
+
+When asking for a license, you must provide the DNS domain that will be used for the API. Each license is tied to a specific API DNS name.
+If you need multiples licenses files, for example for production and pre-production environments, please specify it to the support, and provide both API DNS name.
+
+We can also provide you a 30 days trial license if you want to test the application.
+
 ### Online
 - Ansible server:
   - python >= 3.10
@@ -188,6 +205,7 @@ Object storage (S3):
 
 | Variables                                    | Default value                                                            | Description                                                      |
 |----------------------------------------------|--------------------------------------------------------------------------|------------------------------------------------------------------|
+| bimdata_license                              | *undefined*                                                                | The license file content provided by BIMData.io support.       |
 | api_secret_key                               | "{{ vault_api_secret_key }}"                                             | You should not change this.                                      |
 | api_workers                                  | 8                                                                        | Number of web processes to handle requests.                      |
 | api_workers_args                             | ["-k gevent", "--max-requests 5000", "--max-requests-jitter 1000"]       | List of arguments to configure gunicorn workers.                 |
