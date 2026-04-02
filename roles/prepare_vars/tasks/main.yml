@@ -8,7 +8,7 @@
 - name: Gather ansible facts
   ansible.builtin.setup:
 
-- name: Failed if there is no license
+- name: Fail if there is no license
   ansible.builtin.fail:
     msg: >
       There is no license provided. Please provide a valid license in the variable `bimdata_license` to proceed with the installation.
