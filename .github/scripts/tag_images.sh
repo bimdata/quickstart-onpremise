@@ -4,6 +4,7 @@ set -euo pipefail
 
 src_repos=docker-registry.bimdata.io/bimdata
 src_tag=prod
+api_src_tag=on-premises
 
 dest_repos=docker-registry.bimdata.io/on-premises
 # Remove the last ".x" of the tag
@@ -34,7 +35,13 @@ img_list=(
 )
 
 for img in ${img_list[@]} ; do
-  docker pull --quiet ${src_repos}/${img}:${src_tag}
-  docker tag ${src_repos}/${img}:${src_tag} ${dest_repos}/${img}:${dest_tag}
+  if [[ "$img" == "api" ]]; then
+    _src_tag=${api_src_tag}
+  else
+    _src_tag=${src_tag}
+  fi
+
+  docker pull --quiet ${src_repos}/${img}:${_src_tag}
+  docker tag ${src_repos}/${img}:${_src_tag} ${dest_repos}/${img}:${dest_tag}
   docker push --quiet ${dest_repos}/${img}:${dest_tag}
 done
