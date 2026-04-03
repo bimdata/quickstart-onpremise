@@ -3,7 +3,7 @@ This ansible project aims to help you deploy the Bimdata applications on your se
 
 ## Prerequisites
 ### License
-For all versions, published after the 2026-04-01, a valid license is required to deploy and run the application.
+For all versions, published after the 2026-04-03, a valid license is required to deploy and run the application.
 You must contact BIMData.io support to get a valid license.
 
 The content of the license should then be added to your inventory in the variable `bimdata_license`, this should look like:
@@ -135,7 +135,7 @@ on how to configure other way to manage privilege escalation.
 #### Version
 | Variables                   | Default value                          | Description                                                     |
 |-----------------------------|----------------------------------------|-----------------------------------------------------------------|
-| bimdata_version             | 20260330                               | Bimdata version, should match the first part of the github tag. |
+| bimdata_version             | 20260403                               | Bimdata version, should match the first part of the github tag. |
 
 #### DNS configuration
 
