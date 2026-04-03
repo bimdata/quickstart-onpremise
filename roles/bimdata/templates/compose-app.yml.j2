@@ -140,8 +140,8 @@ services:
     image: {{ docker_api_image }}:{{ docker_api_tag }}
     expose:
       - 8000
-{% if not s3_enabled | bool or tls_custom_ca | bool or api_custom_export_logo_bcf | bool %}
     volumes:
+      - {{ bimdata_docker_volume_path }}/license.txt:/opt/license.txt:ro
 {% if not s3_enabled | bool %}
       - {{ bimdata_docker_volume_path }}/web/api_storage:/opt/storage:rw
 {% endif %}
@@ -150,7 +150,6 @@ services:
 {% endif %}
 {% if api_custom_export_logo_bcf | bool %}
       - {{ bimdata_docker_volume_path }}/api/bcf-xls-export-logo.png:/opt/utils/bcf-xls-export-logo.png:ro
-{% endif %}
 {% endif %}
     environment:
       - VIRTUAL_HOST={{ api_dns_name }}

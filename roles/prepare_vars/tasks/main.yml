@@ -8,6 +8,14 @@
 - name: Gather ansible facts
   ansible.builtin.setup:
 
+- name: Fail if there is no license
+  ansible.builtin.fail:
+    msg: >
+      There is no license provided. Please provide a valid license in the variable `bimdata_license` to proceed with the installation.
+      If you don't have a license, please contact BIMdata.io support to get one.
+  when:
+    - bimdata_license is not defined or bimdata_license == ""
+
 - name: Include tasks to check if this is the first deployement
   ansible.builtin.include_tasks: first.yml
 
