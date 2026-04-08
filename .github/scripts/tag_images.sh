@@ -32,6 +32,7 @@ img_list=(
   pointcloud_worker
   worker_b2d
   elevation_worker
+  fragments_worker
 )
 
 for img in ${img_list[@]} ; do

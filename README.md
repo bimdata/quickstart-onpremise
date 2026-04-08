@@ -311,6 +311,10 @@ Object storage (S3):
 | workers_elevation_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
 | workers_elevation_ram                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
 | workers_elevation_task_timeout               | "{{ '15m' | community.general.to_seconds | int }}"                       | Timeout for a Elevation process.                                 |
+| workers_fragments_instance                   | 1                                                                        | Number of replicas deployed on *each* worker server.             |
+| workers_fragments_cpu                        | 1                                                                        | Number of CPUs allocated for each replicas.                      |
+| workers_fragments_ram                        | "{{ ansible_memtotal_mb / 2 }}m"                                         | Quantity of RAM allocated for each replicas.                     |
+| workers_fragments_task_timeout               | "{{ '15m' | community.general.to_seconds | int }}"                       | Timeout for a Fragments process.                                 |
 ||||
 | run_app_initialization                       | true if first deployment else false                                      | Configure if initialization script are run.                      |
 | uuid_namespace                               | "{{ app_dns_domain \| to_uuid }}"                                        | Use to generate needed UUIDs.                                    |
@@ -466,6 +470,8 @@ with the [db] server on these ports.
 | docker_workers_b2d_tag                  | "{{ docker_bimdata_tag }}"                                       | Worker B2D tag.                                                           |
 | docker_workers_elevation_image          | "{{ docker_private_registry }}/on-premises/elevation_worker"     | Worker Elevation image.                                                   |
 | docker_workers_elevation_tag            | "{{ docker_bimdata_tag }}"                                       | Worker Elevation tag.                                                     |
+| docker_workers_fragments_image          | "{{ docker_private_registry }}/on-premises/fragments_worker"     | Worker Fragments image.                                                   |
+| docker_workers_fragments_tag            | "{{ docker_bimdata_tag }}"                                       | Worker Fragments tag.                                                     |
 
 ### docker.yml
 | Variables                       | Default value                                                         | Description                                                                                                  |
