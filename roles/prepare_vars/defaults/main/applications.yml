@@ -217,6 +217,12 @@ workers_elevation_cpu: 1
 workers_elevation_ram: "{{ ansible_memtotal_mb / 2 }}m"
 workers_elevation_task_timeout: "{{ '15m' | community.general.to_seconds | int }}"
 
+## fragments
+workers_fragments_instance: 1
+workers_fragments_cpu: 1
+workers_fragments_ram: "{{ ansible_memtotal_mb / 2 }}m"
+workers_fragments_task_timeout: "{{ '15m' | community.general.to_seconds | int }}"
+
 # Map
 # By default it uses our default token, uncomment and specify your token if needed
 # https://docs.maptiler.com/cloud/api/authentication-key/

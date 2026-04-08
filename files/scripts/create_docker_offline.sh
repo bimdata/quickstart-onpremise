@@ -41,6 +41,7 @@ worker_images=(
   ${src_private_repos}/pointcloud_worker:${src_private_tag}
   ${src_private_repos}/worker_b2d:${src_private_tag}
   ${src_private_repos}/elevation_worker:${src_private_tag}
+  ${src_private_repos}/fragments_worker:${src_private_tag}
 )
 
 app_archive_path="${archive_path}/docker-app-images-${src_private_tag}.tar.bz2"
