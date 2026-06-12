@@ -39,7 +39,6 @@ worker_images=(
   ${src_private_repos}/pdf_preview_worker:${src_private_tag}
   ${src_private_repos}/office_preview_worker:${src_private_tag}
   ${src_private_repos}/pointcloud_worker:${src_private_tag}
-  ${src_private_repos}/worker_b2d:${src_private_tag}
   ${src_private_repos}/elevation_worker:${src_private_tag}
   ${src_private_repos}/fragments_worker:${src_private_tag}
 )
