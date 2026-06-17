@@ -1,5 +1,4 @@
 ---
-version: "3.8"
 services:
 {% if not use_external_db and inventory_hostname in groups['db'] %}
   # Databases
@@ -26,10 +25,11 @@ services:
 {% endif %}
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status"]
-      interval: 5s
+      interval: 60s
       timeout: 20s
       retries: 5
-      start_period: 15s
+      start_period: 60s
+      start_interval: 5s
     restart: unless-stopped
 {% endif %}
 
@@ -119,10 +119,11 @@ services:
 {% endif %}
     healthcheck:
       test: ["CMD-SHELL", "(echo >/dev/tcp/localhost/8080) &>/dev/null"]
-      interval: 10s
+      interval: 60s
       timeout: 10s
       retries: 30
-      start_period: 30s
+      start_period: 60s
+      start_interval: 10s
     restart: unless-stopped
 {% if docker_use_extra_hosts | bool %}
     extra_hosts: {{ docker_extra_hosts | to_yaml }}
@@ -250,11 +251,24 @@ services:
       iam:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "(echo >/dev/tcp/localhost/8000) &>/dev/null"]
-      start_period: 15s
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - |
+            import requests
+            r = requests.get(
+              "http://127.0.0.1:8000/health/",
+              headers={
+                "Host": "{{ api_dns_name}}",
+                "Accept": "application/json",
+              },
+              timeout=1,
+            )
+      start_period: 300s
       start_interval: 5s
       interval: 60s
-      timeout: 1s
+      timeout: 10s
       retries: 3
 
   api-celeri-beat:
@@ -292,7 +306,7 @@ services:
         - celery
         - -b amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@{{ rabbitmq_host }}:{{ rabbitmq_port }}/
         - -d celery@$$HOSTNAME
-      start_period: 10s
+      start_period: 30s
       start_interval: 5s
       interval: 60s
       timeout: 3s
@@ -385,6 +399,17 @@ services:
         condition: service_healthy
       nginx-proxy:
         condition: service_started
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import requests; requests.get('http://127.0.0.1:8000/health/', headers={'Host': '{{ connect_dns_name}}'}, timeout=1).raise_for_status()"
+      start_period: 120s
+      start_interval: 5s
+      interval: 60s
+      timeout: 1s
+      retries: 3
 
   platform-back: &PLATFORM_BACK_BASE_DEFINITION
     container_name: platform-back
@@ -450,6 +475,17 @@ services:
 {% endif %}
       nginx-proxy:
         condition: service_started
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import requests; requests.get('http://127.0.0.1:8000/health/', headers={'Host': '{{ platform_back_dns_name}}'}, timeout=1).raise_for_status()"
+      start_period: 60s
+      start_interval: 5s
+      interval: 60s
+      timeout: 1s
+      retries: 3
 
 {% if platform_back_enable_celery | bool %}
   platform-back-celery-beat:
@@ -487,7 +523,7 @@ services:
         - celery
         - -b amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@{{ rabbitmq_host }}:{{ rabbitmq_port }}/
         - -d celery@$$HOSTNAME
-      start_period: 10s
+      start_period: 60s
       start_interval: 5s
       interval: 60s
       timeout: 3s
