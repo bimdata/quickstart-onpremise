@@ -265,6 +265,7 @@ services:
               },
               timeout=1,
             )
+            r.raise_for_status()
       start_period: 300s
       start_interval: 5s
       interval: 60s
@@ -404,11 +405,21 @@ services:
         - "CMD"
         - "python"
         - "-c"
-        - "import requests; requests.get('http://127.0.0.1:8000/health/', headers={'Host': '{{ connect_dns_name}}'}, timeout=1).raise_for_status()"
+        - |
+            import requests
+            r = requests.get(
+              "http://127.0.0.1:8000/health/",
+              headers={
+                "Host": "{{ connect_dns_name}}",
+                "Accept": "application/json",
+              },
+              timeout=1,
+            )
+            r.raise_for_status()
       start_period: 120s
       start_interval: 5s
       interval: 60s
-      timeout: 1s
+      timeout: 2s
       retries: 3
 
   platform-back: &PLATFORM_BACK_BASE_DEFINITION
@@ -480,11 +491,21 @@ services:
         - "CMD"
         - "python"
         - "-c"
-        - "import requests; requests.get('http://127.0.0.1:8000/health/', headers={'Host': '{{ platform_back_dns_name}}'}, timeout=1).raise_for_status()"
+        - |
+            import requests
+            r = requests.get(
+              "http://127.0.0.1:8000/health/",
+              headers={
+                "Host": "{{ platform_back_dns_name}}",
+                "Accept": "application/json",
+              },
+              timeout=1,
+            )
+            r.raise_for_status()
       start_period: 60s
       start_interval: 5s
       interval: 60s
-      timeout: 1s
+      timeout: 2s
       retries: 3
 
 {% if platform_back_enable_celery | bool %}
