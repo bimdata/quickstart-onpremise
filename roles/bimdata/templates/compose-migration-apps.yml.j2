@@ -1,5 +1,4 @@
 ---
-version: "3.8"
 services:
 {% if not use_external_db and inventory_hostname in groups['db'] %}
   # Databases
@@ -39,4 +38,3 @@ services:
       api-db:
         condition: service_healthy
 {% endif %}
- 
