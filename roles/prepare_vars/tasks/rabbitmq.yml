@@ -7,7 +7,7 @@
       ansible.builtin.assert:
         that:
           - external_rabbitmq_host is defined
-          - external_rabbitmq_host | length
+          - external_rabbitmq_host | length > 0
           - external_rabbitmq_port is defined
           - external_rabbitmq_port | int
         fail_msg: >
@@ -25,7 +25,7 @@
   block:
     - name: Check if rabbitmq is on the same same host
       ansible.builtin.set_fact:
-        rabbit_is_local: "{{ inventory_hostname in groups['app'] | default(false) }}"
+        rabbit_is_local: "{{ (inventory_hostname in groups['app']) | default(false) }}"
 
     - name: Set RabbitMQ connection variable accordingly
       ansible.builtin.set_fact:

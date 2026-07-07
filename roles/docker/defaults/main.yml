@@ -2,14 +2,14 @@
 # Docker APT configuration
 docker_apt_dependencies:
   - ca-certificates
+  - python3-debian
 
-docker_apt_keyring_path: /etc/apt/keyrings/docker.asc
-docker_apt_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
 docker_repo_url: https://download.docker.com/linux
-docker_apt_release_channel: stable
-docker_apt_repo: >-
-  deb [signed-by={{ docker_apt_keyring_path }}] {{ docker_repo_url }}/{{ ansible_distribution | lower }}
-  {{ ansible_distribution_release }} {{ docker_apt_release_channel }}
+
+docker_apt_repo_key_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}/gpg"
+docker_apt_repo_url: "{{ docker_repo_url }}/{{ ansible_distribution | lower }}"
+docker_apt_repo_suites: "{{ ansible_distribution_release }}"
+docker_apt_repo_components: stable
 
 docker_dnf_repo: "{{ docker_repo_url }}/centos/docker-{{ docker_edition }}.repo"
 docker_dnf_repo_key_url: "{{ docker_repo_url }}/centos/gpg"
@@ -20,7 +20,7 @@ docker_pkg_name: "docker-{{ docker_edition }}"
 
 # !! ONLY WORKS WITH APT !!
 # dnf seems to ignore the specified version in most cases when a version is already installed
-docker_pkg_version: "5:27.*"
+docker_pkg_version: "5:29.*"
 docker_pkg_version_hold: "{{ docker_pkg_version | default(false) | ternary(true, false) }}"
 
 docker_compose_pkg_name: "docker-compose-plugin"
@@ -31,3 +31,7 @@ docker_compose_pkg_version_hold: "{{ docker_compose_pkg_version | default(false)
 docker_svc_name: docker
 docker_svc_state: started
 docker_svc_enabled: true
+
+
+### Legacy value
+docker_legacy_apt_repository_file: /etc/apt/sources.list.d/docker.list

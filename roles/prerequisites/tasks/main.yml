@@ -36,6 +36,7 @@
 - name: "Cleanup old docker compose if needed"
   when: _legacy_venv_cleanup
   block:
+    # noqa: no-changed-when
     - name: "Stop all containers setup with compose < 2"
       ansible.builtin.command:
         cmd: "{{ bimdata_path }}/venv/bin/docker-compose down --remove-orphans --timeout 60"

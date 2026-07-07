@@ -47,7 +47,7 @@ smtp_use_tls: {{ smtp_use_tls | lower }}
 smtp_default_email: "{{ smtp_default_email if smtp_default_email }}"
 debug_mail_to: "{{ debug_mail_to if debug_mail_to }}"
 
-{%- if docker_private_registry_login is defined and docker_private_registry_login | length %}
+{%- if docker_private_registry_login is defined and (docker_private_registry_login | length > 0) %}
 
 # Docker registry
 docker_private_registry_login: {{ docker_private_registry_login }}

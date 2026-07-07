@@ -2,7 +2,7 @@
 - name: "Apply post upgrade tasks for Postgresql major upgrade."
   when:
     - _dbs_upgraded is defined
-    - _dbs_upgraded | length
+    - _dbs_upgraded | length > 0
   ansible.builtin.include_tasks: db_upgraded.yml
   loop: "{{ _dbs_upgraded }}"
   loop_control:

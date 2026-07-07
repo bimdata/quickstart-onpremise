@@ -21,16 +21,16 @@ We can also provide you a 30-day trial license if you want to test the applicati
 
 ### Online
 - Ansible server:
-  - python >= 3.10
+  - python >= 3.11
   - must be able to contect through ssh to all the applicative servers
 - Applicative servers:
   - python >= 3.5
 
 ### Offline
 - Ansible server:
-  - python >= 3.10
+  - python >= 3.11
   - python3-request
-  - ansible >= 11.4.0
+  - ansible >= 12.3.0
   - sshpass
   - must be able to contect through ssh to all the applicative servers
 

@@ -1,7 +1,11 @@
 ---
-parseable: true
+exclude_paths:
+   - .github/
+
 skip_list:
    - meta-no-info # Not intended for galaxy, so that's ok if meta/main miss informations
    - var-naming[no-role-prefix]
    - yaml[quoted-strings]  # There is a bug in this rule
    - jinja[spacing]  # Sometime this is just more readable to not respect this
+
+offline: true

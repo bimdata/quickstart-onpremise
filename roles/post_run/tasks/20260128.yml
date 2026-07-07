@@ -20,7 +20,7 @@
   when:
     - db_info.current_version is version("15", ">=")
 
-- name: "Run Postgres vaccum analyze on the database {{ db_info.name }} on the database {{ db_info.name }}"
+- name: "Run Postgres vaccum analyze on the database {{ db_info.name }}"
   community.docker.docker_container_exec:
     container: "{{ db_info.name }}-db"
     command: >-

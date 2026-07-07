@@ -40,7 +40,7 @@ services:
     ports:
       - {{ external_port_http }}:80
       - {{ external_port_https }}:443
-{% if nginx_custom_log_format is defined and nginx_custom_log_format | length %}
+{% if nginx_custom_log_format is defined and (nginx_custom_log_format | length > 0) %}
     environment:
       - LOG_FORMAT={{ nginx_custom_log_format }}
 {% endif %}
@@ -179,10 +179,10 @@ services:
       - IAM_URL={{ urls['iam'] }}
       - IAM_ADMIN_LOGIN={{ iam_user }}
       - IAM_ADMIN_PASSWORD={{ iam_password }}
-{% if smtp_host is defined and smtp_host | length %}
+{% if smtp_host is defined and (smtp_host | length > 0) %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
-{% if smtp_user is defined and smtp_user | length %}
+{% if smtp_user is defined and (smtp_user | length > 0) %}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
@@ -198,7 +198,7 @@ services:
       - S3_SECRET_ACCESS_KEY={{ s3_secret_access_key }}
       - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
       - S3_STORAGE_BUCKET_NAME={{ s3_storage_api_bucket_name }}
-{% if s3_other_options is defined and s3_other_options | length %}
+{% if s3_other_options is defined and (s3_other_options | length > 0) %}
 {% for option in s3_other_options %}
       - {{ option.name | upper }}={{ option.value }}
 {% endfor %}
@@ -351,10 +351,10 @@ services:
       - DB_NAME={{ db_connect_name }}
       - DB_USER={{ db_connect_user }}
       - DB_PASSWORD={{ db_connect_password }}
-{% if smtp_host is defined and smtp_host | length %}
+{% if smtp_host is defined and (smtp_host | length > 0) %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
-{% if smtp_user is defined and smtp_user | length %}
+{% if smtp_user is defined and (smtp_user | length > 0) %}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
@@ -371,7 +371,7 @@ services:
       - S3_MULTIPART_THRESHOLD={{ s3_multipart_threshold }}
       - S3_STORAGE_BUCKET_NAME={{ s3_storage_connect_bucket_name }}
       - CSP_STORAGE_URL={{ csp_storage_url }}
-{% if s3_other_options is defined and s3_other_options | length %}
+{% if s3_other_options is defined and (s3_other_options | length > 0) %}
 {% for option in s3_other_options %}
       - {{ option.name | upper }}={{ option.value }}
 {% endfor %}
@@ -451,10 +451,10 @@ services:
       - RABBITMQ_PORT={{ rabbitmq_port }}
       - RABBITMQ_USER={{ rabbitmq_user }}
       - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-{% if smtp_host is defined and smtp_host | length %}
+{% if smtp_host is defined and (smtp_host | length > 0) %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
-{% if smtp_user is defined and smtp_user | length %}
+{% if smtp_user is defined and (smtp_user | length > 0) %}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
@@ -673,10 +673,10 @@ services:
       - API_URL={{ urls['api'] }}
       - SECRET_KEY={{ marketplace_back_secret_key }}
       - ADMIN_INTERFACE=true
-{% if smtp_host is defined and smtp_host | length %}
+{% if smtp_host is defined and (smtp_host | length > 0) %}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
-{% if smtp_user is defined and smtp_user | length %}
+{% if smtp_user is defined and (smtp_user | length > 0) %}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
@@ -760,7 +760,7 @@ services:
       - INVITATION_SECRET={{ sso_invitation_secret }}
       - SMTP_HOST={{ smtp_host }}
       - SMTP_PORT={{ smtp_port }}
-{% if smtp_user is defined and smtp_user | length %}
+{% if smtp_user is defined and (smtp_user | length > 0) %}
       - SMTP_USER={{ smtp_user }}
       - SMTP_PASS={{ smtp_pass }}
 {% endif %}
