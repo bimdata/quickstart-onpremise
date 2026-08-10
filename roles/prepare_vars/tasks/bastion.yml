@@ -3,11 +3,11 @@
   ansible.builtin.assert:
     that:
       - bastion_ssh_addr is defined
-      - bastion_ssh_addr | length
+      - bastion_ssh_addr | length > 0
       - bastion_ssh_port is defined
       - bastion_ssh_port | int
       - bastion_ssh_user is defined
-      - bastion_ssh_user | length
+      - bastion_ssh_user | length > 0
     fail_msg: >
       You choose to use a connection through a bastion (use_bastion: true),
       bastion_ssh_addr, bastion_ssh_port, bastion_ssh_user must be defined and not empty.
@@ -16,6 +16,6 @@
   ansible.builtin.set_fact:
     ansible_ssh_common_args: >
       -o ProxyCommand='ssh -W %h:%p -q -p {{ bastion_ssh_port | default(22) }} {{ bastion_ssh_user }}@{{ bastion_ssh_addr }}
-      {%- if bastion_ssh_extra_options is defined and bastion_ssh_extra_options | length %}
+      {%- if bastion_ssh_extra_options is defined and (bastion_ssh_extra_options | length > 0) %}
         {{ bastion_ssh_extra_options }}
       {%- endif -%}'

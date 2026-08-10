@@ -15,7 +15,7 @@ api:
       }
     }
     {% endif %}
-    {% if api_nginx_custom_conf | length %}
+    {% if api_nginx_custom_conf | length > 0 %}
     {{ api_nginx_custom_conf | trim }}
     {% endif %}
 

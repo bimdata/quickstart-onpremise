@@ -6,6 +6,6 @@
     mode: "0750"
 
 - name: "Upload docker images"
-  include_tasks: upload_docker_images.yml
+  ansible.legacy.include_tasks: upload_docker_images.yml
   loop: "{{ install_offline_docker }}"
   when: item.group is not defined or inventory_hostname in groups[item.group]

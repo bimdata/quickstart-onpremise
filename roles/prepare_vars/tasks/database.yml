@@ -7,7 +7,7 @@
       ansible.builtin.assert:
         that:
           - external_db_host is defined
-          - external_db_host | length
+          - external_db_host | length > 0
           - external_db_port is defined
           - external_db_port | int
         fail_msg: "You choose to use an external database server (use_external_db: true), external_db_host, external_db_port must be defined and not empty."

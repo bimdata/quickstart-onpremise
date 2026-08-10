@@ -3,6 +3,6 @@
   ansible.builtin.assert:
     that:
       - smtp_host is defined
-      - smtp_host | length
+      - smtp_host | length > 0
     fail_msg: "You choose to use the SSO email module (sso_invitation_enabled: true), smtp_host must be defined and not empty."
   when: sso_invitation_enabled
