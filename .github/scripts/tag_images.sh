@@ -23,7 +23,6 @@ img_list=(
   sso_invitation_email_sender
   workers
   viewer_360
-  xkt_worker
   xkt_v10_worker
   dwg_worker
   image_preview_worker

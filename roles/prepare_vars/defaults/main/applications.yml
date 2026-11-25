@@ -154,11 +154,6 @@ workers_merge_ram: "{{ ansible_memtotal_mb / 2 }}m"
 workers_merge_task_timeout: "{{ '2h' | community.general.to_seconds | int }}"
 
 ## xkt
-workers_xkt_instance: 1
-workers_xkt_cpu: 1
-workers_xkt_ram: "{{ ansible_memtotal_mb / 2 }}m"
-workers_xkt_task_timeout: "{{ '10min' | community.general.to_seconds | int }}"
-
 workers_xkt_v10_instance: 1
 workers_xkt_v10_cpu: 1
 workers_xkt_v10_ram: "{{ ansible_memtotal_mb / 2 }}m"

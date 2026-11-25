@@ -143,34 +143,6 @@ workers-merge:
   extra_hosts: {{ docker_extra_hosts | to_yaml }}
 {% endif %}
 
-workers-xkt:
-  image: {{ docker_workers_xkt_image }}:{{ docker_workers_xkt_tag }}
-  deploy:
-    replicas: {{ workers_xkt_instance }}
-    resources:
-      limits:
-        cpus: "{{ workers_xkt_cpu }}"
-        memory: "{{ workers_xkt_ram }}"
-  environment:
-    - RABBITMQ_HOST={{ rabbitmq_host }}
-    - RABBITMQ_PORT={{ rabbitmq_port }}
-    - RABBITMQ_USER={{ rabbitmq_user }}
-    - RABBITMQ_PASSWORD={{ rabbitmq_password }}
-    - API_URL={{ urls['api'] }}
-    - ENV={{ app_env }}
-    - QUEUE=xkt
-    - TIMEOUT={{ workers_xkt_task_timeout }}
-    - MASTER_TOKEN={{ master_token }}
-{% if tls_custom_ca | bool %}
-    - CA_CERT=/opt/onprem-ca.crt
-  volumes:
-    - {{ bimdata_docker_volume_path }}/ca.crt:/opt/onprem-ca.crt:ro
-{% endif %}
-  restart: unless-stopped
-{% if docker_use_extra_hosts | bool %}
-  extra_hosts: {{ docker_extra_hosts | to_yaml }}
-{% endif %}
-
 workers-xkt-v10:
   image: {{ docker_workers_xkt_v10_image }}:{{ docker_workers_xkt_v10_tag }}
   deploy:
